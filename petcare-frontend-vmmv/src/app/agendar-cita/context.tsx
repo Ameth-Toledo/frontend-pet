@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 
 type ServiceType = "chequeo" | "grooming" | null;
 
@@ -10,9 +10,6 @@ interface AgendarCitaContextType {
 
   motivo: string;
   setMotivo: (m: string) => void;
-
-  descripcion: string;
-  setDescripcion: (d: string) => void;
 
   groomingOption: string;
   setGroomingOption: (g: string) => void;
@@ -28,6 +25,8 @@ interface AgendarCitaContextType {
 
   telefono: string;
   setTelefono: (t: string) => void;
+
+  resetFlow: () => void;
 }
 
 const AgendarCitaContext = createContext<AgendarCitaContextType | null>(null);
@@ -47,13 +46,53 @@ export function AgendarCitaProvider({
 }) {
   const [service, setService] = useState<ServiceType>(null);
   const [motivo, setMotivo] = useState("");
-  const [descripcion, setDescripcion] = useState("");
   const [groomingOption, setGroomingOption] = useState("");
-
   const [email, setEmail] = useState("");
   const [nombre, setNombre] = useState("");
   const [apellido, setApellido] = useState("");
   const [telefono, setTelefono] = useState("");
+
+  // 🔹 Cargar desde localStorage
+  useEffect(() => {
+    const saved = localStorage.getItem("agendarCitaFlow");
+    if (saved) {
+      const data = JSON.parse(saved);
+      setService(data.service || null);
+      setMotivo(data.motivo || "");
+      setGroomingOption(data.groomingOption || "");
+      setEmail(data.email || "");
+      setNombre(data.nombre || "");
+      setApellido(data.apellido || "");
+      setTelefono(data.telefono || "");
+    }
+  }, []);
+
+  // 🔹 Guardar automáticamente
+  useEffect(() => {
+    localStorage.setItem(
+      "agendarCitaFlow",
+      JSON.stringify({
+        service,
+        motivo,
+        groomingOption,
+        email,
+        nombre,
+        apellido,
+        telefono,
+      })
+    );
+  }, [service, motivo, groomingOption, email, nombre, apellido, telefono]);
+
+  const resetFlow = () => {
+    localStorage.removeItem("agendarCitaFlow");
+    setService(null);
+    setMotivo("");
+    setGroomingOption("");
+    setEmail("");
+    setNombre("");
+    setApellido("");
+    setTelefono("");
+  };
 
   return (
     <AgendarCitaContext.Provider
@@ -62,8 +101,6 @@ export function AgendarCitaProvider({
         setService,
         motivo,
         setMotivo,
-        descripcion,
-        setDescripcion,
         groomingOption,
         setGroomingOption,
         email,
@@ -74,6 +111,7 @@ export function AgendarCitaProvider({
         setApellido,
         telefono,
         setTelefono,
+        resetFlow,
       }}
     >
       {children}

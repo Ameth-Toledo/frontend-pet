@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useAgendarCita } from "../context";
+import { ROUTES } from "@/lib/routes";
 
 export default function ServicioPage() {
   const router = useRouter();
@@ -13,6 +14,12 @@ export default function ServicioPage() {
     groomingOption,
     setGroomingOption,
   } = useAgendarCita();
+
+  const handleServiceChange = (type: "chequeo" | "grooming") => {
+    setService(type);
+    setMotivo("");
+    setGroomingOption("");
+  };
 
   const isValid =
     (service === "chequeo" && motivo) ||
@@ -30,7 +37,7 @@ export default function ServicioPage() {
 
       <div className="space-y-6">
         <div
-          onClick={() => setService("chequeo")}
+          onClick={() => handleServiceChange("chequeo")}
           className={`border rounded-2xl p-6 cursor-pointer transition-all
           ${
             service === "chequeo"
@@ -48,13 +55,17 @@ export default function ServicioPage() {
               <option value="">Motivo</option>
               <option>Vómito</option>
               <option>Diarrea</option>
+              <option>Diarrea con sangre</option>
+              <option>Se comió algo indebido</option>
               <option>Vacunación</option>
+              <option>Seguimiento rutinario</option>
+              <option>Desparasitación</option>
             </select>
           )}
         </div>
 
         <div
-          onClick={() => setService("grooming")}
+          onClick={() => handleServiceChange("grooming")}
           className={`border rounded-2xl p-6 cursor-pointer transition-all
           ${
             service === "grooming"
@@ -71,7 +82,11 @@ export default function ServicioPage() {
             >
               <option value="">Selecciona opción</option>
               <option>Baño básico</option>
-              <option>Corte estándar</option>
+              <option>Baño + corte estándar</option>
+              <option>Corte según raza</option>
+              <option>Estilo creativo</option>
+              <option>Tijera completo</option>
+              <option>Deslanado y cepillado profundo</option>
             </select>
           )}
         </div>
@@ -80,7 +95,7 @@ export default function ServicioPage() {
       <div className="mt-10 flex justify-center">
         <button
           disabled={!isValid}
-          onClick={() => router.push("/agendar-cita/datos")}
+          onClick={() => router.push(ROUTES.PUBLIC.AGENDAR_CITA_DATOS)}
           className={`h-12 px-10 rounded-xl font-medium text-sm
           ${
             isValid

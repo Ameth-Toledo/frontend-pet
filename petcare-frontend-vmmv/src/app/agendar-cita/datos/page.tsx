@@ -2,11 +2,29 @@
 
 import { useRouter } from "next/navigation";
 import { useAgendarCita } from "../context";
+import { useEffect } from "react";
+import { ROUTES } from "@/lib/routes";
 
 export default function DatosPage() {
   const router = useRouter();
-  const { email, setEmail, nombre, setNombre, apellido, setApellido, telefono, setTelefono } =
-    useAgendarCita();
+  const {
+    service,
+    email,
+    setEmail,
+    nombre,
+    setNombre,
+    apellido,
+    setApellido,
+    telefono,
+    setTelefono,
+  } = useAgendarCita();
+
+  // 🔒 Bloqueo si no hay servicio
+  useEffect(() => {
+    if (!service) {
+      router.replace(ROUTES.PUBLIC.AGENDAR_CITA_SERVICIO);
+    }
+  }, [service, router]);
 
   const isValid =
     email.trim() !== "" &&
@@ -57,7 +75,7 @@ export default function DatosPage() {
 
       <div className="mt-10 flex justify-between">
         <button
-          onClick={() => router.back()}
+          onClick={() => router.push(ROUTES.PUBLIC.AGENDAR_CITA_SERVICIO)}
           className="text-sm text-[#64748B]"
         >
           ← Volver
