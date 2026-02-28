@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useAgendarCita } from "../layout";
+import { useAgendarCita } from "../context";
 
 export default function ServicioPage() {
   const router = useRouter();
