@@ -5,31 +5,31 @@ export const ROUTES = {
     REGISTER: '/register',
   },
   CLIENTE: {
-    DASHBOARD: '/dashboard',
-    MASCOTAS: '/mascotas',
-    CITAS: '/citas',
-    PERFIL: '/perfil',
+    DASHBOARD: '/cliente/dashboard',
+    MASCOTAS: '/cliente/mascotas',
+    CITAS: '/cliente/citas',
+    PERFIL: '/cliente/perfil',
   },
   ADMIN: {
     DASHBOARD: '/admin/dashboard',
-    USUARIOS: '/usuarios',
+    USUARIOS: '/admin/usuarios',
     REPORTES: '/admin/reportes',
   },
   VETERINARIO: {
-    DASHBOARD: '/vet/dashboard',
-    HISTORIAL: '/historial-clinico',
-    CITAS: '/vet/citas',
+    DASHBOARD: '/veterinario/dashboard',
+    HISTORIAL: '/veterinario/historial-clinico',
+    CITAS: '/veterinario/citas',
   },
 } as const;
 
 export const getRedirectByRole = (role: string): string => {
   switch (role) {
     case 'CLIENTE':
-      return ROUTES.CLIENTE.MASCOTAS;
+      return ROUTES.CLIENTE.DASHBOARD;
     case 'ADMIN':
-      return ROUTES.ADMIN.USUARIOS;
+      return ROUTES.ADMIN.DASHBOARD;
     case 'VETERINARIO':
-      return ROUTES.VETERINARIO.HISTORIAL;
+      return ROUTES.VETERINARIO.DASHBOARD;
     default:
       return ROUTES.PUBLIC.LOGIN;
   }

@@ -1,7 +1,9 @@
+import { ReactNode } from "react";
+
 export default function ClienteLayout({
   children,
 }: {
-  children: React.ReactNode;
+  children: ReactNode;
 }) {
   return (
     <div className="min-h-screen bg-gray-50">
