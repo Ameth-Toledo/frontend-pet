@@ -26,6 +26,15 @@ interface AgendarCitaContextType {
   telefono: string;
   setTelefono: (t: string) => void;
 
+  especie: "perro" | "gato" | null;
+  setEspecie: (e: "perro" | "gato" | null) => void;
+
+  nombreMascota: string;
+  setNombreMascota: (n: string) => void;
+
+  raza: string;
+  setRaza: (r: string) => void;
+
   resetFlow: () => void;
 }
 
@@ -52,7 +61,10 @@ export function AgendarCitaProvider({
   const [apellido, setApellido] = useState("");
   const [telefono, setTelefono] = useState("");
 
-  // 🔹 Cargar desde localStorage
+  const [especie, setEspecie] = useState<"perro" | "gato" | null>(null);
+  const [nombreMascota, setNombreMascota] = useState("");
+  const [raza, setRaza] = useState("");
+
   useEffect(() => {
     const saved = localStorage.getItem("agendarCitaFlow");
     if (saved) {
@@ -64,10 +76,12 @@ export function AgendarCitaProvider({
       setNombre(data.nombre || "");
       setApellido(data.apellido || "");
       setTelefono(data.telefono || "");
+      setEspecie(data.especie || null);
+      setNombreMascota(data.nombreMascota || "");
+      setRaza(data.raza || "");
     }
   }, []);
 
-  // 🔹 Guardar automáticamente
   useEffect(() => {
     localStorage.setItem(
       "agendarCitaFlow",
@@ -79,9 +93,23 @@ export function AgendarCitaProvider({
         nombre,
         apellido,
         telefono,
+        especie,
+        nombreMascota,
+        raza,
       })
     );
-  }, [service, motivo, groomingOption, email, nombre, apellido, telefono]);
+  }, [
+    service,
+    motivo,
+    groomingOption,
+    email,
+    nombre,
+    apellido,
+    telefono,
+    especie,
+    nombreMascota,
+    raza,
+  ]);
 
   const resetFlow = () => {
     localStorage.removeItem("agendarCitaFlow");
@@ -92,6 +120,9 @@ export function AgendarCitaProvider({
     setNombre("");
     setApellido("");
     setTelefono("");
+    setEspecie(null);
+    setNombreMascota("");
+    setRaza("");
   };
 
   return (
@@ -111,6 +142,12 @@ export function AgendarCitaProvider({
         setApellido,
         telefono,
         setTelefono,
+        especie,
+        setEspecie,
+        nombreMascota,
+        setNombreMascota,
+        raza,
+        setRaza,
         resetFlow,
       }}
     >

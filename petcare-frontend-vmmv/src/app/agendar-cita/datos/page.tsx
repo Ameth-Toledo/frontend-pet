@@ -7,6 +7,7 @@ import { ROUTES } from "@/lib/routes";
 
 export default function DatosPage() {
   const router = useRouter();
+
   const {
     service,
     email,
@@ -19,7 +20,6 @@ export default function DatosPage() {
     setTelefono,
   } = useAgendarCita();
 
-  // 🔒 Bloqueo si no hay servicio
   useEffect(() => {
     if (!service) {
       router.replace(ROUTES.PUBLIC.AGENDAR_CITA_SERVICIO);
@@ -83,12 +83,16 @@ export default function DatosPage() {
 
         <button
           disabled={!isValid}
+          onClick={() =>
+            router.push(ROUTES.PUBLIC.AGENDAR_CITA_MASCOTA)
+          }
           className={`h-12 px-10 rounded-xl font-medium text-sm
-          ${
-            isValid
-              ? "bg-[#2F8F83] text-white"
-              : "bg-gray-200 text-gray-400 cursor-not-allowed"
-          }`}
+            ${
+              isValid
+                ? "bg-[#2F8F83] text-white"
+                : "bg-gray-200 text-gray-400 cursor-not-allowed"
+            }
+          `}
         >
           Continuar →
         </button>

@@ -4,6 +4,7 @@ export const ROUTES = {
     LOGIN: '/login',
     REGISTER: '/register',
     AGENDAR_CITA: '/agendar-cita',
+    AGENDAR_CITA_MASCOTA: '/agendar-cita/mascota',
 
     // 🔹 Flujo agendar cita
     AGENDAR_CITA_SERVICIO: '/agendar-cita/servicio',

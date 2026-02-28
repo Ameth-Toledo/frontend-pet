@@ -9,6 +9,7 @@ function StepIndicator() {
   const stepMap: Record<string, number> = {
     "/agendar-cita/servicio": 1,
     "/agendar-cita/datos": 2,
+    "/agendar-cita/mascota": 3,
   };
 
   const currentStep = stepMap[pathname] || 1;
