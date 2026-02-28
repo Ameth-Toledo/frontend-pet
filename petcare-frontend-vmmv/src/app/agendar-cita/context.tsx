@@ -35,6 +35,9 @@ interface AgendarCitaContextType {
   raza: string;
   setRaza: (r: string) => void;
 
+  fecha: string | null;
+  setFecha: (f: string | null) => void;
+
   resetFlow: () => void;
 }
 
@@ -60,10 +63,10 @@ export function AgendarCitaProvider({
   const [nombre, setNombre] = useState("");
   const [apellido, setApellido] = useState("");
   const [telefono, setTelefono] = useState("");
-
   const [especie, setEspecie] = useState<"perro" | "gato" | null>(null);
   const [nombreMascota, setNombreMascota] = useState("");
   const [raza, setRaza] = useState("");
+  const [fecha, setFecha] = useState<string | null>(null);
 
   useEffect(() => {
     const saved = localStorage.getItem("agendarCitaFlow");
@@ -79,6 +82,7 @@ export function AgendarCitaProvider({
       setEspecie(data.especie || null);
       setNombreMascota(data.nombreMascota || "");
       setRaza(data.raza || "");
+      setFecha(data.fecha || null);
     }
   }, []);
 
@@ -96,6 +100,7 @@ export function AgendarCitaProvider({
         especie,
         nombreMascota,
         raza,
+        fecha,
       })
     );
   }, [
@@ -109,20 +114,11 @@ export function AgendarCitaProvider({
     especie,
     nombreMascota,
     raza,
+    fecha,
   ]);
 
   const resetFlow = () => {
     localStorage.removeItem("agendarCitaFlow");
-    setService(null);
-    setMotivo("");
-    setGroomingOption("");
-    setEmail("");
-    setNombre("");
-    setApellido("");
-    setTelefono("");
-    setEspecie(null);
-    setNombreMascota("");
-    setRaza("");
   };
 
   return (
@@ -148,6 +144,8 @@ export function AgendarCitaProvider({
         setNombreMascota,
         raza,
         setRaza,
+        fecha,
+        setFecha,
         resetFlow,
       }}
     >
