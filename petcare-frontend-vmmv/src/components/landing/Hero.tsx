@@ -20,7 +20,7 @@ export default function Hero() {
           </p>
 
           <Link
-            href="/login"
+            href="/ElegirServicio"
             className="h-12 px-8 rounded-xl bg-[#2F8F83] text-white font-medium shadow-lg hover:bg-[#287A70] transition-all duration-300 inline-flex items-center justify-center"
           >
             Agendar cita de seguimiento
