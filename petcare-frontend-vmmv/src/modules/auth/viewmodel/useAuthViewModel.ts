@@ -1,7 +1,12 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { AuthService } from '../services/auth.service';
-import { LoginRequestDTO, RegisterRequestDTO } from '../model/dto';
+import { 
+  LoginRequestDTO, 
+  RegisterRequestDTO,
+  ForgotPasswordRequestDTO,
+  ResetPasswordRequestDTO
+} from '../model/dto';
 import { getRedirectByRole } from '@/lib/routes';
 
 export function useAuthViewModel() {
@@ -18,11 +23,9 @@ export function useAuthViewModel() {
     try {
       const { user, token } = await AuthService.login(credentials);
 
-      // Guardar en localStorage
       localStorage.setItem('token', token);
       localStorage.setItem('user', JSON.stringify(user));
 
-      // Redirigir según el rol (determinado automáticamente por el backend)
       const redirectPath = getRedirectByRole(user.role);
       router.push(redirectPath);
 
@@ -45,7 +48,6 @@ export function useAuthViewModel() {
       const response = await AuthService.register(data);
 
       if (response.success) {
-        // Redirigir a login después del registro
         router.push('/login');
         return { success: true, message: response.message };
       } else {
@@ -63,6 +65,59 @@ export function useAuthViewModel() {
     }
   };
 
+  // ─── Forgot Password ─────────────────────────────────
+
+  const forgotPassword = async (data: ForgotPasswordRequestDTO) => {
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const response = await AuthService.forgotPassword(data);
+
+      if (response.success) {
+        return { success: true, message: response.message };
+      } else {
+        setError(response.message || 'Error al enviar email');
+        return { success: false, message: response.message };
+      }
+
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Error al enviar email de recuperación';
+      setError(errorMessage);
+      console.error('Forgot password error:', err);
+      return { success: false, message: errorMessage };
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // ─── Reset Password ──────────────────────────────────
+
+  const resetPassword = async (data: ResetPasswordRequestDTO) => {
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const response = await AuthService.resetPassword(data);
+
+      if (response.success) {
+        router.push('/login');
+        return { success: true, message: response.message };
+      } else {
+        setError(response.message || 'Error al cambiar contraseña');
+        return { success: false, message: response.message };
+      }
+
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Error al cambiar contraseña';
+      setError(errorMessage);
+      console.error('Reset password error:', err);
+      return { success: false, message: errorMessage };
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   // ─── Logout ──────────────────────────────────────────
 
   const logout = async () => {
@@ -71,11 +126,8 @@ export function useAuthViewModel() {
     } catch (err) {
       console.error('Logout error:', err);
     } finally {
-      // Limpiar localStorage
       localStorage.removeItem('token');
       localStorage.removeItem('user');
-      
-      // Redirigir a login
       router.push('/login');
     }
   };
@@ -85,6 +137,8 @@ export function useAuthViewModel() {
     error,
     login,
     register,
+    forgotPassword,
+    resetPassword,
     logout,
   };
 }

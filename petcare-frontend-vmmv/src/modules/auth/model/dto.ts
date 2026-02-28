@@ -1,5 +1,4 @@
 // ─── Request DTOs (lo que enviamos al backend) ───────────
-
 export interface LoginRequestDTO {
   email: string;
   password: string;
@@ -9,8 +8,17 @@ export interface RegisterRequestDTO {
   nombre: string;
   apellido: string;
   email: string;
-  telefono: string;  
+  telefono: string;
   password: string;
+}
+
+export interface ForgotPasswordRequestDTO {
+  email: string;
+}
+
+export interface ResetPasswordRequestDTO {
+  token: string;
+  newPassword: string;
 }
 
 // ─── Response DTOs (lo que recibimos del backend) ────────
@@ -36,4 +44,14 @@ export interface RegisterResponseDTO {
     nombre: string;
     apellido: string;
   };
+}
+
+export interface ForgotPasswordResponseDTO {
+  success: boolean;
+  message: string;
+}
+
+export interface ResetPasswordResponseDTO {
+  success: boolean;
+  message: string;
 }

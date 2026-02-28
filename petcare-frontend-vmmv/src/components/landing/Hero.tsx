@@ -37,7 +37,7 @@ export default function Hero() {
               <div className="flex items-center gap-3 mb-2">
                 <div className="h-3 w-3 rounded-full bg-[#2F8F83]"></div>
                 <p className="text-sm font-semibold text-[#1E293B]">
-                  Vacuna 2024
+                  Vacuna 2026
                 </p>
               </div>
               <p className="text-xs text-[#64748B]">
