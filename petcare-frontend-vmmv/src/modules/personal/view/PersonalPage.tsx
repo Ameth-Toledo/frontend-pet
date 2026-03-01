@@ -1,9 +1,10 @@
 "use client";
 
 import React from "react";
-import { useVeterinariosViewModel } from "@/modules/personal/viewmodel/usePersonalViewModel";
-import VeterinariosHeader from "./PersonalHeader";
-import VeterinariosTable from "./PersonalTable";
+import { usePersonalViewModel } from "@/modules/personal/viewmodel/usePersonalViewModel";
+import PersonalHeader from "./PersonalHeader";
+import PersonalTable from "./PersonalTable";
+import PersonalFormModal from "./PersonalFormModal";
 
 // ─── Spinner ──────────────────────────────────────────────────────────────────
 function Spinner() {
@@ -32,7 +33,6 @@ const NAV_ICONS: Record<string, React.ReactNode> = {
   clients: (
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
       <circle cx="9" cy="7" r="4" /><path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2" />
-      <path d="M16 3.13a4 4 0 0 1 0 7.75M21 21v-2a4 4 0 0 0-3-3.85" />
     </svg>
   ),
   appointments: (
@@ -49,7 +49,6 @@ const NAV_ICONS: Record<string, React.ReactNode> = {
   staff: (
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
       <circle cx="12" cy="8" r="4" /><path d="M6 20v-1a6 6 0 0 1 12 0v1" />
-      <path d="M16 3.13a4 4 0 0 1 0 7.75" />
     </svg>
   ),
   analytics: (
@@ -75,7 +74,6 @@ const NAV_ITEMS = [
   { label: "Configuración",   key: "settings" },
 ];
 
-// ─── Sidebar ──────────────────────────────────────────────────────────────────
 function PawIcon() {
   return (
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
@@ -103,7 +101,6 @@ function Sidebar() {
         </div>
         <span style={{ fontSize: "17px", fontWeight: 700, color: "#1F2937" }}>PetCare</span>
       </div>
-
       <nav style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
         {NAV_ITEMS.map((item) => (
           <div
@@ -125,35 +122,20 @@ function Sidebar() {
   );
 }
 
-// ─── Navbar ───────────────────────────────────────────────────────────────────
 function Navbar({ searchTerm, onSearchChange }: { searchTerm: string; onSearchChange: (v: string) => void }) {
   return (
     <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "center", marginBottom: "24px" }}>
       <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-        {/* Global search in navbar as per design */}
-        <div
-          style={{
-            display: "flex", alignItems: "center", gap: "8px",
-            backgroundColor: "#FFFFFF", border: "1px solid #E5E7EB",
-            borderRadius: "10px", padding: "8px 14px", width: "220px",
-          }}
-        >
+        <div style={{ display: "flex", alignItems: "center", gap: "8px", backgroundColor: "#FFFFFF", border: "1px solid #E5E7EB", borderRadius: "10px", padding: "8px 14px", width: "220px" }}>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2">
             <circle cx="11" cy="11" r="8" /><path d="M21 21l-4.35-4.35" />
           </svg>
           <input
-            type="text"
-            placeholder="Buscar veterinarios..."
-            value={searchTerm}
-            onChange={(e) => onSearchChange(e.target.value)}
-            style={{
-              border: "none", outline: "none", fontSize: "13px",
-              color: "#1F2937", backgroundColor: "transparent", width: "100%",
-            }}
+            type="text" placeholder="Buscar personal..."
+            value={searchTerm} onChange={(e) => onSearchChange(e.target.value)}
+            style={{ border: "none", outline: "none", fontSize: "13px", color: "#1F2937", backgroundColor: "transparent", width: "100%" }}
           />
         </div>
-
-        {/* User info */}
         <div style={{ textAlign: "right" }}>
           <p style={{ fontSize: "13px", fontWeight: 700, color: "#1F2937" }}>Dr. Smith</p>
           <p style={{ fontSize: "11px", color: "#6B7280", textTransform: "uppercase", letterSpacing: "0.04em" }}>Veterinary Surgeon</p>
@@ -164,8 +146,9 @@ function Navbar({ searchTerm, onSearchChange }: { searchTerm: string; onSearchCh
 }
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
-export default function VeterinariosPage() {
-  const { filteredVeterinarios, searchTerm, setSearchTerm, loading } = useVeterinariosViewModel();
+export default function PersonalPage() {
+  const { filteredVeterinarios, searchTerm, setSearchTerm, loading, isCreateOpen, openCreate, closeCreate } =
+    usePersonalViewModel();
 
   if (loading) return <Spinner />;
 
@@ -181,10 +164,17 @@ export default function VeterinariosPage() {
 
       <div style={{ flex: 1, minWidth: 0, paddingTop: "4px" }}>
         <Navbar searchTerm={searchTerm} onSearchChange={setSearchTerm} />
-        {/* Header: title + subtitle + filtrar btn + nuevo btn */}
-        <VeterinariosHeader searchTerm={searchTerm} onSearchChange={setSearchTerm} />
-        <VeterinariosTable veterinarios={filteredVeterinarios} />
+        {/* Pass openCreate to header so button can trigger modal */}
+        <PersonalHeader
+          searchTerm={searchTerm}
+          onSearchChange={setSearchTerm}
+          onNuevoClick={openCreate}
+        />
+        <PersonalTable veterinarios={filteredVeterinarios} />
       </div>
+
+      {/* Modal — rendered inside page, not a new route */}
+      {isCreateOpen && <PersonalFormModal onClose={closeCreate} />}
     </div>
   );
 }

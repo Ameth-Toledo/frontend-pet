@@ -1,22 +1,15 @@
 import React from "react";
 
-interface VeterinariosHeaderProps {
+interface PersonalHeaderProps {
   searchTerm: string;
   onSearchChange: (value: string) => void;
+  onNuevoClick: () => void;
 }
 
-export default function VeterinariosHeader({ searchTerm, onSearchChange }: VeterinariosHeaderProps) {
+export default function PersonalHeader({ searchTerm, onSearchChange, onNuevoClick }: PersonalHeaderProps) {
   return (
     <div style={{ marginBottom: "20px" }}>
-      {/* Title row */}
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "flex-start",
-          marginBottom: "20px",
-        }}
-      >
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "16px" }}>
         <div>
           <h1 style={{ fontSize: "22px", fontWeight: 700, color: "#1F2937", marginBottom: "4px" }}>
             Veterinarios
@@ -26,86 +19,53 @@ export default function VeterinariosHeader({ searchTerm, onSearchChange }: Veter
           </p>
         </div>
 
-        {/* Right: search + nuevo */}
         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
           {/* Search */}
           <div
             style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "8px",
-              backgroundColor: "#FFFFFF",
-              border: "1px solid #E5E7EB",
-              borderRadius: "10px",
-              padding: "8px 14px",
-              width: "220px",
+              display: "flex", alignItems: "center", gap: "8px",
+              backgroundColor: "#FFFFFF", border: "1px solid #E5E7EB",
+              borderRadius: "10px", padding: "8px 14px", width: "220px",
             }}
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2">
-              <circle cx="11" cy="11" r="8" />
-              <path d="M21 21l-4.35-4.35" />
+              <circle cx="11" cy="11" r="8" /><path d="M21 21l-4.35-4.35" />
             </svg>
             <input
               type="text"
               placeholder="Buscar veterinarios..."
               value={searchTerm}
               onChange={(e) => onSearchChange(e.target.value)}
-              style={{
-                border: "none",
-                outline: "none",
-                fontSize: "13px",
-                color: "#1F2937",
-                backgroundColor: "transparent",
-                width: "100%",
-              }}
+              style={{ border: "none", outline: "none", fontSize: "13px", color: "#1F2937", backgroundColor: "transparent", width: "100%" }}
             />
           </div>
 
-          {/* Nuevo Veterinario */}
+          {/* ← This button now calls onNuevoClick to open the modal */}
           <button
+            onClick={onNuevoClick}
             style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "6px",
-              backgroundColor: "#6BAF9F",
-              border: "none",
-              borderRadius: "10px",
-              padding: "8px 18px",
-              fontSize: "13px",
-              fontWeight: 600,
-              color: "#FFFFFF",
-              cursor: "pointer",
+              display: "flex", alignItems: "center", gap: "6px",
+              backgroundColor: "#6BAF9F", border: "none", borderRadius: "10px",
+              padding: "8px 18px", fontSize: "13px", fontWeight: 600,
+              color: "#FFFFFF", cursor: "pointer",
             }}
-            onMouseEnter={(e) => {
-              (e.currentTarget as HTMLButtonElement).style.backgroundColor = "#5AA193";
-            }}
-            onMouseLeave={(e) => {
-              (e.currentTarget as HTMLButtonElement).style.backgroundColor = "#6BAF9F";
-            }}
+            onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = "#5AA193"; }}
+            onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = "#6BAF9F"; }}
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" strokeWidth="2.5">
-              <line x1="12" y1="5" x2="12" y2="19" />
-              <line x1="5" y1="12" x2="19" y2="12" />
+              <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
             </svg>
-            Nuevo Veterinario
+            Registrar nuevo personal
           </button>
         </div>
       </div>
 
-      {/* Filtrar button row — below title, left aligned as in design */}
       <button
         style={{
-          display: "flex",
-          alignItems: "center",
-          gap: "6px",
-          backgroundColor: "#FFFFFF",
-          border: "1px solid #E5E7EB",
-          borderRadius: "10px",
-          padding: "7px 16px",
-          fontSize: "13px",
-          fontWeight: 500,
-          color: "#1F2937",
-          cursor: "pointer",
+          display: "flex", alignItems: "center", gap: "6px",
+          backgroundColor: "#FFFFFF", border: "1px solid #E5E7EB",
+          borderRadius: "10px", padding: "7px 16px", fontSize: "13px",
+          fontWeight: 500, color: "#1F2937", cursor: "pointer",
         }}
       >
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6B7280" strokeWidth="2">

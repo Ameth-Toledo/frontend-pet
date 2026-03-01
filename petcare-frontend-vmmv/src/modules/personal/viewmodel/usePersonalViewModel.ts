@@ -1,27 +1,32 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { veterinariosService } from "../services/personal.service";
+import { personalService } from "../services/personal.service";
 import { mapVeterinarioDTOtoUI } from "../model/mapper";
 import { VeterinarioUI } from "../model/ui.model";
 
-interface VeterinariosViewModelState {
+interface PersonalViewModelState {
   veterinarios: VeterinarioUI[];
   filteredVeterinarios: VeterinarioUI[];
   searchTerm: string;
   setSearchTerm: (term: string) => void;
   loading: boolean;
+  // modal
+  isCreateOpen: boolean;
+  openCreate: () => void;
+  closeCreate: () => void;
 }
 
-export function useVeterinariosViewModel(): VeterinariosViewModelState {
+export function usePersonalViewModel(): PersonalViewModelState {
   const [veterinarios, setVeterinarios] = useState<VeterinarioUI[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
-      const dtos = await veterinariosService.getVeterinarios();
+      const dtos = await personalService.getVeterinarios();
       setVeterinarios(dtos.map(mapVeterinarioDTOtoUI));
       setLoading(false);
     };
@@ -37,5 +42,17 @@ export function useVeterinariosViewModel(): VeterinariosViewModelState {
     );
   });
 
-  return { veterinarios, filteredVeterinarios, searchTerm, setSearchTerm, loading };
+  const openCreate = () => setIsCreateOpen(true);
+  const closeCreate = () => setIsCreateOpen(false);
+
+  return {
+    veterinarios,
+    filteredVeterinarios,
+    searchTerm,
+    setSearchTerm,
+    loading,
+    isCreateOpen,
+    openCreate,
+    closeCreate,
+  };
 }

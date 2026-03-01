@@ -1,4 +1,4 @@
-import { VeterinarioDTO } from "../model/dto";
+import { VeterinarioDTO, CreatePersonalDTO } from "../model/dto";
 
 const mockVeterinarios: VeterinarioDTO[] = [
   {
@@ -43,6 +43,45 @@ const mockVeterinarios: VeterinarioDTO[] = [
   },
 ];
 
-export const veterinariosService = {
-  getVeterinarios: (): Promise<VeterinarioDTO[]> => Promise.resolve(mockVeterinarios),
+function generarId(): string {
+  return `VET-${String(Math.floor(Math.random() * 900) + 100)}`;
+}
+
+function generarContrasena(): string {
+  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  let suffix = "";
+  for (let i = 0; i < 3; i++) {
+    suffix += chars[Math.floor(Math.random() * chars.length)];
+  }
+  return `PetCare-2024-${suffix}`;
+}
+
+export const personalService = {
+  getVeterinarios: (): Promise<VeterinarioDTO[]> =>
+    Promise.resolve(mockVeterinarios),
+
+  generarContrasenaTemp: (): Promise<string> =>
+    new Promise((resolve) => setTimeout(() => resolve(generarContrasena()), 300)),
+
+  createPersonal: (dto: CreatePersonalDTO): Promise<VeterinarioDTO> =>
+    new Promise((resolve) =>
+      setTimeout(() => {
+        const nuevo: VeterinarioDTO = {
+          id: generarId(),
+          nombre: dto.nombreCompleto,
+          especialidad: dto.rol === "VETERINARIO" ? "Veterinario General" : "Administrador",
+          telefono: "",
+          email: dto.correoElectronico,
+          cedula: dto.cedulaProfesional || "N/A",
+          estado: "ACTIVO",
+          avatarInitials: dto.nombreCompleto
+            .split(" ")
+            .slice(0, 2)
+            .map((n) => n[0]?.toUpperCase() ?? "")
+            .join(""),
+        };
+        console.log("[personalService] Nuevo personal creado:", nuevo);
+        resolve(nuevo);
+      }, 800)
+    ),
 };
