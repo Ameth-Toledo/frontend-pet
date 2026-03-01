@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { usePacientesViewModel } from "@/modules/pacientes-admin/viewmodel/usePacientesViewModel";
+import { usePacientesViewModel } from "@/modules/mascotas-admin/viewmodel/usePacientesViewModel";
 import PacientesHeader from "./PacientesHeader";
 import PacientesTable from "./PacientesTable";
 

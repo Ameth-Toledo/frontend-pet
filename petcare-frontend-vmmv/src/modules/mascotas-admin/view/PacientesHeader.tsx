@@ -20,7 +20,7 @@ export default function PacientesHeader({ searchTerm, onSearchChange }: Paciente
       {/* Left: title + subtitle */}
       <div>
         <h1 style={{ fontSize: "22px", fontWeight: 700, color: "#1F2937", marginBottom: "2px" }}>
-          Pacientes
+          Mascotas
         </h1>
         <p style={{ fontSize: "13px", color: "#6B7280" }}>
           Gestión integral de la base de datos de mascotas.
