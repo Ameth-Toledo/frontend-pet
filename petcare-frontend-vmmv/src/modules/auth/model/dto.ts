@@ -1,4 +1,3 @@
-// ─── Request DTOs (lo que enviamos al backend) ───────────
 export interface LoginRequestDTO {
   email: string;
   password: string;
@@ -21,17 +20,17 @@ export interface ResetPasswordRequestDTO {
   newPassword: string;
 }
 
-// ─── Response DTOs (lo que recibimos del backend) ────────
-
 export interface LoginResponseDTO {
+  success: true;
   token: string;
   user: {
     id: number;
     email: string;
     nombre: string;
     apellido: string;
-    tipo_usuario: 'PERSONAL' | 'CLIENTE';
-    id_rol?: number;
+    rol: 'ADMIN' | 'VETERINARIO' | 'CLIENTE';
+    password_temporal: boolean;
+    foto_perfil: string | null;
   };
 }
 
