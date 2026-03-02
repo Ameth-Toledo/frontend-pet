@@ -1,4 +1,5 @@
 import { ReactNode } from "react";
+import Sidebar from "@/components/layout/Sidebar";
 
 export default function ClienteLayout({
   children,
@@ -6,11 +7,11 @@ export default function ClienteLayout({
   children: ReactNode;
 }) {
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="p-8">
-        <h1 className="text-2xl font-bold mb-6">Panel Cliente</h1>
+    <div className="min-h-screen flex bg-gray-50">
+      <Sidebar />
+      <main className="flex-1">
         {children}
-      </div>
+      </main>
     </div>
   );
 }
