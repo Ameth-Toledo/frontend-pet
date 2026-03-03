@@ -1,277 +1,182 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useAuthViewModel } from '../viewmodel/useAuthViewModel';
-import Button from '@/components/ui/Button';
-import Link from 'next/link';
+import { useState, useEffect } from "react";
+import { useRegisterViewModel } from "../viewmodel/RegisterViewModel";
 
-export default function RegisterForm() {
-  const { register, isLoading, error } = useAuthViewModel();
+interface RegisterFormProps {
+  prefilledData?: {
+    email: string;
+    nombre: string;
+    apellido: string;
+    telefono: string;
+  } | null;
+  fromAppointment?: boolean;
+}
+
+export default function RegisterForm({ prefilledData, fromAppointment = false }: RegisterFormProps) {
+  const viewModel = useRegisterViewModel(fromAppointment);
   
   const [formData, setFormData] = useState({
-    nombre: '',
-    apellido: '',
-    email: '',
-    telefono: '',
-    password: '',
-    passwordConfirm: '',
+    email: "",
+    nombre: "",
+    apellido: "",
+    telefono: "",
+    password: "",
+    confirmPassword: "",
   });
 
-  const [validationError, setValidationError] = useState<string | null>(null);
+  // 🔥 IMPORTANTE: Actualizar formData cuando prefilledData cambie
+  useEffect(() => {
+    if (prefilledData) {
+      setFormData(prev => ({
+        ...prev,
+        email: prefilledData.email || "",
+        nombre: prefilledData.nombre || "",
+        apellido: prefilledData.apellido || "",
+        telefono: prefilledData.telefono || "",
+      }));
+    }
+  }, [prefilledData]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setValidationError(null);
+    viewModel.setError("");
 
-    // Validar contraseñas
-    if (formData.password !== formData.passwordConfirm) {
-      setValidationError('Las contraseñas no coinciden');
+    if (formData.password !== formData.confirmPassword) {
+      viewModel.setError("Las contraseñas no coinciden");
       return;
     }
 
-    if (formData.password.length < 8) {
-      setValidationError('La contraseña debe tener al menos 8 caracteres');
+    if (formData.password.length < 6) {
+      viewModel.setError("La contraseña debe tener al menos 6 caracteres");
       return;
     }
 
-    // Validar teléfono (10 dígitos)
-    if (!/^\d{10}$/.test(formData.telefono)) {
-      setValidationError('El teléfono debe tener 10 dígitos');
-      return;
-    }
-
-    // Registrar
-    await register({
+    await viewModel.register({
+      email: formData.email,
       nombre: formData.nombre,
       apellido: formData.apellido,
-      email: formData.email,
-      password: formData.password,
       telefono: formData.telefono,
+      password: formData.password,
     });
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData(prev => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }));
-  };
-
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#F5F5F0] px-4 py-8">
-      <div className="w-full max-w-2xl">
-        
-        {/* Logo y título superior */}
-        <div className="text-center mb-8">
-          <div className="flex items-center justify-center gap-2 mb-3">
-            <div className="w-10 h-10 bg-[#2F8F83] rounded-full flex items-center justify-center">
-              <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M10 3.5a1.5 1.5 0 013 0V4a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-.5a1.5 1.5 0 000 3h.5a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-.5a1.5 1.5 0 00-3 0v.5a1 1 0 01-1 1H6a1 1 0 01-1-1v-3a1 1 0 00-1-1h-.5a1.5 1.5 0 010-3H4a1 1 0 001-1V6a1 1 0 011-1h3a1 1 0 001-1v-.5z" />
-              </svg>
-            </div>
-            <h1 className="text-3xl font-bold text-gray-900">PetCare</h1>
-          </div>
-          <p className="text-sm text-gray-600">Gestión Veterinaria de Prestigio</p>
+    <form onSubmit={handleSubmit} className="space-y-4">
+      {viewModel.error && (
+        <div className="bg-red-50 text-red-600 p-3 rounded-lg text-sm">
+          {viewModel.error}
+        </div>
+      )}
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Email *
+        </label>
+        <input
+          type="email"
+          name="email"
+          value={formData.email}
+          onChange={handleChange}
+          required
+          disabled={!!prefilledData?.email}
+          className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#2F8F83] focus:ring-2 focus:ring-[#2F8F83]/20 outline-none disabled:bg-gray-100"
+        />
+      </div>
+
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Nombre *
+          </label>
+          <input
+            type="text"
+            name="nombre"
+            value={formData.nombre}
+            onChange={handleChange}
+            required
+            disabled={!!prefilledData?.nombre}
+            className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#2F8F83] focus:ring-2 focus:ring-[#2F8F83]/20 outline-none disabled:bg-gray-100"
+          />
         </div>
 
-        {/* Card principal */}
-        <div className="bg-white rounded-2xl shadow-lg p-8 space-y-6">
-          
-          {/* Título del formulario */}
-          <div>
-            <h2 className="text-2xl font-semibold text-gray-900 mb-2">
-              Únete a PetCare
-            </h2>
-            <p className="text-sm text-gray-600">
-              Crea tu cuenta para comenzar
-            </p>
-          </div>
-
-          {/* Error message */}
-          {(error || validationError) && (
-            <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg text-sm">
-              {error || validationError}
-            </div>
-          )}
-
-          {/* Formulario */}
-          <form onSubmit={handleSubmit} className="space-y-4">
-            
-            {/* Nombre y Apellido */}
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Nombre *
-                </label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                    </svg>
-                  </div>
-                  <input
-                    type="text"
-                    name="nombre"
-                    value={formData.nombre}
-                    onChange={handleChange}
-                    placeholder="Juan"
-                    disabled={isLoading}
-                    required
-                    className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#2F8F83] focus:border-transparent transition-all disabled:opacity-50"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Apellido *
-                </label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                    </svg>
-                  </div>
-                  <input
-                    type="text"
-                    name="apellido"
-                    value={formData.apellido}
-                    onChange={handleChange}
-                    placeholder="Pérez"
-                    disabled={isLoading}
-                    required
-                    className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#2F8F83] focus:border-transparent transition-all disabled:opacity-50"
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Email */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Correo electrónico *
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" />
-                  </svg>
-                </div>
-                <input
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  placeholder="ejemplo@correo.com"
-                  disabled={isLoading}
-                  required
-                  className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#2F8F83] focus:border-transparent transition-all disabled:opacity-50"
-                />
-              </div>
-            </div>
-
-            {/* Teléfono */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Teléfono *
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                  </svg>
-                </div>
-                <input
-                  type="tel"
-                  name="telefono"
-                  value={formData.telefono}
-                  onChange={handleChange}
-                  placeholder="1234567890"
-                  disabled={isLoading}
-                  required
-                  maxLength={10}
-                  className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#2F8F83] focus:border-transparent transition-all disabled:opacity-50"
-                />
-              </div>
-              <p className="text-xs text-gray-500 mt-1">Ingresa 10 dígitos sin espacios</p>
-            </div>
-
-            {/* Password y Confirmar */}
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Contraseña *
-                </label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                    </svg>
-                  </div>
-                  <input
-                    type="password"
-                    name="password"
-                    value={formData.password}
-                    onChange={handleChange}
-                    placeholder="••••••••"
-                    disabled={isLoading}
-                    required
-                    minLength={8}
-                    className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#2F8F83] focus:border-transparent transition-all disabled:opacity-50"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Confirmar contraseña *
-                </label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                  </div>
-                  <input
-                    type="password"
-                    name="passwordConfirm"
-                    value={formData.passwordConfirm}
-                    onChange={handleChange}
-                    placeholder="••••••••"
-                    disabled={isLoading}
-                    required
-                    minLength={8}
-                    className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#2F8F83] focus:border-transparent transition-all disabled:opacity-50"
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Botón Registrarse */}
-            <Button
-              type="submit"
-              disabled={isLoading}
-              fullWidth
-              className="bg-[#2F8F83] hover:bg-[#287A70] h-12"
-            >
-              {isLoading ? "Creando cuenta..." : "Crear cuenta"}
-            </Button>
-          </form>
-
-          {/* Link a login */}
-          <p className="text-center text-sm text-gray-600">
-            ¿Ya tienes cuenta?{" "}
-            <Link href="/login" className="text-[#2F8F83] hover:underline font-semibold">
-              Inicia sesión aquí
-            </Link>
-          </p>
-        </div>
-
-        {/* Copyright */}
-        <div className="mt-4 text-center text-xs text-gray-500">
-          © {new Date().getFullYear()} PetCare Inc. • Términos y Privacidad
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Apellido *
+          </label>
+          <input
+            type="text"
+            name="apellido"
+            value={formData.apellido}
+            onChange={handleChange}
+            required
+            disabled={!!prefilledData?.apellido}
+            className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#2F8F83] focus:ring-2 focus:ring-[#2F8F83]/20 outline-none disabled:bg-gray-100"
+          />
         </div>
       </div>
-    </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Teléfono *
+        </label>
+        <input
+          type="tel"
+          name="telefono"
+          value={formData.telefono}
+          onChange={handleChange}
+          required
+          disabled={!!prefilledData?.telefono}
+          className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#2F8F83] focus:ring-2 focus:ring-[#2F8F83]/20 outline-none disabled:bg-gray-100"
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Contraseña *
+        </label>
+        <input
+          type="password"
+          name="password"
+          value={formData.password}
+          onChange={handleChange}
+          required
+          minLength={6}
+          className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#2F8F83] focus:ring-2 focus:ring-[#2F8F83]/20 outline-none"
+          placeholder="Mínimo 6 caracteres"
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Confirmar contraseña *
+        </label>
+        <input
+          type="password"
+          name="confirmPassword"
+          value={formData.confirmPassword}
+          onChange={handleChange}
+          required
+          className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#2F8F83] focus:ring-2 focus:ring-[#2F8F83]/20 outline-none"
+        />
+      </div>
+
+      <button
+        type="submit"
+        disabled={viewModel.isLoading}
+        className={`w-full py-3 rounded-xl font-medium transition-all
+          ${
+            viewModel.isLoading
+              ? "bg-gray-400 cursor-not-allowed"
+              : "bg-[#2F8F83] hover:bg-[#267A6F] text-white"
+          }`}
+      >
+        {viewModel.isLoading ? "Creando cuenta..." : fromAppointment ? "Crear cuenta y confirmar cita" : "Crear cuenta"}
+      </button>
+    </form>
   );
 }

@@ -1,192 +1,233 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
 import { useAgendarCita } from "../context";
-import { appointmentsService } from "@/modules/citas/services/appointmentsService";
-import { Veterinario } from "../types";
+import { useFechaViewModel } from "@/modules/citas/viewmodel/FechaViewModel";
+
+const MONTH_NAMES = [
+  "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+  "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+];
+
+const DAY_NAMES = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];
 
 export default function FechaPage() {
-  const router = useRouter();
   const {
-    selectedService,
+    nombreMascota,
     selectedVeterinario,
     setSelectedVeterinario,
     selectedFecha,
     setSelectedFecha,
   } = useAgendarCita();
 
-  const [veterinarios, setVeterinarios] = useState<Veterinario[]>([]);
-  const [isLoadingVets, setIsLoadingVets] = useState(true);
-  const [isCheckingAvailability, setIsCheckingAvailability] = useState(false);
-  const [availabilityMessage, setAvailabilityMessage] = useState("");
-  const [currentMonth, setCurrentMonth] = useState(new Date());
+  const viewModel = useFechaViewModel(nombreMascota || "");
+
+  const [veterinarioId, setVeterinarioId] = useState<number | null>(
+    selectedVeterinario?.id_personal || null
+  );
   const [selectedDay, setSelectedDay] = useState<number | null>(null);
 
   useEffect(() => {
-    if (!selectedService) {
-      router.replace('/agendar-cita/servicio');
+    console.log('useEffect triggered - veterinarioId:', veterinarioId);
+    if (veterinarioId && !isNaN(veterinarioId)) {
+      console.log('Llamando loadDiasDisponibles...');
+      viewModel.loadDiasDisponibles(veterinarioId);
+    }
+  }, [veterinarioId]);
+
+  useEffect(() => {
+    if (veterinarioId && !isNaN(veterinarioId)) {
+      console.log('Mes cambió, recargando días...');
+      viewModel.loadDiasDisponibles(veterinarioId);
+    }
+  }, [viewModel.currentMonth]);
+
+  const handleVeterinarioChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target.value;
+    console.log('Value del select:', value, 'tipo:', typeof value);
+    
+    if (!value || value === "") {
+      setVeterinarioId(null);
+      setSelectedDay(null);
+      setSelectedFecha("");
       return;
     }
-    loadVeterinarios();
-  }, [selectedService, router]);
 
-  const loadVeterinarios = async () => {
-    try {
-      setIsLoadingVets(true);
-      const response = await appointmentsService.getProfessionals();
-      if (response.success) {
-        setVeterinarios(response.data);
-      }
-    } catch (error) {
-      console.error('Error cargando veterinarios:', error);
-    } finally {
-      setIsLoadingVets(false);
+    const id = parseInt(value, 10);
+    console.log('Veterinario seleccionado (parseado):', id);
+    
+    if (isNaN(id)) {
+      console.error('ID inválido:', value);
+      return;
     }
-  };
 
-  const checkAvailability = async (fecha: string) => {
-    if (!selectedVeterinario) return;
-
-    try {
-      setIsCheckingAvailability(true);
-      setAvailabilityMessage("");
-
-      const response = await appointmentsService.getAvailability({
-        id_personal: selectedVeterinario.id_personal,
-        fecha
-      });
-
-      if (response.success && response.data.disponible) {
-        setSelectedFecha(fecha);
-        setAvailabilityMessage("");
-      } else {
-        setSelectedFecha(null);
-        setAvailabilityMessage("No hay disponibilidad para esta fecha. Por favor selecciona otro día.");
-      }
-    } catch (error) {
-      console.error('Error verificando disponibilidad:', error);
-      setAvailabilityMessage("Error al verificar disponibilidad.");
-    } finally {
-      setIsCheckingAvailability(false);
-    }
+    setVeterinarioId(id);
+    setSelectedDay(null);
+    setSelectedFecha("");
   };
 
   const handleDayClick = (day: number) => {
-    if (!selectedVeterinario) {
-      setAvailabilityMessage("Por favor selecciona un profesional primero.");
-      return;
-    }
+    if (!veterinarioId) return;
+    if (viewModel.isPastDate(day)) return;
+    if (!viewModel.isDayAvailable(day)) return;
 
     setSelectedDay(day);
-    const fecha = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day);
-    const fechaStr = fecha.toISOString().split('T')[0];
-    checkAvailability(fechaStr);
+    const fecha = `${viewModel.currentMonth.getFullYear()}-${String(viewModel.currentMonth.getMonth() + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+    setSelectedFecha(fecha);
   };
 
-  const getDaysInMonth = () => {
-    const year = currentMonth.getFullYear();
-    const month = currentMonth.getMonth();
-    const firstDay = new Date(year, month, 1).getDay();
-    const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const handleContinue = () => {
+    if (!selectedFecha) return;
 
-    const days = [];
-    for (let i = 0; i < firstDay; i++) {
-      days.push(null);
-    }
-    for (let i = 1; i <= daysInMonth; i++) {
-      days.push(i);
-    }
-    return days;
+    const saveToContext = (vet: any, fecha: string) => {
+      setSelectedVeterinario({
+        id_personal: vet.id_personal,
+        nombre: vet.nombre,
+        apellido: vet.apellido,
+        especialidad: vet.especialidad || "Veterinario"
+      });
+      setSelectedFecha(fecha);
+    };
+
+    viewModel.continuar(veterinarioId, selectedFecha, saveToContext);
   };
 
-  const changeMonth = (direction: number) => {
-    setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + direction, 1));
-    setSelectedDay(null);
-    setSelectedFecha(null);
-    setAvailabilityMessage("");
-  };
+  const isValid = viewModel.validateForm(veterinarioId, selectedFecha || "");
 
-  const monthNames = ["ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO", "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE"];
-  const dayNames = ["DOM", "LUN", "MAR", "MIÉ", "JUE", "VIE", "SÁB"];
+  if (viewModel.isLoadingVeterinarios) {
+    return (
+      <div className="flex items-center justify-center py-20">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#2F8F83] mx-auto mb-4"></div>
+          <p className="text-gray-600">Cargando veterinarios...</p>
+        </div>
+      </div>
+    );
+  }
 
-  const isValid = selectedVeterinario && selectedFecha;
+  if (viewModel.error) {
+    return (
+      <div className="bg-red-50 text-red-600 p-4 rounded-lg">
+        {viewModel.error}
+      </div>
+    );
+  }
 
   return (
-    <div className="max-w-4xl mx-auto">
+    <div className="max-w-2xl mx-auto">
       <div className="mb-8">
         <p className="text-sm text-gray-500 mb-2">NUEVA CITA</p>
-        <h1 className="text-3xl font-bold text-gray-900">Elegir día</h1>
+        <h1 className="text-3xl font-bold text-gray-900">Selecciona fecha</h1>
       </div>
 
-      <div className="mb-8">
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Seleccionar profesional
-        </label>
-        {isLoadingVets ? (
-          <div className="text-gray-500">Cargando veterinarios...</div>
-        ) : (
+      <div className="space-y-6">
+        {/* Selector de Veterinario */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Veterinario*
+          </label>
           <select
-            value={selectedVeterinario?.id_personal || ""}
-            onChange={(e) => {
-              const vet = veterinarios.find(v => v.id_personal === parseInt(e.target.value));
-              setSelectedVeterinario(vet || null);
-              setSelectedDay(null);
-              setSelectedFecha(null);
-              setAvailabilityMessage("");
-            }}
+            value={veterinarioId || ""}
+            onChange={handleVeterinarioChange}
             className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#2F8F83] focus:ring-2 focus:ring-[#2F8F83]/20 outline-none"
           >
-            <option value="">Cualquier profesional</option>
-            {veterinarios.map((vet) => (
-              <option key={vet.id_personal} value={vet.id_personal}>
-                Dr. {vet.nombre} {vet.apellido} - {vet.especialidad}
-              </option>
-            ))}
+            <option value="">Selecciona un veterinario</option>
+            {viewModel.veterinarios.map((vet, index) => {
+              // El backend devuelve 'id' en lugar de 'id_personal'
+              const vetId = (vet as any).id || (vet as any).id_personal;
+              console.log('Vet:', vet.nombre, 'ID:', vetId);
+              
+              return (
+                <option key={`vet-${vetId}-${index}`} value={vetId}>
+                  {vet.nombre} {vet.apellido} {vet.especialidad ? `- ${vet.especialidad}` : ''}
+                </option>
+              );
+            })}
           </select>
-        )}
-      </div>
-
-      <div className="bg-white rounded-2xl p-6 shadow-sm">
-        <div className="flex items-center justify-between mb-6">
-          <button onClick={() => changeMonth(-1)} className="p-2 hover:bg-gray-100 rounded-lg">←</button>
-          <h2 className="text-lg font-semibold">{monthNames[currentMonth.getMonth()]} {currentMonth.getFullYear()}</h2>
-          <button onClick={() => changeMonth(1)} className="p-2 hover:bg-gray-100 rounded-lg">→</button>
         </div>
 
-        <div className="grid grid-cols-7 gap-2 mb-4">
-          {dayNames.map((day, idx) => (
-            <div key={`day-${idx}`} className="text-center text-sm font-medium text-gray-500 py-2">{day}</div>
-          ))}
-        </div>
+        {/* Calendario */}
+        {veterinarioId && !isNaN(veterinarioId) && (
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-3">
+              Fecha*
+            </label>
 
-        <div className="grid grid-cols-7 gap-2">
-          {getDaysInMonth().map((day, index) => (
-            <div key={`cell-${index}`} className="aspect-square">
-              {day ? (
-                <button
-                  onClick={() => handleDayClick(day)}
-                  disabled={isCheckingAvailability || !selectedVeterinario}
-                  className={`w-full h-full rounded-lg flex items-center justify-center transition-all
-                    ${selectedDay === day && selectedFecha ? "bg-[#2F8F83] text-white font-semibold" : selectedVeterinario ? "hover:bg-gray-100 text-gray-700" : "text-gray-300 cursor-not-allowed"}`}
-                >
-                  {day}
-                </button>
-              ) : (
-                <div />
-              )}
-            </div>
-          ))}
-        </div>
+            {viewModel.isLoadingDias && (
+              <div className="text-center py-8">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#2F8F83] mx-auto mb-2"></div>
+                <p className="text-sm text-gray-600">Cargando disponibilidad...</p>
+              </div>
+            )}
 
-        {isCheckingAvailability && (
-          <div className="mt-4 text-center text-sm text-gray-600">Verificando disponibilidad...</div>
-        )}
+            {!viewModel.isLoadingDias && (
+              <div className="border border-gray-200 rounded-2xl p-6">
+                {/* Header del calendario */}
+                <div className="flex items-center justify-between mb-6">
+                  <button
+                    onClick={viewModel.goToPreviousMonth}
+                    className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                  >
+                    <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                    </svg>
+                  </button>
+                  <h3 className="font-semibold text-gray-900">
+                    {MONTH_NAMES[viewModel.currentMonth.getMonth()]} {viewModel.currentMonth.getFullYear()}
+                  </h3>
+                  <button
+                    onClick={viewModel.goToNextMonth}
+                    className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                  >
+                    <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </button>
+                </div>
 
-        {availabilityMessage && (
-          <div className="mt-4 p-4 bg-red-50 text-red-600 rounded-lg flex items-start gap-2">
-            <span className="text-xl">⚠️</span>
-            <span className="text-sm">{availabilityMessage}</span>
+                {/* Días de la semana */}
+                <div className="grid grid-cols-7 gap-2 mb-2">
+                  {DAY_NAMES.map((day, idx) => (
+                    <div key={`day-${idx}`} className="text-center text-sm font-medium text-gray-600 py-2">
+                      {day}
+                    </div>
+                  ))}
+                </div>
+
+                {/* Días del mes */}
+                <div className="grid grid-cols-7 gap-2">
+                  {viewModel.getDaysInMonth(viewModel.currentMonth).map((day, index) => {
+                    if (day === null) {
+                      return <div key={`empty-${index}`} />;
+                    }
+
+                    const isPast = viewModel.isPastDate(day);
+                    const isAvailable = viewModel.isDayAvailable(day);
+                    const isSelected = selectedDay === day;
+                    const isDisabled = isPast || !isAvailable;
+
+                    return (
+                      <button
+                        key={`cell-${index}`}
+                        onClick={() => handleDayClick(day)}
+                        disabled={isDisabled}
+                        className={`aspect-square rounded-xl flex items-center justify-center text-sm font-medium transition-all
+                          ${isDisabled ? "text-gray-300 cursor-not-allowed bg-gray-50" : "hover:bg-[#E6F4F2]"}
+                          ${isSelected ? "bg-[#2F8F83] text-white hover:bg-[#267A6F]" : "text-gray-700"}`}
+                      >
+                        {day}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {viewModel.diasDisponibles.size === 0 && !viewModel.isLoadingDias && (
+                  <div className="mt-4 text-center text-sm text-gray-500">
+                    Este veterinario no tiene horarios disponibles este mes
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         )}
       </div>
@@ -194,8 +235,9 @@ export default function FechaPage() {
       <div className="mt-10 flex justify-center">
         <button
           disabled={!isValid}
-          onClick={() => router.push('/agendar-cita/horario')}
-          className={`h-12 px-10 rounded-xl font-medium text-sm transition-colors ${isValid ? "bg-[#2F8F83] text-white hover:bg-[#267A6F]" : "bg-gray-200 text-gray-400 cursor-not-allowed"}`}
+          onClick={handleContinue}
+          className={`h-12 px-10 rounded-xl font-medium text-sm transition-colors
+            ${isValid ? "bg-[#2F8F83] text-white hover:bg-[#267A6F]" : "bg-gray-200 text-gray-400 cursor-not-allowed"}`}
         >
           Continuar →
         </button>

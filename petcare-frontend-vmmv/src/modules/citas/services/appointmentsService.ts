@@ -34,14 +34,14 @@ export const appointmentsService = {
     return response.data;
   },
 
-  // Paso 4: Obtener disponibilidad
+  // Paso 4: Obtener disponibilidad de fecha (verificar si trabaja ese día)
   async getAvailability(params: { id_personal: number; fecha: string }) {
     const response = await apiClient.get(`${APPOINTMENTS_API}/api/appointments/availability`, { params });
     return response.data;
   },
 
-  // Paso 4: Obtener horarios (slots)
-  async getTimeSlots(params: { id_personal: number; fecha: string; id_servicio: number }) {
+  // Paso 5: Obtener horarios disponibles (slots)
+  async getTimeSlots(params: { id_personal: number; fecha: string; id_servicio?: number }) {
     const response = await apiClient.get(`${APPOINTMENTS_API}/api/appointments/time-slots`, { params });
     return response.data;
   },
