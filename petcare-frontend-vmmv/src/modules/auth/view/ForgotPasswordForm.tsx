@@ -4,18 +4,20 @@ import { useState } from 'react';
 import { useAuthViewModel } from '../viewmodel/useAuthViewModel';
 import Button from '@/components/ui/Button';
 import Link from 'next/link';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPaw } from '@fortawesome/free-solid-svg-icons'
 
 export default function ForgotPasswordForm() {
   const { forgotPassword, isLoading, error } = useAuthViewModel();
-  
+
   const [email, setEmail] = useState('');
   const [success, setSuccess] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     const result = await forgotPassword({ email });
-    
+
     if (result.success) {
       setSuccess(true);
     }
@@ -25,23 +27,22 @@ export default function ForgotPasswordForm() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#F5F5F0] px-4 py-8">
         <div className="w-full max-w-md">
-          
+
           {/* Logo */}
           <div className="text-center mb-8">
             <div className="flex items-center justify-center gap-2 mb-3">
               <div className="w-10 h-10 bg-[#2F8F83] rounded-full flex items-center justify-center">
                 <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M10 3.5a1.5 1.5 0 013 0V4a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-.5a1.5 1.5 0 000 3h.5a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-.5a1.5 1.5 0 00-3 0v.5a1 1 0 01-1 1H6a1 1 0 01-1-1v-3a1 1 0 00-1-1h-.5a1.5 1.5 0 010-3H4a1 1 0 001-1V6a1 1 0 011-1h3a1 1 0 001-1v-.5z" />
+                  <FontAwesomeIcon icon={faPaw} />
                 </svg>
               </div>
               <h1 className="text-3xl font-bold text-gray-900">PetCare</h1>
             </div>
             <p className="text-sm text-gray-600">Gestión Veterinaria de Prestigio</p>
           </div>
-
           {/* Success Card */}
           <div className="bg-white rounded-2xl shadow-lg p-8 space-y-6">
-            
+
             {/* Success Icon */}
             <div className="flex justify-center">
               <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
@@ -50,7 +51,9 @@ export default function ForgotPasswordForm() {
                 </svg>
               </div>
             </div>
-
+          {/* Boton de accesibilidad */}
+          <div className="flex justify-start mb-4">
+          </div>
             {/* Título */}
             <div className="text-center">
               <h2 className="text-2xl font-semibold text-gray-900 mb-2">
@@ -67,7 +70,7 @@ export default function ForgotPasswordForm() {
             {/* Instrucciones */}
             <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
               <p className="text-sm text-gray-600 leading-relaxed">
-                El enlace expirará en <strong>24 horas</strong>. 
+                El enlace expirará en <strong>24 horas</strong>.
                 Si no ves el correo, revisa tu carpeta de spam.
               </p>
             </div>
@@ -98,13 +101,13 @@ export default function ForgotPasswordForm() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#F5F5F0] px-4 py-8">
       <div className="w-full max-w-md">
-        
+
         {/* Logo */}
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-2 mb-3">
             <div className="w-10 h-10 bg-[#2F8F83] rounded-full flex items-center justify-center">
               <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M10 3.5a1.5 1.5 0 013 0V4a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-.5a1.5 1.5 0 000 3h.5a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-.5a1.5 1.5 0 00-3 0v.5a1 1 0 01-1 1H6a1 1 0 01-1-1v-3a1 1 0 00-1-1h-.5a1.5 1.5 0 010-3H4a1 1 0 001-1V6a1 1 0 011-1h3a1 1 0 001-1v-.5z" />
+                <FontAwesomeIcon icon={faPaw} />
               </svg>
             </div>
             <h1 className="text-3xl font-bold text-gray-900">PetCare</h1>
@@ -114,7 +117,7 @@ export default function ForgotPasswordForm() {
 
         {/* Card principal */}
         <div className="bg-white rounded-2xl shadow-lg p-8 space-y-6">
-          
+
           {/* Título */}
           <div>
             <h2 className="text-2xl font-semibold text-gray-900 mb-2">
@@ -134,7 +137,7 @@ export default function ForgotPasswordForm() {
 
           {/* Formulario */}
           <form onSubmit={handleSubmit} className="space-y-4">
-            
+
             {/* Email Input */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">

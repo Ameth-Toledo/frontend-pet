@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { ROUTES } from "@/lib/routes";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSyringe } from "@fortawesome/free-solid-svg-icons";
 
 export default function Hero() {
   return (
@@ -36,7 +38,7 @@ export default function Hero() {
 
             <div className="absolute -bottom-8 left-10 bg-white rounded-2xl px-6 py-5 shadow-xl w-[260px]">
               <div className="flex items-center gap-3 mb-2">
-                <div className="h-3 w-3 rounded-full bg-[#2F8F83]"></div>
+                  <FontAwesomeIcon icon={faSyringe} style={{color: "rgb(47, 143, 131)",fontSize:40}} />
                 <p className="text-sm font-semibold text-[#1E293B]">
                   Vacuna 2026
                 </p>
