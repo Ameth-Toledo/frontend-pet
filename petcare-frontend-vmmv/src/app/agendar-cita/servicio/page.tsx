@@ -1,17 +1,8 @@
 "use client";
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { useAgendarCita } from "../context";
-import { appointmentsService } from "@/modules/citas/services/appointmentsService";
 
-interface Servicio {
-  id_servicio: number;
-  nombre: string;
-  descripcion: string;
-  duracion_minutos: number;
-  costo?: number;
-  activo: boolean;
-}
+import { useState } from "react";
+import { useAgendarCita } from "../context";
+import { useServicioViewModel } from "@/modules/citas/viewmodel/ServicioViewModel";
 
 const MOTIVOS_CHEQUEO = [
   "Vómito",
@@ -24,60 +15,25 @@ const MOTIVOS_CHEQUEO = [
 ];
 
 export default function ServicioPage() {
-  const router = useRouter();
-  const { selectedService, setSelectedService, motivo, setMotivo } = useAgendarCita();
-  const [servicios, setServicios] = useState<Servicio[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState("");
+  const { selectedService, setSelectedService, setMotivo } = useAgendarCita();
+  const viewModel = useServicioViewModel();
+  
   const [motivoSelected, setMotivoSelected] = useState("");
   const [descripcion, setDescripcion] = useState("");
 
-  useEffect(() => {
-    loadServicios();
-  }, []);
-
-  const loadServicios = async () => {
-    try {
-      setIsLoading(true);
-      const response = await appointmentsService.getServices();
-      
-      if (response.success) {
-        setServicios(response.data.filter((s: Servicio) => s.activo));
-      }
-    } catch (err: any) {
-      console.error('Error cargando servicios:', err);
-      setError('Error al cargar servicios');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleServiceSelect = (servicio: Servicio) => {
+  const handleServiceSelect = (servicio: any) => {
     setSelectedService(servicio);
     setMotivoSelected("");
     setDescripcion("");
   };
 
   const handleContinue = () => {
-    if (selectedService) {
-      // Guardar motivo completo
-      const motivoCompleto = motivoSelected 
-        ? `${motivoSelected}${descripcion ? `: ${descripcion}` : ''}`
-        : descripcion;
-      setMotivo(motivoCompleto);
-      
-      router.push('/agendar-cita/datos');
-    }
+    viewModel.continuar(selectedService, motivoSelected, descripcion, setMotivo);
   };
 
-  const isChequeoMedico = selectedService?.nombre?.toLowerCase().includes('chequeo') || 
-                          selectedService?.nombre?.toLowerCase().includes('consulta');
+  const isValid = viewModel.validateForm(selectedService, motivoSelected, descripcion);
 
-  const isValid = selectedService && (
-    !isChequeoMedico || motivoSelected || descripcion
-  );
-
-  if (isLoading) {
+  if (viewModel.isLoading) {
     return (
       <div className="flex items-center justify-center py-20">
         <div className="text-center">
@@ -88,10 +44,10 @@ export default function ServicioPage() {
     );
   }
 
-  if (error) {
+  if (viewModel.error) {
     return (
       <div className="bg-red-50 text-red-600 p-4 rounded-lg">
-        {error}
+        {viewModel.error}
       </div>
     );
   }
@@ -106,10 +62,9 @@ export default function ServicioPage() {
       </p>
 
       <div className="space-y-6">
-        {servicios.map((servicio) => {
+        {viewModel.servicios.map((servicio) => {
           const isSelected = selectedService?.id_servicio === servicio.id_servicio;
-          const isChequeo = servicio.nombre?.toLowerCase().includes('chequeo') || 
-                           servicio.nombre?.toLowerCase().includes('consulta');
+          const isChequeo = viewModel.isChequeoMedico(servicio);
 
           return (
             <div
@@ -129,7 +84,6 @@ export default function ServicioPage() {
                 </div>
               </div>
 
-              {/* Desplegable para Chequeo Médico */}
               {isSelected && isChequeo && (
                 <div className="mt-4 space-y-4">
                   <div>
@@ -167,7 +121,6 @@ export default function ServicioPage() {
                 </div>
               )}
 
-              {/* Opcional para otros servicios */}
               {isSelected && !isChequeo && (
                 <div className="mt-4">
                   <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -188,7 +141,7 @@ export default function ServicioPage() {
         })}
       </div>
 
-      {servicios.length === 0 && (
+      {viewModel.servicios.length === 0 && (
         <div className="text-center py-10 text-gray-500">
           No hay servicios disponibles en este momento.
         </div>
@@ -199,11 +152,7 @@ export default function ServicioPage() {
           disabled={!isValid}
           onClick={handleContinue}
           className={`h-12 px-10 rounded-xl font-medium text-sm transition-colors
-            ${
-              isValid
-                ? "bg-[#2F8F83] text-white hover:bg-[#267A6F]"
-                : "bg-gray-200 text-gray-400 cursor-not-allowed"
-            }`}
+            ${isValid ? "bg-[#2F8F83] text-white hover:bg-[#267A6F]" : "bg-gray-200 text-gray-400 cursor-not-allowed"}`}
         >
           Continuar →
         </button>

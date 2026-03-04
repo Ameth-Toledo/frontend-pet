@@ -1,105 +1,82 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { useAgendarCita } from "../context";
-import { useEffect } from "react";
-import { ROUTES } from "@/lib/routes";
+import { useHorarioViewModel } from "@/modules/citas/viewmodel/HorarioViewModel";
 
 export default function HorarioPage() {
-  const router = useRouter();
-  const { fecha, horario, setHorario } = useAgendarCita();
+  const {
+    selectedFecha,
+    selectedHorario,
+    setSelectedHorario,
+  } = useAgendarCita();
 
-  // 🔒 Protección de flujo
-  useEffect(() => {
-    if (!fecha) {
-      router.replace(ROUTES.PUBLIC.AGENDAR_CITA_FECHA);
-    }
-  }, [fecha, router]);
+  const viewModel = useHorarioViewModel(selectedFecha || "");
 
-  // 🧠 Si cambia la fecha, limpiamos horario seleccionado
-  useEffect(() => {
-    setHorario(null);
-  }, [fecha, setHorario]);
+  const [horario, setHorario] = useState(selectedHorario || "");
 
-  const horariosDisponibles = [
-    "09:00 - 09:30",
-    "09:30 - 10:00",
-    "10:00 - 10:30",
-    "10:30 - 11:00",
-    "11:00 - 11:30",
-    "12:00 - 12:30",
-    "15:00 - 15:30",
-    "15:30 - 16:00",
-    "16:00 - 16:30",
-    "16:30 - 17:00",
-    "17:00 - 17:30",
-    "17:30 - 18:00",
-  ];
+  const handleHorarioSelect = (slot: string) => {
+    setHorario(slot);
+  };
 
-  const isValid = Boolean(horario);
+  const handleContinue = () => {
+    const saveToContext = (h: string) => {
+      setSelectedHorario(h);
+    };
+
+    viewModel.continuar(horario, saveToContext);
+  };
+
+  const isValid = viewModel.validateForm(horario);
 
   return (
-    <>
-      <h1 className="text-2xl font-semibold text-[#1E293B] text-center mb-2">
-        Elegir horario
-      </h1>
-
-      <p className="text-sm text-[#64748B] text-center mb-10">
-        Selecciona un horario disponible para el día elegido.
-      </p>
-
-      {/* Fecha seleccionada */}
-      <div className="mb-6 text-center text-sm text-[#2F8F83] font-medium">
-        Fecha seleccionada: {fecha}
+    <div className="max-w-2xl mx-auto">
+      <div className="mb-8">
+        <p className="text-sm text-gray-500 mb-2">NUEVA CITA</p>
+        <h1 className="text-3xl font-bold text-gray-900">Selecciona horario</h1>
       </div>
 
-      {/* Grid horarios */}
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-10">
-        {horariosDisponibles.map((hora) => (
-          <button
-            key={hora}
-            type="button"
-            onClick={() => setHorario(hora)}
-            className={`h-11 rounded-xl text-sm font-medium transition-all duration-200
-              ${
-                horario === hora
-                  ? "bg-[#2F8F83] text-white shadow-md"
-                  : "bg-gray-100 hover:bg-[#E6F4F2]"
-              }
-            `}
-          >
-            {hora}
-          </button>
-        ))}
+      <div className="mb-6">
+        <label className="block text-sm font-medium text-gray-700 mb-3">
+          Horarios disponibles*
+        </label>
+        <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
+          {viewModel.generateTimeSlots().map((slot) => {
+            const isSelected = horario === slot;
+            
+            return (
+              <button
+                key={slot}
+                onClick={() => handleHorarioSelect(slot)}
+                className={`py-3 px-4 rounded-xl border-2 font-medium transition-all
+                  ${isSelected 
+                    ? "border-[#2F8F83] bg-[#2F8F83] text-white" 
+                    : "border-gray-200 hover:border-[#2F8F83] text-gray-700"
+                  }`}
+              >
+                {slot}
+              </button>
+            );
+          })}
+        </div>
       </div>
 
-      {/* Botones navegación */}
-      <div className="flex justify-between">
+      <div className="mt-10 flex justify-center gap-4">
         <button
-          type="button"
-          onClick={() => router.push(ROUTES.PUBLIC.AGENDAR_CITA_FECHA)}
-          className="text-sm text-[#64748B] hover:text-[#1E293B] transition"
+          onClick={viewModel.volver}
+          className="h-12 px-8 rounded-xl font-medium text-sm border-2 border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors"
         >
           ← Volver
         </button>
-
         <button
-          type="button"
           disabled={!isValid}
-          onClick={() =>
-            router.push(ROUTES.PUBLIC.AGENDAR_CITA_RESUMEN)
-          }
-          className={`h-12 px-10 rounded-xl font-medium text-sm transition-all
-            ${
-              isValid
-                ? "bg-[#2F8F83] text-white hover:bg-[#287A70]"
-                : "bg-gray-200 text-gray-400 cursor-not-allowed"
-            }
-          `}
+          onClick={handleContinue}
+          className={`h-12 px-10 rounded-xl font-medium text-sm transition-colors
+            ${isValid ? "bg-[#2F8F83] text-white hover:bg-[#267A6F]" : "bg-gray-200 text-gray-400 cursor-not-allowed"}`}
         >
           Continuar →
         </button>
       </div>
-    </>
+    </div>
   );
 }

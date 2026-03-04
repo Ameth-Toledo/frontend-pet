@@ -1,12 +1,12 @@
 "use client";
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+
+import { useState, useEffect } from "react";
 import { useAgendarCita } from "../context";
+import { useDatosViewModel } from "@/modules/citas/viewmodel/DatosViewModel";
 
 export default function DatosPage() {
-  const router = useRouter();
   const { 
-    selectedService, 
+    selectedService,
     email: contextEmail,
     setEmail: setContextEmail,
     nombre: contextNombre,
@@ -17,56 +17,37 @@ export default function DatosPage() {
     setTelefono: setContextTelefono
   } = useAgendarCita();
   
+  const viewModel = useDatosViewModel(selectedService);
+  
   const [email, setEmail] = useState(contextEmail || "");
   const [nombre, setNombre] = useState(contextNombre || "");
   const [apellido, setApellido] = useState(contextApellido || "");
   const [telefono, setTelefono] = useState(contextTelefono || "");
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  // Auto-llenar SOLO si es un CLIENTE logueado
+  // Cargar datos pre-llenados del ViewModel
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const userStr = localStorage.getItem('user');
-      const token = localStorage.getItem('token');
-      
-      if (userStr && token) {
-        try {
-          const user = JSON.parse(userStr);
-          
-          // Solo auto-llenar si es CLIENTE (no Admin ni Vet)
-          if (user.role === 'CLIENTE') {
-            setIsLoggedIn(true);
-            setEmail(user.email || "");
-            
-            const nameParts = user.fullName?.split(' ') || [];
-            setNombre(nameParts[0] || "");
-            setApellido(nameParts.slice(1).join(' ') || "");
-          }
-        } catch (error) {
-          console.error('Error loading user data:', error);
-        }
-      }
+    if (viewModel.userData.email) {
+      setEmail(viewModel.userData.email);
+      setNombre(viewModel.userData.nombre);
+      setApellido(viewModel.userData.apellido);
+      setTelefono(viewModel.userData.telefono);
     }
-  }, []);
-
-  useEffect(() => {
-    if (!selectedService) {
-      router.push('/agendar-cita/servicio');
-    }
-  }, [selectedService, router]);
+  }, [viewModel.userData]);
 
   const handleContinue = () => {
-    if (isValid) {
-      setContextEmail(email);
-      setContextNombre(nombre);
-      setContextApellido(apellido);
-      setContextTelefono(telefono);
-      
-      router.push('/agendar-cita/mascota');
-    }
+    const formData = { email, nombre, apellido, telefono };
+    
+    const saveToContext = (data: typeof formData) => {
+      setContextEmail(data.email);
+      setContextNombre(data.nombre);
+      setContextApellido(data.apellido);
+      setContextTelefono(data.telefono);
+    };
+
+    viewModel.continuar(formData, saveToContext);
   };
 
-  const isValid = email && nombre && apellido && telefono;
+  const isValid = viewModel.validateForm({ email, nombre, apellido, telefono });
 
   return (
     <div className="max-w-2xl mx-auto">
@@ -75,10 +56,10 @@ export default function DatosPage() {
         <h1 className="text-3xl font-bold text-gray-900">Tus datos</h1>
       </div>
 
-      {!isLoggedIn && (
+      {!viewModel.isLoggedIn && (
         <div className="mb-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
           <p className="text-sm text-blue-800">
-            ℹAl finalizar, podrás crear tu cuenta con estos datos para gestionar tus citas¡
+            ℹ️ Al finalizar, podrás crear tu cuenta con estos datos para gestionar tus citas
           </p>
         </div>
       )}
@@ -93,7 +74,8 @@ export default function DatosPage() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="ejemplo@correo.com"
-            className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#2F8F83] focus:ring-2 focus:ring-[#2F8F83]/20 outline-none"
+            disabled={viewModel.isLoggedIn}
+            className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#2F8F83] focus:ring-2 focus:ring-[#2F8F83]/20 outline-none disabled:bg-gray-100"
           />
         </div>
 
@@ -107,7 +89,8 @@ export default function DatosPage() {
               value={nombre}
               onChange={(e) => setNombre(e.target.value)}
               placeholder="Nombre"
-              className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#2F8F83] focus:ring-2 focus:ring-[#2F8F83]/20 outline-none"
+              disabled={viewModel.isLoggedIn}
+              className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#2F8F83] focus:ring-2 focus:ring-[#2F8F83]/20 outline-none disabled:bg-gray-100"
             />
           </div>
 
@@ -120,7 +103,8 @@ export default function DatosPage() {
               value={apellido}
               onChange={(e) => setApellido(e.target.value)}
               placeholder="Apellido"
-              className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#2F8F83] focus:ring-2 focus:ring-[#2F8F83]/20 outline-none"
+              disabled={viewModel.isLoggedIn}
+              className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#2F8F83] focus:ring-2 focus:ring-[#2F8F83]/20 outline-none disabled:bg-gray-100"
             />
           </div>
         </div>
@@ -131,14 +115,15 @@ export default function DatosPage() {
           </label>
           <div className="flex gap-2">
             <select className="px-4 py-3 rounded-xl border border-gray-200 focus:border-[#2F8F83] focus:ring-2 focus:ring-[#2F8F83]/20 outline-none">
-              <option key="+52">+52</option>
-              <option key="+1">+1</option>
+              <option value="+52">+52</option>
+              <option value="+1">+1</option>
             </select>
             <input
               type="tel"
               value={telefono}
               onChange={(e) => setTelefono(e.target.value)}
               placeholder="1234567890"
+              maxLength={10}
               className="flex-1 px-4 py-3 rounded-xl border border-gray-200 focus:border-[#2F8F83] focus:ring-2 focus:ring-[#2F8F83]/20 outline-none"
             />
           </div>
@@ -150,11 +135,7 @@ export default function DatosPage() {
           disabled={!isValid}
           onClick={handleContinue}
           className={`h-12 px-10 rounded-xl font-medium text-sm transition-colors
-            ${
-              isValid
-                ? "bg-[#2F8F83] text-white hover:bg-[#267A6F]"
-                : "bg-gray-200 text-gray-400 cursor-not-allowed"
-            }`}
+            ${isValid ? "bg-[#2F8F83] text-white hover:bg-[#267A6F]" : "bg-gray-200 text-gray-400 cursor-not-allowed"}`}
         >
           Continuar →
         </button>

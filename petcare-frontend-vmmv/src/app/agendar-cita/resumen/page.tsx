@@ -1,182 +1,202 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useAgendarCita } from "../context";
-import { useEffect, useState } from "react";
-import { appointmentsService } from "@/modules/citas/services/appointmentsService";
+import { useResumenViewModel } from "@/modules/citas/viewmodel/ResumenViewModel";
 
 export default function ResumenPage() {
-  const router = useRouter();
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
-
   const {
     selectedService,
-    motivo,
+    email,
     nombre,
     apellido,
-    email,
     telefono,
     especie,
     nombreMascota,
     raza,
+    selectedVeterinario,
     selectedFecha,
     selectedHorario,
-    selectedVeterinario,
+    motivo
   } = useAgendarCita();
 
-  useEffect(() => {
-    if (!selectedHorario) {
-      router.replace('/agendar-cita/horario');
-    }
-  }, [selectedHorario, router]);
+  const viewModel = useResumenViewModel();
 
-  const handleConfirm = async () => {
-    const isLoggedIn = localStorage.getItem('token');
-    
-    if (!isLoggedIn) {
-      // Usuario nuevo - Guardar datos y redirigir a registro
-      const appointmentData = {
-        servicio: selectedService,
-        veterinario: selectedVeterinario,
-        fecha: selectedFecha,
-        horario: selectedHorario,
-        motivo,
-        userData: { email, nombre, apellido, telefono },
-        mascotaData: { especie, nombreMascota, raza }
-      };
-      
-      localStorage.setItem('pendingAppointmentData', JSON.stringify(appointmentData));
-      router.push('/register?from=appointment');
-    } else {
-      // Usuario logueado - Crear cita directamente
-      await crearCita();
-    }
+  const handleConfirm = () => {
+    const appointmentData = {
+      servicio: selectedService,
+      veterinario: selectedVeterinario,
+      fecha: selectedFecha || "",
+      horario: selectedHorario || "",
+      motivo: motivo || "",
+      userData: { email: email || "", nombre: nombre || "", apellido: apellido || "", telefono: telefono || "" },
+      mascotaData: { especie: especie || "", nombreMascota: nombreMascota || "", raza: raza || "" }
+    };
+
+    viewModel.confirmarCita(appointmentData);
   };
-
-  const crearCita = async () => {
-    try {
-      setIsLoading(true);
-      setError("");
-
-      const user = JSON.parse(localStorage.getItem('user') || '{}');
-      
-      // Formato de fecha y hora para el backend
-      const fechaHora = `${selectedFecha}T${selectedHorario}:00`;
-
-      const citaData = {
-        id_cliente: user.id,
-        id_mascota: 1, // TODO: Obtener ID real de mascota creada
-        id_veterinario: selectedVeterinario?.id_personal || 1,
-        id_servicio: selectedService?.id_servicio || 1,
-        fecha_hora: fechaHora,
-        motivo_detalle: motivo
-      };
-
-      const response = await appointmentsService.createAppointment(citaData);
-
-      if (response.success) {
-        router.push('/agendar-cita/confirmado');
-      }
-    } catch (err: any) {
-      console.error('Error creando cita:', err);
-      setError(err.response?.data?.error || 'Error al crear la cita');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const servicioTexto = selectedService?.nombre || "No seleccionado";
 
   return (
-    <>
-      <h1 className="text-2xl font-semibold text-[#1E293B] text-center mb-2">
-        Resumen de tu cita
-      </h1>
+    <div className="max-w-3xl mx-auto">
+      <div className="mb-8">
+        <p className="text-sm text-gray-500 mb-2">NUEVA CITA</p>
+        <h1 className="text-3xl font-bold text-gray-900">Resumen de tu cita</h1>
+      </div>
 
-      <p className="text-sm text-[#64748B] text-center mb-10">
-        Revisa la información antes de confirmar.
-      </p>
-
-      {error && (
-        <div className="bg-red-50 text-red-600 p-4 rounded-lg mb-6">
-          {error}
+      {viewModel.error && (
+        <div className="mb-6 p-4 bg-red-50 text-red-600 rounded-lg">
+          {viewModel.error}
         </div>
       )}
 
-      <div className="space-y-6 text-sm text-[#1E293B] mb-10">
-        <div className="flex justify-between border-b pb-2">
-          <span>Servicio</span>
-          <span>{servicioTexto}</span>
-        </div>
-
-        {motivo && (
-          <div className="flex justify-between border-b pb-2">
-            <span>Motivo</span>
-            <span>{motivo}</span>
+      <div className="space-y-6">
+        {/* Servicio */}
+        <div className="bg-white border border-gray-200 rounded-2xl p-6">
+          <div className="flex items-start justify-between">
+            <div className="flex gap-4">
+              <div className="w-12 h-12 rounded-full bg-[#E6F4F2] flex items-center justify-center flex-shrink-0">
+                <svg className="w-6 h-6 text-[#2F8F83]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                </svg>
+              </div>
+              <div>
+                <h3 className="font-semibold text-gray-900 mb-1">Servicio</h3>
+                <p className="text-gray-700">{selectedService?.nombre}</p>
+                {motivo && <p className="text-sm text-gray-500 mt-1">{motivo}</p>}
+              </div>
+            </div>
+            <button
+              onClick={() => viewModel.modificarPaso('servicio')}
+              className="text-sm text-[#2F8F83] hover:underline font-medium"
+            >
+              Modificar
+            </button>
           </div>
-        )}
-
-        <div className="flex justify-between border-b pb-2">
-          <span>Paciente</span>
-          <span>{nombreMascota} ({especie})</span>
         </div>
 
-        <div className="flex justify-between border-b pb-2">
-          <span>Raza</span>
-          <span>{raza}</span>
-        </div>
-
-        <div className="flex justify-between border-b pb-2">
-          <span>Propietario</span>
-          <span>{nombre} {apellido}</span>
-        </div>
-
-        <div className="flex justify-between border-b pb-2">
-          <span>Contacto</span>
-          <span>{email} | {telefono}</span>
-        </div>
-
-        <div className="flex justify-between border-b pb-2">
-          <span>Fecha</span>
-          <span>{selectedFecha}</span>
-        </div>
-
-        <div className="flex justify-between border-b pb-2">
-          <span>Horario</span>
-          <span>{selectedHorario}</span>
-        </div>
-
-        {selectedVeterinario && (
-          <div className="flex justify-between border-b pb-2">
-            <span>Veterinario</span>
-            <span>Dr. {selectedVeterinario.nombre} {selectedVeterinario.apellido}</span>
+        {/* Propietario */}
+        <div className="bg-white border border-gray-200 rounded-2xl p-6">
+          <div className="flex items-start justify-between">
+            <div className="flex gap-4">
+              <div className="w-12 h-12 rounded-full bg-[#E6F4F2] flex items-center justify-center flex-shrink-0">
+                <svg className="w-6 h-6 text-[#2F8F83]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+              </div>
+              <div>
+                <h3 className="font-semibold text-gray-900 mb-1">Propietario</h3>
+                <p className="text-gray-700">{nombre} {apellido}</p>
+                <p className="text-sm text-gray-500">{email}</p>
+                <p className="text-sm text-gray-500">{telefono}</p>
+              </div>
+            </div>
+            <button
+              onClick={() => viewModel.modificarPaso('datos')}
+              className="text-sm text-[#2F8F83] hover:underline font-medium"
+            >
+              Modificar
+            </button>
           </div>
-        )}
+        </div>
+
+        {/* Mascota */}
+        <div className="bg-white border border-gray-200 rounded-2xl p-6">
+          <div className="flex items-start justify-between">
+            <div className="flex gap-4">
+              <div className="w-12 h-12 rounded-full bg-[#E6F4F2] flex items-center justify-center flex-shrink-0">
+                <svg className="w-6 h-6 text-[#2F8F83]" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M18 4c-.8 0-1.5.4-2 1-.5-.6-1.2-1-2-1s-1.5.4-2 1c-.5-.6-1.2-1-2-1-1.7 0-3 1.3-3 3v1c0 2.2 1.8 4 4 4h2c2.2 0 4-1.8 4-4V7c0-1.7-1.3-3-3-3zm-8 9c-3.3 0-6 2.7-6 6v1h20v-1c0-3.3-2.7-6-6-6h-8z"/>
+                </svg>
+              </div>
+              <div>
+                <h3 className="font-semibold text-gray-900 mb-1">Mascota</h3>
+                <div className="grid grid-cols-3 gap-4">
+                  <div>
+                    <p className="text-xs text-gray-500">Especie</p>
+                    <p className="text-gray-700 capitalize">{especie}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-500">Raza</p>
+                    <p className="text-gray-700">{raza}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-500">Nombre</p>
+                    <p className="text-gray-700">{nombreMascota}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <button
+              onClick={() => viewModel.modificarPaso('mascota')}
+              className="text-sm text-[#2F8F83] hover:underline font-medium"
+            >
+              Modificar
+            </button>
+          </div>
+        </div>
+
+        {/* Profesional */}
+        <div className="bg-white border border-gray-200 rounded-2xl p-6">
+          <div className="flex items-start justify-between">
+            <div className="flex gap-4">
+              <div className="w-12 h-12 rounded-full bg-[#E6F4F2] flex items-center justify-center flex-shrink-0">
+                <svg className="w-6 h-6 text-[#2F8F83]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <div>
+                <h3 className="font-semibold text-gray-900 mb-1">Profesional</h3>
+                <p className="text-gray-700">{selectedVeterinario?.nombre} {selectedVeterinario?.apellido}</p>
+                <p className="text-sm text-gray-500">{selectedVeterinario?.especialidad}</p>
+              </div>
+            </div>
+            <button
+              onClick={() => viewModel.modificarPaso('fecha')}
+              className="text-sm text-[#2F8F83] hover:underline font-medium"
+            >
+              Modificar
+            </button>
+          </div>
+        </div>
+
+        {/* Fecha y Hora */}
+        <div className="bg-gray-50 border border-gray-200 rounded-2xl p-6">
+          <div className="flex items-start justify-between">
+            <div className="flex gap-4">
+              <div className="w-12 h-12 rounded-full bg-[#E6F4F2] flex items-center justify-center flex-shrink-0">
+                <svg className="w-6 h-6 text-[#2F8F83]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+              </div>
+              <div>
+                <h3 className="font-semibold text-gray-900 mb-1">Fecha y Hora</h3>
+                <p className="text-gray-700 text-lg font-medium">
+                  {selectedFecha && viewModel.formatFecha(selectedFecha)} - {selectedHorario && viewModel.formatHorario(selectedHorario)}
+                </p>
+              </div>
+            </div>
+            <button
+              onClick={() => viewModel.modificarPaso('horario')}
+              className="text-sm text-[#2F8F83] hover:underline font-medium"
+            >
+              Modificar
+            </button>
+          </div>
+        </div>
       </div>
 
-      <div className="flex justify-between">
-        <button
-          onClick={() => router.push('/agendar-cita/horario')}
-          className="text-sm text-[#64748B]"
-          disabled={isLoading}
-        >
-          ← Volver
-        </button>
-
+      <div className="mt-10 flex justify-center">
         <button
           onClick={handleConfirm}
-          disabled={isLoading}
-          className={`h-12 px-10 rounded-xl font-medium text-sm transition-colors
-            ${
-              isLoading
-                ? "bg-gray-400 cursor-not-allowed"
-                : "bg-[#2F8F83] text-white hover:bg-[#267A6F]"
-            }`}
+          disabled={viewModel.isLoading}
+          className={`w-full h-14 rounded-xl font-semibold text-lg transition-all flex items-center justify-center gap-2
+            ${viewModel.isLoading ? "bg-gray-400 cursor-not-allowed" : "bg-[#2F8F83] hover:bg-[#267A6F] text-white"}`}
         >
-          {isLoading ? "Procesando..." : "Confirmar Cita"}
+          {viewModel.isLoading ? "Procesando..." : "Confirmar Cita"}
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+          </svg>
         </button>
       </div>
-    </>
+    </div>
   );
 }
