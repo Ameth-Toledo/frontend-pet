@@ -133,10 +133,11 @@ export default function PersonalFormModal({ onClose }: PersonalFormModalProps) {
         backgroundColor: "rgba(0,0,0,0.45)",
         backdropFilter: "blur(3px)",
         display: "flex",
-        alignItems: "center",
+        alignItems: "flex-start",
         justifyContent: "center",
         zIndex: 1000,
-        padding: "16px",
+        padding: "24px 16px",
+        overflowY: "auto",
       }}
     >
       <div
@@ -147,8 +148,6 @@ export default function PersonalFormModal({ onClose }: PersonalFormModalProps) {
           padding: "32px",
           width: "100%",
           maxWidth: "520px",
-          maxHeight: "90vh",
-          overflowY: "auto",
         }}
       >
         {/* Title */}
