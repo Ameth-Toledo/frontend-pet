@@ -1,17 +1,11 @@
 import { ReactNode } from "react";
-import Sidebar from "@/components/layout/Sidebar";
+import SidebarCliente from "@/components/layout/SidebarCliente";
 
-export default function ClienteLayout({
-  children,
-}: {
-  children: ReactNode;
-}) {
+export default function ClienteLayout({ children }: { children: ReactNode }) {
   return (
     <div className="min-h-screen flex bg-gray-50">
-      <Sidebar />
-      <main className="flex-1">
-        {children}
-      </main>
+      <SidebarCliente />
+      <main className="flex-1">{children}</main>
     </div>
   );
 }

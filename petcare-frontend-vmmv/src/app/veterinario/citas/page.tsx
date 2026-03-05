@@ -2,62 +2,34 @@
 
 export default function MisCitasVeterinario() {
   const citas = [
-    {
-      paciente: "Buddy",
-      raza: "Golden Retriever",
-      propietario: "Sarah Jenkins",
-      servicio: "Chequeo médico",
-      fecha: "12 Oct, 2023",
-      hora: "10:30 AM",
-      estado: "confirmada",
-    },
-    {
-      paciente: "Bini",
-      raza: "Border Terrier",
-      propietario: "Linda Garcia",
-      servicio: "Limpieza dental",
-      fecha: "13 Oct, 2023",
-      hora: "09:00 AM",
-      estado: "confirmada",
-    },
-    {
-      paciente: "Toro",
-      raza: "Pug",
-      propietario: "James Wilson",
-      servicio: "Control de peso",
-      fecha: "13 Oct, 2023",
-      hora: "03:30 PM",
-      estado: "cancelada",
-    },
+    { paciente: "Buddy",  raza: "Golden Retriever", propietario: "Sarah Jenkins", servicio: "Chequeo médico",   fecha: "12 Oct, 2023", hora: "10:30 AM", estado: "confirmada" },
+    { paciente: "Bini",   raza: "Border Terrier",   propietario: "Linda Garcia",  servicio: "Limpieza dental",  fecha: "13 Oct, 2023", hora: "09:00 AM", estado: "confirmada" },
+    { paciente: "Toro",   raza: "Pug",              propietario: "James Wilson",  servicio: "Control de peso",  fecha: "13 Oct, 2023", hora: "03:30 PM", estado: "cancelada" },
   ];
 
-  const badgeStyles: Record<string, string> = {
-    confirmada: "bg-green-100 text-green-700",
-    cancelada: "bg-red-100 text-red-600",
-    pendiente: "bg-yellow-100 text-yellow-700",
+  const badgeStyle: Record<string, React.CSSProperties> = {
+    confirmada: { backgroundColor: "#E6F4F1", color: "#2F6B62" },
+    cancelada:  { backgroundColor: "#FEF2F2", color: "#B91C1C" },
+    pendiente:  { backgroundColor: "#FFFBEB", color: "#92400E" },
   };
 
   return (
-    <div className="space-y-8">
+    <div style={{ padding: "32px", backgroundColor: "#F7F9FB", minHeight: "100vh" }}>
 
-      {/* HEADER */}
-      <div className="flex justify-between items-center">
+      {/* Header */}
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "24px" }}>
         <div>
-          <h1 className="text-2xl font-semibold text-[#1E293B]">
-            Mis citas
-          </h1>
-          <p className="text-sm text-gray-500">
+          <h1 style={{ fontSize: "22px", fontWeight: 800, color: "#1F2937", margin: 0 }}>Mis citas</h1>
+          <p style={{ fontSize: "13px", color: "#6B7280", margin: "4px 0 0 0" }}>
             Gestión y seguimiento de tu agenda veterinaria.
           </p>
         </div>
-
-        <div className="flex gap-4">
+        <div style={{ display: "flex", gap: "10px" }}>
           <input
             placeholder="Buscar cita..."
-            className="h-10 px-4 rounded-lg border border-gray-200 text-sm"
+            style={{ height: "38px", padding: "0 14px", borderRadius: "8px", border: "1px solid #E5E7EB", fontSize: "13px", outline: "none" }}
           />
-
-          <select className="h-10 px-4 rounded-lg border border-gray-200 text-sm">
+          <select style={{ height: "38px", padding: "0 14px", borderRadius: "8px", border: "1px solid #E5E7EB", fontSize: "13px", outline: "none", backgroundColor: "#FFFFFF" }}>
             <option>Todos</option>
             <option>Confirmadas</option>
             <option>Pendientes</option>
@@ -66,75 +38,48 @@ export default function MisCitasVeterinario() {
         </div>
       </div>
 
-      {/* TABLE */}
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-
-        <div className="grid grid-cols-6 bg-gray-50 text-xs font-medium text-gray-500 px-6 py-4">
+      {/* Table */}
+      <div style={{ backgroundColor: "#FFFFFF", border: "1px solid #E5E7EB", borderRadius: "16px", overflow: "hidden" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr 1fr 100px", backgroundColor: "#F9FAFB", padding: "12px 24px", fontSize: "11px", fontWeight: 600, color: "#6B7280", textTransform: "uppercase", letterSpacing: "0.05em" }}>
           <div>Paciente</div>
           <div>Propietario</div>
           <div>Servicio</div>
           <div>Fecha</div>
           <div>Estado</div>
-          <div className="text-right">Acción</div>
+          <div style={{ textAlign: "right" }}>Acción</div>
         </div>
 
-        <div className="divide-y">
-
-          {citas.map((cita, index) => (
-            <div
-              key={index}
-              className="grid grid-cols-6 items-center px-6 py-5 text-sm hover:bg-gray-50 transition"
-            >
-              <div>
-                <p className="font-medium text-[#1E293B]">
-                  {cita.paciente}
-                </p>
-                <p className="text-xs text-gray-500">
-                  {cita.raza}
-                </p>
-              </div>
-
-              <div className="text-gray-600">
-                {cita.propietario}
-              </div>
-
-              <div className="text-gray-600">
-                {cita.servicio}
-              </div>
-
-              <div>
-                <p className="text-[#1E293B]">
-                  {cita.fecha}
-                </p>
-                <p className="text-xs text-gray-500">
-                  {cita.hora}
-                </p>
-              </div>
-
-              <div>
-                <span
-                  className={`px-3 py-1 rounded-full text-xs font-medium ${
-                    badgeStyles[cita.estado]
-                  }`}
-                >
-                  {cita.estado}
-                </span>
-              </div>
-
-              <div className="text-right">
-                {cita.estado === "confirmada" && (
-                  <button className="bg-[#2F8F83] text-white px-4 py-2 rounded-lg text-xs">
-                    Iniciar
-                  </button>
-                )}
-              </div>
+        {citas.map((cita, i) => (
+          <div key={i} style={{
+            display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr 1fr 100px",
+            alignItems: "center", padding: "16px 24px", fontSize: "13px",
+            borderTop: "1px solid #F3F4F6",
+          }}>
+            <div>
+              <p style={{ fontWeight: 600, color: "#1F2937", margin: 0 }}>{cita.paciente}</p>
+              <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0 0" }}>{cita.raza}</p>
             </div>
-          ))}
-
-        </div>
-
+            <div style={{ color: "#6B7280" }}>{cita.propietario}</div>
+            <div style={{ color: "#6B7280" }}>{cita.servicio}</div>
+            <div>
+              <p style={{ color: "#1F2937", margin: 0 }}>{cita.fecha}</p>
+              <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0 0" }}>{cita.hora}</p>
+            </div>
+            <div>
+              <span style={{ ...badgeStyle[cita.estado], padding: "4px 10px", borderRadius: "20px", fontSize: "11px", fontWeight: 600 }}>
+                {cita.estado}
+              </span>
+            </div>
+            <div style={{ textAlign: "right" }}>
+              {cita.estado === "confirmada" && (
+                <button style={{ backgroundColor: "#4F8A7C", color: "#FFFFFF", border: "none", borderRadius: "8px", padding: "7px 14px", fontSize: "12px", fontWeight: 500, cursor: "pointer" }}>
+                  Iniciar
+                </button>
+              )}
+            </div>
+          </div>
+        ))}
       </div>
-
     </div>
   );
 }

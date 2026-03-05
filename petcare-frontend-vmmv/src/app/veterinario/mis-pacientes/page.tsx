@@ -4,142 +4,89 @@ import { Search, Filter, Plus, Eye, Pencil } from "lucide-react";
 
 export default function MisPacientesPage() {
   const pacientes = [
-    {
-      id: 1,
-      nombre: "Buddy",
-      especie: "Perro",
-      raza: "Golden Retriever",
-      propietario: "Sarah Jenkins",
-      estado: "ACTIVO",
-    },
-    {
-      id: 2,
-      nombre: "Misty",
-      especie: "Gato",
-      raza: "Siamés",
-      propietario: "Mark Thompson",
-      estado: "ACTIVO",
-    },
-    {
-      id: 3,
-      nombre: "Bella",
-      especie: "Perro",
-      raza: "Border Terrier",
-      propietario: "Linda Garcia",
-      estado: "INACTIVO",
-    },
+    { id: 1, nombre: "Buddy",  especie: "Perro", raza: "Golden Retriever", propietario: "Sarah Jenkins",  estado: "ACTIVO" },
+    { id: 2, nombre: "Misty",  especie: "Gato",  raza: "Siamés",           propietario: "Mark Thompson",  estado: "ACTIVO" },
+    { id: 3, nombre: "Bella",  especie: "Perro", raza: "Border Terrier",   propietario: "Linda Garcia",   estado: "INACTIVO" },
   ];
 
   return (
-    <div className="space-y-8">
-      {/* HEADER */}
-      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+    <div style={{ padding: "32px", backgroundColor: "#F7F9FB", minHeight: "100vh" }}>
+
+      {/* Header */}
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "24px" }}>
         <div>
-          <h1 className="text-2xl font-semibold text-[#1E293B]">
-            Mis pacientes
-          </h1>
-          <p className="text-sm text-[#64748B]">
+          <h1 style={{ fontSize: "22px", fontWeight: 800, color: "#1F2937", margin: 0 }}>Mis pacientes</h1>
+          <p style={{ fontSize: "13px", color: "#6B7280", margin: "4px 0 0 0" }}>
             Gestión integral de la base de datos clínica.
           </p>
         </div>
-
-        <div className="flex items-center gap-3">
-          <div className="relative">
-            <Search
-              size={16}
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-            />
+        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+          <div style={{ position: "relative" }}>
+            <Search size={14} style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", color: "#9CA3AF" }} />
             <input
               placeholder="Buscar pacientes..."
-              className="h-10 pl-9 pr-4 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#2F8F83]/30"
+              style={{ height: "38px", paddingLeft: "34px", paddingRight: "14px", borderRadius: "8px", border: "1px solid #E5E7EB", fontSize: "13px", outline: "none" }}
             />
           </div>
-
-          <button className="h-10 px-4 rounded-xl border border-gray-200 text-sm flex items-center gap-2 hover:bg-gray-50">
-            <Filter size={16} />
-            Filtrar
+          <button style={{ height: "38px", padding: "0 14px", borderRadius: "8px", border: "1px solid #E5E7EB", fontSize: "13px", display: "flex", alignItems: "center", gap: "6px", backgroundColor: "#FFFFFF", cursor: "pointer" }}>
+            <Filter size={14} /> Filtrar
           </button>
-
-          <button className="h-10 px-4 rounded-xl bg-[#2F8F83] text-white text-sm flex items-center gap-2 hover:bg-[#287A70] transition">
-            <Plus size={16} />
-            Nuevo paciente
+          <button style={{ height: "38px", padding: "0 16px", borderRadius: "8px", backgroundColor: "#4F8A7C", color: "#FFFFFF", border: "none", fontSize: "13px", fontWeight: 500, display: "flex", alignItems: "center", gap: "6px", cursor: "pointer" }}>
+            <Plus size={14} /> Nuevo paciente
           </button>
         </div>
       </div>
 
-      {/* TABLA */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-        <table className="w-full text-sm">
-          <thead className="bg-gray-50 text-gray-500 text-xs uppercase tracking-wide">
-            <tr>
-              <th className="text-left px-6 py-4">Mascota</th>
-              <th className="text-left px-6 py-4">Especie / Raza</th>
-              <th className="text-left px-6 py-4">Propietario</th>
-              <th className="text-left px-6 py-4">Estado</th>
-              <th className="text-right px-6 py-4">Acciones</th>
-            </tr>
-          </thead>
+      {/* Table */}
+      <div style={{ backgroundColor: "#FFFFFF", border: "1px solid #E5E7EB", borderRadius: "16px", overflow: "hidden" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1.5fr 1.5fr 1fr 80px", backgroundColor: "#F9FAFB", padding: "12px 24px", fontSize: "11px", fontWeight: 600, color: "#6B7280", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+          <div>Mascota</div>
+          <div>Especie / Raza</div>
+          <div>Propietario</div>
+          <div>Estado</div>
+          <div style={{ textAlign: "right" }}>Acciones</div>
+        </div>
 
-          <tbody className="divide-y divide-gray-100">
-            {pacientes.map((paciente) => (
-              <tr key={paciente.id} className="hover:bg-gray-50 transition">
-                <td className="px-6 py-5 font-medium text-[#1E293B]">
-                  {paciente.nombre}
-                </td>
+        {pacientes.map((p, i) => (
+          <div key={p.id} style={{
+            display: "grid", gridTemplateColumns: "1fr 1.5fr 1.5fr 1fr 80px",
+            alignItems: "center", padding: "16px 24px", fontSize: "13px",
+            borderTop: "1px solid #F3F4F6",
+          }}>
+            <div style={{ fontWeight: 600, color: "#1F2937" }}>{p.nombre}</div>
+            <div>
+              <p style={{ fontWeight: 600, color: "#1F2937", margin: 0 }}>{p.especie}</p>
+              <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0 0" }}>{p.raza}</p>
+            </div>
+            <div style={{ color: "#6B7280" }}>{p.propietario}</div>
+            <div>
+              <span style={{
+                padding: "4px 10px", borderRadius: "20px", fontSize: "11px", fontWeight: 600,
+                backgroundColor: p.estado === "ACTIVO" ? "#E6F4F1" : "#F3F4F6",
+                color: p.estado === "ACTIVO" ? "#2F6B62" : "#6B7280",
+              }}>
+                {p.estado}
+              </span>
+            </div>
+            <div style={{ display: "flex", justifyContent: "flex-end", gap: "12px", color: "#9CA3AF" }}>
+              <button style={{ background: "none", border: "none", cursor: "pointer", color: "inherit" }}><Eye size={15} /></button>
+              <button style={{ background: "none", border: "none", cursor: "pointer", color: "inherit" }}><Pencil size={15} /></button>
+            </div>
+          </div>
+        ))}
 
-                <td className="px-6 py-5 text-[#64748B]">
-                  <div className="font-medium text-[#1E293B]">
-                    {paciente.especie}
-                  </div>
-                  <div className="text-xs">{paciente.raza}</div>
-                </td>
-
-                <td className="px-6 py-5 text-[#64748B]">
-                  {paciente.propietario}
-                </td>
-
-                <td className="px-6 py-5">
-                  <span
-                    className={`px-3 py-1 rounded-full text-xs font-medium ${
-                      paciente.estado === "ACTIVO"
-                        ? "bg-[#E6F4F2] text-[#2F8F83]"
-                        : "bg-gray-100 text-gray-500"
-                    }`}
-                  >
-                    {paciente.estado}
-                  </span>
-                </td>
-
-                <td className="px-6 py-5">
-                  <div className="flex justify-end gap-3 text-gray-500">
-                    <button className="hover:text-[#2F8F83] transition">
-                      <Eye size={16} />
-                    </button>
-
-                    <button className="hover:text-[#2F8F83] transition">
-                      <Pencil size={16} />
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-
-        {/* FOOTER */}
-        <div className="px-6 py-4 flex items-center justify-between text-xs text-gray-500">
+        {/* Footer */}
+        <div style={{ padding: "14px 24px", display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: "12px", color: "#6B7280", borderTop: "1px solid #F3F4F6" }}>
           <span>Mostrando 3 de 128 pacientes</span>
-
-          <div className="flex items-center gap-2">
-            <button className="h-8 w-8 rounded-lg border border-gray-200">
-              1
-            </button>
-            <button className="h-8 w-8 rounded-lg bg-[#2F8F83] text-white">
-              2
-            </button>
-            <button className="h-8 w-8 rounded-lg border border-gray-200">
-              3
-            </button>
+          <div style={{ display: "flex", gap: "6px" }}>
+            {[1, 2, 3].map((n) => (
+              <button key={n} style={{
+                width: "30px", height: "30px", borderRadius: "6px", fontSize: "12px", cursor: "pointer",
+                border: n === 2 ? "none" : "1px solid #E5E7EB",
+                backgroundColor: n === 2 ? "#4F8A7C" : "#FFFFFF",
+                color: n === 2 ? "#FFFFFF" : "#6B7280",
+              }}>{n}</button>
+            ))}
           </div>
         </div>
       </div>

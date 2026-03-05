@@ -9,29 +9,29 @@ export const ROUTES = {
     AGENDAR_CITA_HORARIO: "/agendar-cita/horario",
     AGENDAR_CITA_RESUMEN: "/agendar-cita/resumen",
     AGENDAR_CITA_CONFIRMADO: "/agendar-cita/confirmado",
-
-    // 🔹 Flujo agendar cita
     AGENDAR_CITA_SERVICIO: '/agendar-cita/servicio',
     AGENDAR_CITA_DATOS: '/agendar-cita/datos',
   },
 
   CLIENTE: {
-    DASHBOARD: '/cliente/dashboard',
-    MASCOTAS: '/cliente/mascotas',
-    CITAS: '/cliente/citas',
-    PERFIL: '/cliente/perfil',
+    DASHBOARD:      '/cliente/dashboard',
+    MIS_CITAS:      '/cliente/miscitas',
+    MIS_MASCOTAS:   '/cliente/mismascotas',
+    CONFIGURACION:  '/cliente/configuracion',
   },
 
   ADMIN: {
     DASHBOARD: '/admin/dashboard',
-    USUARIOS: '/admin/usuarios',
-    REPORTES: '/admin/reportes',
+    USUARIOS:  '/admin/usuarios',
+    REPORTES:  '/admin/reportes',
   },
 
   VETERINARIO: {
-    DASHBOARD: '/veterinario/dashboard',
-    HISTORIAL: '/veterinario/historial-clinico',
-    CITAS: '/veterinario/citas',
+    DASHBOARD:        '/veterinario/dashboard',
+    CITAS:            '/veterinario/citas',
+    MIS_PACIENTES:    '/veterinario/mis-pacientes',
+    HISTORIAL:        '/veterinario/historial-clinico',
+    // CONFIGURACION: '/veterinario/configuracion',  // ← descomenta cuando esté lista la vista
   },
 } as const;
 
