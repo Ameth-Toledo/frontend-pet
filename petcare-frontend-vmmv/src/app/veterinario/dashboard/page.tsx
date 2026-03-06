@@ -7,7 +7,7 @@ export default function VeterinarioDashboard() {
       {/* Header */}
       <div style={{ marginBottom: "24px" }}>
         <h1 style={{ fontSize: "22px", fontWeight: 800, color: "#1F2937", margin: 0 }}>
-          Bienvenido de nuevo!
+          Panel principal
         </h1>
         <p style={{ fontSize: "13px", color: "#6B7280", margin: "4px 0 0 0" }}>
           Resumen de tu actividad veterinaria del día.

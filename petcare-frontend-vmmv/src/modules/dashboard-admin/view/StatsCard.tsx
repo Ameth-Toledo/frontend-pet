@@ -41,11 +41,11 @@ export default function StatsCard({ title, value, subtext, icon }: StatsCardProp
         </p>
         <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
           {isTrend && (
-            <span style={{ color: "#6BAF9F", fontSize: "12px" }}>▲</span>
+            <span style={{ color: "#4F8A7C", fontSize: "12px" }}>▲</span>
           )}
           <p
             style={{
-              color: isTrend ? "#6BAF9F" : "#6B7280",
+              color: isTrend ? "#4F8A7C" : "#6B7280",
               fontSize: "13px",
               fontWeight: isTrend ? 500 : 400,
             }}

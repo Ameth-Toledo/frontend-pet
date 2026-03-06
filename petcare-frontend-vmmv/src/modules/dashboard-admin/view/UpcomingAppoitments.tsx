@@ -8,7 +8,7 @@ interface Props {
 function Badge({ label, variant }: { label: string; variant: AppointmentUI["badgeVariant"] }) {
   const styles =
     variant === "checkup"
-      ? { background: "#E6F4F1", color: "#2F8F7A" }
+      ? { background: "#E6F4F1", color: "#4F8A7C" }
       : { background: "#FFF4E5", color: "#D97706" };
 
   return (
@@ -67,7 +67,7 @@ export default function UpcomingAppointments({ appointments }: Props) {
           style={{
             background: "none",
             border: "none",
-            color: "#6BAF9F",
+            color: "#4F8A7C",
             fontSize: "14px",
             fontWeight: 500,
             cursor: "pointer",
@@ -134,7 +134,7 @@ export default function UpcomingAppointments({ appointments }: Props) {
           {/* Action */}
           <button
             style={{
-              backgroundColor: "#6BAF9F",
+              backgroundColor: "#4F8A7C",
               color: "#FFFFFF",
               border: "none",
               borderRadius: "8px",

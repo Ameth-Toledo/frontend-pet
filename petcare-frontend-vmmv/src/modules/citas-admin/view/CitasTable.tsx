@@ -98,7 +98,7 @@ export default function CitasTable({ citas, total = 128 }: CitasTableProps) {
               style={{
                 width: "32px", height: "32px", borderRadius: "8px",
                 border: page === 1 ? "none" : "1px solid #E5E7EB",
-                backgroundColor: page === 1 ? "#6BAF9F" : "#FFFFFF",
+                backgroundColor: page === 1 ? "#4F8A7C" : "#FFFFFF",
                 color: page === 1 ? "#FFFFFF" : "#6B7280",
                 fontSize: "13px", fontWeight: page === 1 ? 600 : 400,
                 cursor: "pointer",

@@ -21,9 +21,14 @@ export const ROUTES = {
   },
 
   ADMIN: {
-    DASHBOARD: '/admin/dashboard',
-    USUARIOS:  '/admin/usuarios',
-    REPORTES:  '/admin/reportes',
+    DASHBOARD:      '/admin/dashboard',
+    CLIENTES:       '/admin/clientes',
+    CITAS:          '/admin/citas',
+    MASCOTAS:       '/admin/mascotas',
+    PERSONAL:       '/admin/personal',
+    ANALISIS:       '/admin/analisis',
+    CONFIGURACION:  '/admin/configuracion',
+    // USUARIOS:    '/admin/usuarios',  // ← descomentar cuando esté lista la vista
   },
 
   VETERINARIO: {
@@ -31,7 +36,7 @@ export const ROUTES = {
     CITAS:            '/veterinario/citas',
     MIS_PACIENTES:    '/veterinario/mis-pacientes',
     HISTORIAL:        '/veterinario/historial-clinico',
-    // CONFIGURACION: '/veterinario/configuracion',  // ← descomenta cuando esté lista la vista
+    // CONFIGURACION: '/veterinario/configuracion',
   },
 } as const;
 

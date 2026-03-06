@@ -73,7 +73,7 @@ export default function AppointmentsChart({ data }: AppointmentsChartProps) {
                   width={barW}
                   height={barH}
                   rx={8}
-                  fill={isMax ? "#6BAF9F" : "#A8D5CB"}
+                  fill={isMax ? "#4F8A7C" : "#A8D5CB"}
                 />
                 {/* Month label */}
                 <text

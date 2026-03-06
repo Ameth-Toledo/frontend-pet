@@ -15,7 +15,7 @@ const mockMetrics: DashboardMetricsDTO = {
     { month: "Jun", count: 150 },
   ],
   serviceDistribution: [
-    { label: "Vacunas",    percentage: 45, color: "#6BAF9F" },
+    { label: "Vacunas",    percentage: 45, color: "#4F8A7C" },
     { label: "Baño & Corte", percentage: 30, color: "#F59E0B" },
     { label: "Consultas",  percentage: 15, color: "#93C5FD" },
     { label: "Cirugías",   percentage: 10, color: "#1F2937" },

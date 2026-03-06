@@ -45,12 +45,12 @@ export default function PersonalHeader({ searchTerm, onSearchChange, onNuevoClic
             onClick={onNuevoClick}
             style={{
               display: "flex", alignItems: "center", gap: "6px",
-              backgroundColor: "#6BAF9F", border: "none", borderRadius: "10px",
+              backgroundColor: "#4F8A7C", border: "none", borderRadius: "10px",
               padding: "8px 18px", fontSize: "13px", fontWeight: 600,
               color: "#FFFFFF", cursor: "pointer",
             }}
-            onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = "#5AA193"; }}
-            onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = "#6BAF9F"; }}
+            onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = "#3E6F63"; }}
+            onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = "#4F8A7C"; }}
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" strokeWidth="2.5">
               <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />

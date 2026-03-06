@@ -18,7 +18,7 @@ function Avatar({ initials }: { initials: string }) {
         justifyContent: "center",
         fontSize: "13px",
         fontWeight: 700,
-        color: "#2F8F7A",
+        color: "#4F8A7C",
         flexShrink: 0,
         border: "2px solid #D1EAE4",
       }}
@@ -41,7 +41,7 @@ function EstadoBadge({ estado }: { estado: VeterinarioUI["estado"] }) {
         letterSpacing: "0.05em",
         textTransform: "uppercase",
         backgroundColor: isActive ? "#E6F4F1" : "#F3F4F6",
-        color: isActive ? "#2F8F7A" : "#6B7280",
+        color: isActive ? "#4F8A7C" : "#6B7280",
       }}
     >
       {estado}
@@ -63,7 +63,7 @@ function IconButton({ title, children }: { title: string; children: React.ReactN
         alignItems: "center",
         justifyContent: "center",
         cursor: "pointer",
-        color: "#6BAF9F",
+        color: "#4F8A7C",
       }}
       onMouseEnter={(e) => {
         (e.currentTarget as HTMLButtonElement).style.backgroundColor = "#E6F4F1";
