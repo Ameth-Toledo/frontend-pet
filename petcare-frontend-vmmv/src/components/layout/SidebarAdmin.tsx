@@ -11,8 +11,6 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import Sidebar, { NavItem } from "./Sidebar";
 
-// ✅ Para agregar una nueva ruta al sidebar del admin,
-// simplemente añade un nuevo objeto a este array con label, href e icon.
 const adminNavItems: NavItem[] = [
   { label: "Panel principal",    href: "/admin/dashboard",    icon: faTableColumns },
   { label: "Clientes",           href: "/admin/clientes",     icon: faUsers },

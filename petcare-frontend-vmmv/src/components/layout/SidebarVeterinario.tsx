@@ -9,8 +9,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import Sidebar, { NavItem } from "./Sidebar";
 
-// ✅ Para agregar una nueva ruta al sidebar del veterinario,
-// simplemente añade un nuevo objeto a este array con label, href e icon.
+
 const veterinarioNavItems: NavItem[] = [
   { label: "Panel principal",   href: "/veterinario/dashboard",        icon: faTableColumns },
   { label: "Mis citas",         href: "/veterinario/citas",            icon: faCalendarCheck },
