@@ -10,8 +10,8 @@ interface PersonalFormModalProps {
 
 // ─── Colors ───────────────────────────────────────────────────────────────────
 const C = {
-  green: "#6BAF9F",
-  greenDark: "#5AA193",
+  green: "#4F8A7C",
+  greenDark: "#3E6F63",
   greenLight: "#E6F4F1",
   greenBorder: "#C8E6E0",
   white: "#FFFFFF",

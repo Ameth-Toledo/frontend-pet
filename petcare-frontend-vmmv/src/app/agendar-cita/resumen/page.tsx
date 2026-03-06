@@ -47,7 +47,7 @@ export default function ResumenPage() {
       };
       
       localStorage.setItem('pendingAppointmentData', JSON.stringify(appointmentData));
-      router.push('/register?from=appointment');
+      router.push('/?from=appointment');
     } else {
       // Usuario logueado - Crear cita directamente
       await crearCita();

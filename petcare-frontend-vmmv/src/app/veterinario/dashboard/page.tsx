@@ -2,131 +2,94 @@
 
 export default function VeterinarioDashboard() {
   return (
-    <div className="grid grid-cols-12 gap-8">
+    <div style={{ padding: "32px", backgroundColor: "#F7F9FB", minHeight: "100vh" }}>
 
-      {/* LEFT COLUMN */}
-      <div className="col-span-9 space-y-8">
+      {/* Header */}
+      <div style={{ marginBottom: "24px" }}>
+        <h1 style={{ fontSize: "22px", fontWeight: 800, color: "#1F2937", margin: 0 }}>
+          Panel principal
+        </h1>
+        <p style={{ fontSize: "13px", color: "#6B7280", margin: "4px 0 0 0" }}>
+          Resumen de tu actividad veterinaria del día.
+        </p>
+      </div>
 
-        {/* STATS */}
-        <div className="grid grid-cols-3 gap-6">
-
-          <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-            <p className="text-sm text-gray-500">Citas hoy</p>
-            <h2 className="text-3xl font-semibold text-[#1E293B] mt-2">12</h2>
-            <p className="text-xs text-green-600 mt-1">
-              +15% respecto a ayer
-            </p>
-          </div>
-
-          <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-            <p className="text-sm text-gray-500">Próxima cita</p>
-            <h2 className="text-lg font-semibold text-[#1E293B] mt-2">
-              09:30 AM - Buddy
+      {/* STATS */}
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "16px", marginBottom: "24px" }}>
+        {[
+          { label: "Citas hoy", value: "12", sub: "+15% respecto a ayer", subColor: "#4F8A7C" },
+          { label: "Próxima cita", value: "09:30 AM - Buddy", sub: "Chequeo médico", subColor: "#4F8A7C" },
+          { label: "Pacientes activos", value: "48", sub: "8 nuevos esta semana", subColor: "#6B7280" },
+        ].map((stat, i) => (
+          <div key={i} style={{
+            backgroundColor: "#FFFFFF",
+            border: "1px solid #E5E7EB",
+            borderRadius: "16px",
+            padding: "20px 24px",
+          }}>
+            <p style={{ fontSize: "13px", color: "#6B7280", margin: 0 }}>{stat.label}</p>
+            <h2 style={{ fontSize: i === 1 ? "16px" : "28px", fontWeight: 700, color: "#1F2937", margin: "8px 0 4px" }}>
+              {stat.value}
             </h2>
-            <p className="text-xs text-[#2F8F83] mt-1">
-              Chequeo médico
-            </p>
+            <p style={{ fontSize: "12px", color: stat.subColor, margin: 0 }}>{stat.sub}</p>
           </div>
+        ))}
+      </div>
 
-          <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-            <p className="text-sm text-gray-500">Pacientes activos</p>
-            <h2 className="text-3xl font-semibold text-[#1E293B] mt-2">48</h2>
-            <p className="text-xs text-gray-400 mt-1">
-              8 nuevos esta semana
-            </p>
-          </div>
+      <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: "20px" }}>
 
-        </div>
-
-        {/* PROXIMAS CITAS */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-
-          <div className="flex justify-between items-center mb-6">
-            <h3 className="text-lg font-semibold text-[#1E293B]">
-              Próximas citas
-            </h3>
-            <button className="text-sm text-[#2F8F83] font-medium">
+        {/* PRÓXIMAS CITAS */}
+        <div style={{ backgroundColor: "#FFFFFF", border: "1px solid #E5E7EB", borderRadius: "16px", padding: "24px" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
+            <h3 style={{ fontSize: "15px", fontWeight: 700, color: "#1F2937", margin: 0 }}>Próximas citas</h3>
+            <button style={{ fontSize: "13px", color: "#4F8A7C", fontWeight: 500, background: "none", border: "none", cursor: "pointer" }}>
               Ver todas
             </button>
           </div>
 
-          <div className="space-y-4">
-
-            <div className="flex items-center justify-between border rounded-xl p-4 hover:bg-gray-50 transition">
-              <div>
-                <p className="font-medium text-[#1E293B]">Buddy</p>
-                <p className="text-sm text-gray-500">
-                  09:30 AM • Chequeo médico
-                </p>
+          <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+            {[
+              { nombre: "Buddy", hora: "09:30 AM", servicio: "Chequeo médico" },
+              { nombre: "Luna",  hora: "11:15 AM", servicio: "Control post cirugía" },
+            ].map((cita, i) => (
+              <div key={i} style={{
+                display: "flex", alignItems: "center", justifyContent: "space-between",
+                border: "1px solid #E5E7EB", borderRadius: "10px", padding: "14px 16px",
+              }}>
+                <div>
+                  <p style={{ fontWeight: 600, color: "#1F2937", margin: 0, fontSize: "14px" }}>{cita.nombre}</p>
+                  <p style={{ fontSize: "12px", color: "#6B7280", margin: "2px 0 0 0" }}>{cita.hora} • {cita.servicio}</p>
+                </div>
+                <button style={{
+                  backgroundColor: "#4F8A7C", color: "#FFFFFF",
+                  border: "none", borderRadius: "8px", padding: "8px 16px",
+                  fontSize: "13px", fontWeight: 500, cursor: "pointer",
+                }}>
+                  Iniciar
+                </button>
               </div>
+            ))}
+          </div>
+        </div>
 
-              <button className="bg-[#2F8F83] text-white px-4 py-2 rounded-lg text-sm">
-                Iniciar
-              </button>
-            </div>
-
-            <div className="flex items-center justify-between border rounded-xl p-4 hover:bg-gray-50 transition">
-              <div>
-                <p className="font-medium text-[#1E293B]">Luna</p>
-                <p className="text-sm text-gray-500">
-                  11:15 AM • Control post cirugía
-                </p>
+        {/* PACIENTES RECIENTES */}
+        <div style={{ backgroundColor: "#FFFFFF", border: "1px solid #E5E7EB", borderRadius: "16px", padding: "24px" }}>
+          <h3 style={{ fontSize: "15px", fontWeight: 700, color: "#1F2937", margin: "0 0 20px 0" }}>Pacientes recientes</h3>
+          <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+            {[
+              { nombre: "Maximus", raza: "Golden Retriever" },
+              { nombre: "Misty",   raza: "Siamés" },
+              { nombre: "Bella",   raza: "Pastor Alemán" },
+            ].map((p, i) => (
+              <div key={i} style={{ borderBottom: i < 2 ? "1px solid #F3F4F6" : "none", paddingBottom: i < 2 ? "16px" : 0 }}>
+                <p style={{ fontWeight: 600, color: "#1F2937", margin: 0, fontSize: "14px" }}>{p.nombre}</p>
+                <p style={{ fontSize: "12px", color: "#6B7280", margin: "2px 0 0 0" }}>{p.raza}</p>
               </div>
-
-              <button className="bg-[#2F8F83] text-white px-4 py-2 rounded-lg text-sm">
-                Iniciar
-              </button>
-            </div>
-
+            ))}
           </div>
         </div>
 
       </div>
-
-      {/* RIGHT COLUMN */}
-      <div className="col-span-3 space-y-8">
-
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-
-          <h3 className="text-lg font-semibold text-[#1E293B] mb-6">
-            Pacientes recientes
-          </h3>
-
-          <div className="space-y-4">
-
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="font-medium text-[#1E293B]">Maximus</p>
-                <p className="text-xs text-gray-500">
-                  Golden Retriever
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="font-medium text-[#1E293B]">Misty</p>
-                <p className="text-xs text-gray-500">
-                  Siamese
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="font-medium text-[#1E293B]">Bella</p>
-                <p className="text-xs text-gray-500">
-                  Pastor Alemán
-                </p>
-              </div>
-            </div>
-
-          </div>
-
-        </div>
-
-      </div>
-
     </div>
   );
 }

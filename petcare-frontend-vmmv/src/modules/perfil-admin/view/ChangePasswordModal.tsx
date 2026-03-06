@@ -4,8 +4,8 @@ import React from "react";
 import { useChangePasswordViewModel } from "@/modules/perfil-admin/viewmodel/useChangePasswordViewModel";
 
 const C = {
-  green: "#6BAF9F",
-  greenDark: "#5AA193",
+  green: "#4F8A7C",
+  greenDark: "#3E6F63",
   white: "#FFFFFF",
   textMain: "#1F2937",
   textSub: "#6B7280",

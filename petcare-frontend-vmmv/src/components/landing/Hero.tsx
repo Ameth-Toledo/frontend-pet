@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { ROUTES } from "@/lib/routes";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSyringe } from "@fortawesome/free-solid-svg-icons";
 
 export default function Hero() {
   return (
@@ -31,12 +33,12 @@ export default function Hero() {
         <div className="flex justify-center">
           <div className="relative bg-[#2F8F83] rounded-[32px] p-10 w-[480px] h-[600px] shadow-[0_35px_80px_-15px_rgba(47,143,131,0.5)] flex items-center justify-center">
             <div className="w-[360px] h-[460px] bg-white/10 rounded-2xl flex items-center justify-center text-white/70 text-sm">
-              Imagen próximamente
+              <img src="https://www.petco.com.mx/medias/Perro-result.webp?context=bWFzdGVyfHJvb3R8MzExNDh8aW1hZ2Uvd2VicHxhRFEwTDJnd05pOHhNVE0xTmpBMk1UY3lPRGM1T0M5UVpYSnliMTl5WlhOMWJIUXVkMlZpY0F8ZmY0NmYzOTE3MjI5YmM3YjBlNzY0YjQ0MzNlNGQyNTcyZmIzN2MxZTk2ZGQwMzU1NmUwNjJjYzhjNDAyYWZjZg" alt="" />
             </div>
 
             <div className="absolute -bottom-8 left-10 bg-white rounded-2xl px-6 py-5 shadow-xl w-[260px]">
               <div className="flex items-center gap-3 mb-2">
-                <div className="h-3 w-3 rounded-full bg-[#2F8F83]"></div>
+                  <FontAwesomeIcon icon={faSyringe} style={{color: "rgb(47, 143, 131)",fontSize:40}} />
                 <p className="text-sm font-semibold text-[#1E293B]">
                   Vacuna 2026
                 </p>

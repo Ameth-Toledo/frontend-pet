@@ -7,7 +7,7 @@ interface MetricsCardsProps {
 
 function CalendarIcon() {
   return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#6BAF9F" strokeWidth="2">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#4F8A7C" strokeWidth="2">
       <rect x="3" y="4" width="18" height="18" rx="3" />
       <path d="M3 9h18M8 2v4M16 2v4" strokeLinecap="round" />
     </svg>
@@ -16,7 +16,7 @@ function CalendarIcon() {
 
 function PatientIcon() {
   return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#6BAF9F" strokeWidth="2">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#4F8A7C" strokeWidth="2">
       <circle cx="10" cy="7" r="4" />
       <path d="M4 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2" />
       <path d="M19 8v6M22 11h-6" strokeLinecap="round" />
@@ -54,7 +54,7 @@ function MetricCard({ icon, label, value, trendLabel, trendPositive }: CardProps
           top: "16px",
           right: "16px",
           backgroundColor: trendPositive ? "#E6F4F1" : "#FDECEC",
-          color: trendPositive ? "#2F8F7A" : "#B91C1C",
+          color: trendPositive ? "#4F8A7C" : "#B91C1C",
           fontSize: "11px",
           fontWeight: 700,
           padding: "3px 10px",

@@ -1,3 +1,10 @@
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faClipboardList } from '@fortawesome/free-solid-svg-icons';
+import { faCalendarDay } from '@fortawesome/free-solid-svg-icons';
+import { faAddressBook } from '@fortawesome/free-solid-svg-icons';
+
+
+
 export default function WhyPetCare() {
   return (
     <section className="bg-white py-28">
@@ -10,6 +17,9 @@ export default function WhyPetCare() {
 
         <div className="grid md:grid-cols-3 gap-10">
           <div className="bg-[#F6F7F5] rounded-2xl p-10 text-center">
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 16 }}>
+              <FontAwesomeIcon icon={faClipboardList} style={{ color: "#2f8f83", width: 34, height: 34 }} />
+            </div>
             <h3 className="text-lg font-semibold text-[#1E293B] mb-4">
               Indicaciones claras
             </h3>
@@ -19,6 +29,9 @@ export default function WhyPetCare() {
           </div>
 
           <div className="bg-[#F6F7F5] rounded-2xl p-10 text-center">
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 16 }}>
+              <FontAwesomeIcon icon={faCalendarDay} style={{ color: "#2f8f83", width: 34, height: 34 }} />
+            </div>
             <h3 className="text-lg font-semibold text-[#1E293B] mb-4">
               Control de citas
             </h3>
@@ -28,6 +41,9 @@ export default function WhyPetCare() {
           </div>
 
           <div className="bg-[#F6F7F5] rounded-2xl p-10 text-center">
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 16 }}>
+              <FontAwesomeIcon icon={faAddressBook} style={{ color: "#2f8f83", width: 34, height: 34 }} />
+            </div>
             <h3 className="text-lg font-semibold text-[#1E293B] mb-4">
               Información centralizada
             </h3>

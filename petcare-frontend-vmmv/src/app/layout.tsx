@@ -1,9 +1,8 @@
-import type { Metadata } from 'next';
-import '../styles/globals.css';
+import './globals.css';
 
-export const metadata: Metadata = {
-  title: 'PetCare - Gestión Veterinaria',
-  description: 'Sistema de gestión veterinaria profesional',
+export const metadata = {
+  title: 'PetCare',
+  description: 'Plataforma digital de seguimiento veterinario',
 };
 
 export default function RootLayout({
@@ -13,7 +12,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="es">
-      <body className="antialiased">{children}</body>
+      <body className="scroll-smooth bg-white text-gray-900">
+        {children}
+      </body>
     </html>
   );
 }

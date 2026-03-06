@@ -1,20 +1,23 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useAuthViewModel } from '../viewmodel/useAuthViewModel';
-import Button from '@/components/ui/Button';
-import Link from 'next/link';
+import { useState } from "react";
+import { useAuthViewModel } from "../viewmodel/useAuthViewModel";
+import Button from "@/components/ui/Button";
+import Link from "next/link";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPaw } from "@fortawesome/free-solid-svg-icons";
+
 
 export default function RegisterForm() {
   const { register, isLoading, error } = useAuthViewModel();
-  
+
   const [formData, setFormData] = useState({
-    nombre: '',
-    apellido: '',
-    email: '',
-    telefono: '',
-    password: '',
-    passwordConfirm: '',
+    nombre: "",
+    apellido: "",
+    email: "",
+    telefono: "",
+    password: "",
+    passwordConfirm: "",
   });
 
   const [validationError, setValidationError] = useState<string | null>(null);
@@ -25,18 +28,18 @@ export default function RegisterForm() {
 
     // Validar contraseñas
     if (formData.password !== formData.passwordConfirm) {
-      setValidationError('Las contraseñas no coinciden');
+      setValidationError("Las contraseñas no coinciden");
       return;
     }
 
     if (formData.password.length < 8) {
-      setValidationError('La contraseña debe tener al menos 8 caracteres');
+      setValidationError("La contraseña debe tener al menos 8 caracteres");
       return;
     }
 
     // Validar teléfono (10 dígitos)
     if (!/^\d{10}$/.test(formData.telefono)) {
-      setValidationError('El teléfono debe tener 10 dígitos');
+      setValidationError("El teléfono debe tener 10 dígitos");
       return;
     }
 
@@ -51,7 +54,7 @@ export default function RegisterForm() {
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       [e.target.name]: e.target.value,
     }));
@@ -60,23 +63,40 @@ export default function RegisterForm() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#F5F5F0] px-4 py-8">
       <div className="w-full max-w-2xl">
-        
         {/* Logo y título superior */}
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-2 mb-3">
             <div className="w-10 h-10 bg-[#2F8F83] rounded-full flex items-center justify-center">
-              <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M10 3.5a1.5 1.5 0 013 0V4a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-.5a1.5 1.5 0 000 3h.5a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-.5a1.5 1.5 0 00-3 0v.5a1 1 0 01-1 1H6a1 1 0 01-1-1v-3a1 1 0 00-1-1h-.5a1.5 1.5 0 010-3H4a1 1 0 001-1V6a1 1 0 011-1h3a1 1 0 001-1v-.5z" />
+              <svg
+                className="w-6 h-6 text-white"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <FontAwesomeIcon icon={faPaw} />
               </svg>
             </div>
             <h1 className="text-3xl font-bold text-gray-900">PetCare</h1>
           </div>
-          <p className="text-sm text-gray-600">Gestión Veterinaria de Prestigio</p>
+          <p className="text-sm text-gray-600">
+            Gestión Veterinaria de Prestigio
+          </p>
         </div>
 
+        {/*Boton de accecibilidad */}
+        <div className="flex justify-start mb-4">
+          <Link
+            href="/"
+            className="flex items-center gap-2 text-sm text-gray-500 hover:text-[#2F8F83] transition-colors"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            Volver al inicio
+          </Link>
+        </div>
+        
         {/* Card principal */}
         <div className="bg-white rounded-2xl shadow-lg p-8 space-y-6">
-          
           {/* Título del formulario */}
           <div>
             <h2 className="text-2xl font-semibold text-gray-900 mb-2">
@@ -96,7 +116,6 @@ export default function RegisterForm() {
 
           {/* Formulario */}
           <form onSubmit={handleSubmit} className="space-y-4">
-            
             {/* Nombre y Apellido */}
             <div className="grid grid-cols-2 gap-4">
               <div>
@@ -105,8 +124,18 @@ export default function RegisterForm() {
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    <svg
+                      className="h-5 w-5 text-gray-400"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                      />
                     </svg>
                   </div>
                   <input
@@ -128,8 +157,18 @@ export default function RegisterForm() {
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    <svg
+                      className="h-5 w-5 text-gray-400"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                      />
                     </svg>
                   </div>
                   <input
@@ -153,8 +192,18 @@ export default function RegisterForm() {
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" />
+                  <svg
+                    className="h-5 w-5 text-gray-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"
+                    />
                   </svg>
                 </div>
                 <input
@@ -177,8 +226,18 @@ export default function RegisterForm() {
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                  <svg
+                    className="h-5 w-5 text-gray-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
+                    />
                   </svg>
                 </div>
                 <input
@@ -193,7 +252,9 @@ export default function RegisterForm() {
                   className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#2F8F83] focus:border-transparent transition-all disabled:opacity-50"
                 />
               </div>
-              <p className="text-xs text-gray-500 mt-1">Ingresa 10 dígitos sin espacios</p>
+              <p className="text-xs text-gray-500 mt-1">
+                Ingresa 10 dígitos sin espacios
+              </p>
             </div>
 
             {/* Password y Confirmar */}
@@ -204,8 +265,18 @@ export default function RegisterForm() {
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    <svg
+                      className="h-5 w-5 text-gray-400"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                      />
                     </svg>
                   </div>
                   <input
@@ -228,8 +299,18 @@ export default function RegisterForm() {
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    <svg
+                      className="h-5 w-5 text-gray-400"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
                     </svg>
                   </div>
                   <input
@@ -261,7 +342,10 @@ export default function RegisterForm() {
           {/* Link a login */}
           <p className="text-center text-sm text-gray-600">
             ¿Ya tienes cuenta?{" "}
-            <Link href="/login" className="text-[#2F8F83] hover:underline font-semibold">
+            <Link
+              href="/login"
+              className="text-[#2F8F83] hover:underline font-semibold"
+            >
               Inicia sesión aquí
             </Link>
           </p>

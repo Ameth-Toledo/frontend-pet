@@ -8,24 +8,24 @@ interface PacienteRowProps {
 function EspecieAvatar({ icon }: { icon: PacienteUI["especieIcon"] }) {
   const svgs: Record<PacienteUI["especieIcon"], React.ReactNode> = {
     dog: (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6BAF9F" strokeWidth="1.8">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4F8A7C" strokeWidth="1.8">
         <path d="M10 5.5C10 4.12 11.12 3 12.5 3S15 4.12 15 5.5V7h2l1 2-1 1v5a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2v-5L6 9l1-2h3V5.5z" />
         <path d="M9 17v2M15 17v2" strokeLinecap="round" />
       </svg>
     ),
     cat: (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6BAF9F" strokeWidth="1.8">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4F8A7C" strokeWidth="1.8">
         <path d="M4 6V3l3 3h10l3-3v3a7 7 0 0 1-7 7 7 7 0 0 1-7-7z" />
         <path d="M9 17v2M15 17v2M9 13c0 2 6 2 6 0" strokeLinecap="round" />
       </svg>
     ),
     bird: (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6BAF9F" strokeWidth="1.8">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4F8A7C" strokeWidth="1.8">
         <path d="M20 4c-2 0-5 1-7 4H7a4 4 0 0 0 0 8h1l1 3h2l1-3h3a5 5 0 0 0 5-5V4z" />
       </svg>
     ),
     other: (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6BAF9F" strokeWidth="1.8">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4F8A7C" strokeWidth="1.8">
         <circle cx="12" cy="12" r="9" />
         <path d="M12 8v4M12 16h.01" strokeLinecap="round" />
       </svg>
@@ -63,7 +63,7 @@ function EstadoBadge({ estado }: { estado: PacienteUI["estado"] }) {
         letterSpacing: "0.04em",
         textTransform: "uppercase",
         backgroundColor: isActive ? "#E6F4F1" : "#F3F4F6",
-        color: isActive ? "#2F8F7A" : "#6B7280",
+        color: isActive ? "#4F8A7C" : "#6B7280",
       }}
     >
       {estado}
@@ -85,7 +85,7 @@ function ActionButton({ title, children }: { title: string; children: React.Reac
         alignItems: "center",
         justifyContent: "center",
         cursor: "pointer",
-        color: "#6BAF9F",
+        color: "#4F8A7C",
       }}
       onMouseEnter={(e) => {
         (e.currentTarget as HTMLButtonElement).style.backgroundColor = "#E6F4F1";

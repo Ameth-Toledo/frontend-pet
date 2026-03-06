@@ -1,5 +1,6 @@
 "use client";
-
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCircleCheck } from '@fortawesome/free-solid-svg-icons';
 export default function Benefits() {
   return (
     <section className="bg-[#F6F7F5] py-24">
@@ -9,41 +10,47 @@ export default function Benefits() {
             Todo lo que necesitas para cuidar mejor a tu mascota
           </h2>
           <p className="text-base text-[#64748B] mt-4 max-w-2xl mx-auto leading-relaxed">
-            Diseñado para simplificar el seguimiento médico y organizar 
+            Diseñado para simplificar el seguimiento médico y organizar
             información importante en un solo lugar.
           </p>
         </div>
 
         <div className="grid md:grid-cols-3 gap-10">
           <div className="group rounded-[24px] bg-white p-8 shadow-md hover:shadow-xl transition-all duration-300">
-            <div className="h-12 w-12 rounded-xl bg-[#E6F2F0] mb-6"></div>
+            <div className="h-12 w-12 rounded-xl mb-6 flex items-center justify-center">
+              <FontAwesomeIcon icon={faCircleCheck} style={{ color: "#2f8f83", width: 40, height: 40 }} />
+            </div>
             <h3 className="text-lg font-semibold text-[#1E293B] mb-3">
               Historial centralizado
             </h3>
             <p className="text-base text-[#64748B] leading-relaxed">
-              Guarda consultas, diagnósticos y tratamientos en un 
+              Guarda consultas, diagnósticos y tratamientos en un
               entorno organizado y siempre accesible.
             </p>
           </div>
 
           <div className="group rounded-[24px] bg-white p-8 shadow-md hover:shadow-xl transition-all duration-300">
-            <div className="h-12 w-12 rounded-xl bg-[#E6F2F0] mb-6"></div>
+            <div className="h-12 w-12 rounded-xl mb-6 flex items-center justify-center">
+              <FontAwesomeIcon icon={faCircleCheck} style={{ color: "#2f8f83", width: 40, height: 40 }} />
+            </div>
             <h3 className="text-lg font-semibold text-[#1E293B] mb-3">
               Recordatorios inteligentes
             </h3>
             <p className="text-base text-[#64748B] leading-relaxed">
-              Recibe alertas para vacunas, desparasitaciones y citas 
+              Recibe alertas para vacunas, desparasitaciones y citas
               importantes sin depender de notas externas.
             </p>
           </div>
 
           <div className="group rounded-[24px] bg-white p-8 shadow-md hover:shadow-xl transition-all duration-300">
-            <div className="h-12 w-12 rounded-xl bg-[#E6F2F0] mb-6"></div>
+            <div className="h-12 w-12 rounded-xl mb-6 flex items-center justify-center">
+              <FontAwesomeIcon icon={faCircleCheck} style={{ color: "#2f8f83", width: 40, height: 40 }} />
+            </div>
             <h3 className="text-lg font-semibold text-[#1E293B] mb-3">
               Seguimiento post-consulta
             </h3>
             <p className="text-base text-[#64748B] leading-relaxed">
-              Mantén control del progreso después de cada visita 
+              Mantén control del progreso después de cada visita
               veterinaria con notas claras y estructuradas.
             </p>
           </div>

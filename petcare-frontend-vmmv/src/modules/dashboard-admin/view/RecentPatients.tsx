@@ -56,7 +56,7 @@ export default function RecentPatients({ patients }: Props) {
               transition: "background 0.15s",
             }}
             onMouseEnter={(e) => {
-              (e.currentTarget as HTMLDivElement).style.backgroundColor = "#F8FAF9";
+              (e.currentTarget as HTMLDivElement).style.backgroundColor = "#F7F9FB";
             }}
             onMouseLeave={(e) => {
               (e.currentTarget as HTMLDivElement).style.backgroundColor = "transparent";

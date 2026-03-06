@@ -1,11 +1,11 @@
 import { ClienteMascotaDetallePage } from "@/modules/mascota-cliente-detalle/view/ClienteMascotaDetallePage";
 
-interface Props {
-  params: {
-    mascotaId: string;
-  };
-}
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ mascotaId: string }>;
+}) {
+  const { mascotaId } = await params;
 
-export default function Page({ params }: Props) {
-  return <ClienteMascotaDetallePage mascotaId={params.mascotaId} />;
+  return <ClienteMascotaDetallePage mascotaId={mascotaId} />;
 }

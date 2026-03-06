@@ -18,7 +18,7 @@ function Avatar({ iniciales }: { iniciales: string }) {
         justifyContent: "center",
         fontSize: "13px",
         fontWeight: 700,
-        color: "#2F8F7A",
+        color: "#4F8A7C",
         flexShrink: 0,
       }}
     >
@@ -40,7 +40,7 @@ function EstadoBadge({ estado }: { estado: CitaUI["estado"] }) {
         fontSize: "12px",
         fontWeight: 600,
         backgroundColor: isConfirmada ? "#E6F4F1" : "#FDECEC",
-        color: isConfirmada ? "#2F8F7A" : "#B91C1C",
+        color: isConfirmada ? "#4F8A7C" : "#B91C1C",
       }}
     >
       <span
@@ -48,7 +48,7 @@ function EstadoBadge({ estado }: { estado: CitaUI["estado"] }) {
           width: "6px",
           height: "6px",
           borderRadius: "50%",
-          backgroundColor: isConfirmada ? "#2F8F7A" : "#B91C1C",
+          backgroundColor: isConfirmada ? "#4F8A7C" : "#B91C1C",
         }}
       />
       {estado}

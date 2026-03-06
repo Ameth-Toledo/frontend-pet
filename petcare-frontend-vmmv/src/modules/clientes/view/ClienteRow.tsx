@@ -18,7 +18,7 @@ function StatusBadge({ estado }: { estado: ClienteUI["estado"] }) {
         fontSize: "12px",
         fontWeight: 600,
         backgroundColor: isActive ? "#E6F4F1" : "#F3F4F6",
-        color: isActive ? "#2F8F7A" : "#6B7280",
+        color: isActive ? "#4F8A7C" : "#6B7280",
       }}
     >
       <span
@@ -26,7 +26,7 @@ function StatusBadge({ estado }: { estado: ClienteUI["estado"] }) {
           width: "6px",
           height: "6px",
           borderRadius: "50%",
-          backgroundColor: isActive ? "#2F8F7A" : "#9CA3AF",
+          backgroundColor: isActive ? "#4F8A7C" : "#9CA3AF",
         }}
       />
       {estado}
@@ -47,7 +47,7 @@ function Avatar({ iniciales }: { iniciales: string }) {
         justifyContent: "center",
         fontSize: "13px",
         fontWeight: 700,
-        color: "#2F8F7A",
+        color: "#4F8A7C",
         flexShrink: 0,
       }}
     >

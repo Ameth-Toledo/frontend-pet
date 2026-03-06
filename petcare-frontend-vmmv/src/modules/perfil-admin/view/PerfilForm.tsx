@@ -2,10 +2,10 @@ import React from "react";
 import { ProfileFormUI } from "../model/profile.ui.model";
 
 const C = {
-  green: "#6BAF9F",
-  greenDark: "#5AA193",
+  green: "#4F8A7C",
+  greenDark: "#3E6F63",
   white: "#FFFFFF",
-  bg: "#F8FAF9",
+  bg: "#F7F9FB",
   textMain: "#1F2937",
   textSub: "#6B7280",
   border: "#E5E7EB",
@@ -156,7 +156,7 @@ export default function PerfilForm({
           style={{
             backgroundColor: "#E6F4F1", border: `1px solid ${C.green}`,
             borderRadius: "8px", padding: "10px 16px",
-            fontSize: "13px", color: "#2F8F7A", fontWeight: 600,
+            fontSize: "13px", color: "#4F8A7C", fontWeight: 600,
             marginBottom: "20px",
           }}
         >

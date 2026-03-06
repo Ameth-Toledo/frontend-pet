@@ -92,7 +92,7 @@ export default function CitasHeader({ searchTerm, onSearchChange }: CitasHeaderP
             display: "flex",
             alignItems: "center",
             gap: "6px",
-            backgroundColor: "#6BAF9F",
+            backgroundColor: "#4F8A7C",
             border: "none",
             borderRadius: "10px",
             padding: "9px 18px",
@@ -102,10 +102,10 @@ export default function CitasHeader({ searchTerm, onSearchChange }: CitasHeaderP
             cursor: "pointer",
           }}
           onMouseEnter={(e) => {
-            (e.currentTarget as HTMLButtonElement).style.backgroundColor = "#5AA193";
+            (e.currentTarget as HTMLButtonElement).style.backgroundColor = "#3E6F63";
           }}
           onMouseLeave={(e) => {
-            (e.currentTarget as HTMLButtonElement).style.backgroundColor = "#6BAF9F";
+            (e.currentTarget as HTMLButtonElement).style.backgroundColor = "#4F8A7C";
           }}
         >
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" strokeWidth="2.5">

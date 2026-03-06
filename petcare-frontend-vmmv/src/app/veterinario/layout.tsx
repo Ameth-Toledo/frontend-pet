@@ -1,16 +1,11 @@
 import { ReactNode } from "react";
+import SidebarVeterinario from "@/components/layout/SidebarVeterinario";
 
-export default function VeterinarioLayout({
-  children,
-}: {
-  children: ReactNode;
-}) {
+export default function VeterinarioLayout({ children }: { children: ReactNode }) {
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="p-8">
-        <h1 className="text-2xl font-bold mb-6">Panel Veterinario</h1>
-        {children}
-      </div>
+    <div className="min-h-screen flex bg-gray-50">
+      <SidebarVeterinario />
+      <main className="flex-1">{children}</main>
     </div>
   );
 }

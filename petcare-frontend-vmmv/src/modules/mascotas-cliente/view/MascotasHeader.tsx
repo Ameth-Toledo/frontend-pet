@@ -1,40 +1,14 @@
 import React from "react";
 
-const C = {
-  textMain: "#1F2937",
-  textSub: "#6B7280",
-};
-
 export default function MascotasHeader() {
   return (
-    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "28px" }}>
-      {/* Left */}
-      <div>
-        <h1 style={{ fontSize: "22px", fontWeight: 800, color: C.textMain, marginBottom: "4px" }}>
-          Mis mascotas
-        </h1>
-        <p style={{ fontSize: "13px", color: C.textSub }}>
-          Gestiona el historial médico y perfiles de tus mascotas.
-        </p>
-      </div>
-
-      {/* Right — user info */}
-      <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-        <div style={{ textAlign: "right" }}>
-          <p style={{ fontSize: "13px", fontWeight: 700, color: C.textMain }}>Juan Pérez</p>
-          <p style={{ fontSize: "11px", color: C.textSub }}>Premium Member</p>
-        </div>
-        <div
-          style={{
-            width: "38px", height: "38px", borderRadius: "50%",
-            backgroundColor: "#D4B896",
-            display: "flex", alignItems: "center", justifyContent: "center",
-            fontSize: "13px", fontWeight: 700, color: "#fff", flexShrink: 0,
-          }}
-        >
-          JP
-        </div>
-      </div>
+    <div className="mb-8">
+      <h1 className="text-2xl font-extrabold text-gray-800 mb-1">
+        Mis mascotas
+      </h1>
+      <p className="text-sm text-gray-500">
+        Gestiona el historial médico y perfiles de tus mascotas.
+      </p>
     </div>
   );
 }
