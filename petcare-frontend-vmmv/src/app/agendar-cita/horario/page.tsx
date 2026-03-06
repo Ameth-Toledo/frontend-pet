@@ -7,7 +7,16 @@ import { ROUTES } from "@/lib/routes";
 
 export default function HorarioPage() {
   const router = useRouter();
-  const { fecha, horario, setHorario } = useAgendarCita();
+
+  const {
+    selectedFecha,
+    selectedHorario,
+    setSelectedHorario,
+  } = useAgendarCita();
+
+  const fecha = selectedFecha;
+  const horario = selectedHorario;
+  const setHorario = setSelectedHorario;
 
   // 🔒 Protección de flujo
   useEffect(() => {
