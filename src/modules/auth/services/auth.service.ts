@@ -1,21 +1,28 @@
 import { apiClient } from '@/lib/axios';
-import { LoginRequest, LoginResponse, RegisterRequest, RegisterResponse } from '@/modules/auth/interfaces/auth.interfaces';
+import { LoginRequestDTO } from '@/modules/auth/model/dto/request/LoginRequestDTO';
+import { RegisterRequestDTO } from '@/modules/auth/model/dto/request/RegisterRequestDTO';
+import { ForgotPasswordRequestDTO } from '@/modules/auth/model/dto/request/ForgotPasswordRequestDTO';
+import { ResetPasswordRequestDTO } from '@/modules/auth/model/dto/request/ResetPasswordRequestDTO';
+import { LoginResponseDTO } from '@/modules/auth/model/dto/response/LoginResponseDTO';
+import { RegisterResponseDTO } from '@/modules/auth/model/dto/response/RegisterResponseDTO';
+import { ForgotPasswordResponseDTO } from '@/modules/auth/model/dto/response/ForgotPasswordResponseDTO';
+import { ResetPasswordResponseDTO } from '@/modules/auth/model/dto/response/ResetPasswordResponseDTO';
 
 export const authService = {
-  login: (data: LoginRequest) =>
-    apiClient.post<LoginResponse>('/auth/login', data),
+  login: (data: LoginRequestDTO) =>
+    apiClient.post<LoginResponseDTO>('/auth/login', data),
 
-  register: (data: RegisterRequest) =>
-    apiClient.post<RegisterResponse>('/auth/register', data),
+  register: (data: RegisterRequestDTO) =>
+    apiClient.post<RegisterResponseDTO>('/auth/register', data),
 
   changePassword: (data: { currentPassword: string; newPassword: string }) =>
     apiClient.post('/auth/change-password', data),
 
-  forgotPassword: (data: { email: string }) =>
-    apiClient.post('/auth/forgot-password', data),
+  forgotPassword: (data: ForgotPasswordRequestDTO) =>
+    apiClient.post<ForgotPasswordResponseDTO>('/auth/forgot-password', data),
 
-  resetPassword: (data: { token: string; newPassword: string }) =>
-    apiClient.post('/auth/reset-password', data),
+  resetPassword: (data: ResetPasswordRequestDTO) =>
+    apiClient.post<ResetPasswordResponseDTO>('/auth/reset-password', data),
 
   logout: () => {
     if (typeof window !== 'undefined') {
@@ -25,5 +32,4 @@ export const authService = {
   },
 };
 
-// Alias para compatibilidad
 export const AuthService = authService;

@@ -1,22 +1,23 @@
 import { authService } from '@/modules/auth/services/auth.service';
-import { LoginRequest, LoginResult } from '@/modules/auth/interfaces/auth.interfaces';
+import { LoginRequestDTO } from '@/modules/auth/model/dto/request/LoginRequestDTO';
+import { LoginResultDTO } from '@/modules/auth/model/dto/response/LoginResultDTO';
+import { AuthMapper } from '@/modules/auth/model/mapper';
+import { getRedirectByRole } from '@/lib/routes';
 
-const ROLE_REDIRECT: Record<string, string> = {
-  admin: '/admin/dashboard',
-  veterinario: '/veterinario/dashboard',
-  cliente: '/cliente/dashboard',
-};
-
-export const loginUseCase = async (credentials: LoginRequest): Promise<LoginResult> => {
+export const loginUseCase = async (credentials: LoginRequestDTO): Promise<LoginResultDTO> => {
   const response = await authService.login(credentials);
-  const { token, user } = response.data;
+  const data = response.data;
+
+  const entity = AuthMapper.toEntity(data.user);
+  const user = AuthMapper.toUIModel(entity);
+  const token = data.token;
 
   if (typeof window !== 'undefined') {
     localStorage.setItem('token', token);
     localStorage.setItem('user', JSON.stringify(user));
   }
 
-  const redirectTo = ROLE_REDIRECT[user.role] ?? '/';
+  const redirectTo = getRedirectByRole(user.role);
 
   return { user, token, redirectTo };
 };
