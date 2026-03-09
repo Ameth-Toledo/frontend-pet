@@ -52,7 +52,7 @@ export const useRegisterViewModel = (fromAppointment: boolean) => {
         localStorage.setItem('token', token);
         localStorage.setItem('user', JSON.stringify(user));
       }
-      
+
       if (fromAppointment) {
         await createPendingAppointment(user.id, token);
       } else {
@@ -60,7 +60,7 @@ export const useRegisterViewModel = (fromAppointment: boolean) => {
       }
 
     } catch (err: any) {
-      console.error("❌ Error en registro:", err);
+      console.error("Error en registro:", err);
       setError(err.response?.data?.message || err.message || "Error al crear la cuenta");
     } finally {
       setIsLoading(false);
@@ -69,23 +69,23 @@ export const useRegisterViewModel = (fromAppointment: boolean) => {
 
   const createPendingAppointment = async (userId: number, token: string) => {
     const pendingData = localStorage.getItem('pendingAppointmentData');
-    
+
     if (!pendingData) {
       router.push('/cliente/dashboard');
       return;
     }
 
     const appointmentData: AppointmentData = JSON.parse(pendingData);
-    
+
     try {
       const mascotaResponse = await createPet(userId, appointmentData.mascotaData, token);
-      
+
       if (!mascotaResponse.success) {
         throw new Error(mascotaResponse.error || "Error al crear la mascota");
       }
 
       const citaResponse = await createAppointment(
-        userId, 
+        userId,
         mascotaResponse.data.id_mascota,
         appointmentData,
         token
@@ -100,7 +100,7 @@ export const useRegisterViewModel = (fromAppointment: boolean) => {
       }
 
     } catch (err: any) {
-      console.error("❌ Error creando cita:", err);
+      console.error("Error creando cita:", err);
       setError(`Cuenta creada, pero hubo un error al agendar la cita: ${err.message}. Por favor agenda tu cita desde el dashboard.`);
       setTimeout(() => router.push('/cliente/dashboard'), 5000);
     }
@@ -129,7 +129,7 @@ export const useRegisterViewModel = (fromAppointment: boolean) => {
     });
 
     const result = await response.json();
-    
+
     if (!response.ok) {
       throw new Error(result.error || 'Error al crear mascota');
     }
@@ -144,7 +144,7 @@ export const useRegisterViewModel = (fromAppointment: boolean) => {
     token: string
   ) => {
     const fechaHora = `${appointmentData.fecha}T${appointmentData.horario}:00.000Z`;
-    
+
     const citaData = {
       id_cliente: clientId,
       id_mascota: mascotaId,
