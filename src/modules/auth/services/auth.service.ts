@@ -11,6 +11,12 @@ export const authService = {
   changePassword: (data: { currentPassword: string; newPassword: string }) =>
     apiClient.post('/auth/change-password', data),
 
+  forgotPassword: (data: { email: string }) =>
+    apiClient.post('/auth/forgot-password', data),
+
+  resetPassword: (data: { token: string; newPassword: string }) =>
+    apiClient.post('/auth/reset-password', data),
+
   logout: () => {
     if (typeof window !== 'undefined') {
       localStorage.removeItem('token');
@@ -18,5 +24,6 @@ export const authService = {
     }
   },
 };
+
 // Alias para compatibilidad
 export const AuthService = authService;
