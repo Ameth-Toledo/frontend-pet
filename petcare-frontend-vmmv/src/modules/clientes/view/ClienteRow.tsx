@@ -34,28 +34,6 @@ function StatusBadge({ estado }: { estado: ClienteUI["estado"] }) {
   );
 }
 
-function Avatar({ iniciales }: { iniciales: string }) {
-  return (
-    <div
-      style={{
-        width: "38px",
-        height: "38px",
-        borderRadius: "50%",
-        backgroundColor: "#E6F4F1",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        fontSize: "13px",
-        fontWeight: 700,
-        color: "#4F8A7C",
-        flexShrink: 0,
-      }}
-    >
-      {iniciales}
-    </div>
-  );
-}
-
 export default function ClienteRow({ cliente }: ClienteRowProps) {
   return (
     <tr
@@ -69,15 +47,10 @@ export default function ClienteRow({ cliente }: ClienteRowProps) {
     >
       {/* Cliente */}
       <td style={{ padding: "16px 20px" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-          <Avatar iniciales={cliente.iniciales} />
-          <div>
-            <p style={{ fontSize: "14px", fontWeight: 600, color: "#1F2937", marginBottom: "2px" }}>
-              {cliente.nombre}
-            </p>
-            <p style={{ fontSize: "12px", color: "#9CA3AF" }}>{cliente.id}</p>
-          </div>
-        </div>
+        <p style={{ fontSize: "14px", fontWeight: 600, color: "#1F2937", marginBottom: "2px" }}>
+          {cliente.nombre}
+        </p>
+        <p style={{ fontSize: "12px", color: "#9CA3AF" }}>{cliente.id}</p>
       </td>
 
       {/* Teléfono / Correo */}
@@ -89,9 +62,6 @@ export default function ClienteRow({ cliente }: ClienteRowProps) {
       {/* Mascotas */}
       <td style={{ padding: "16px 20px" }}>
         <p style={{ fontSize: "14px", color: "#1F2937" }}>{cliente.mascotas.join(", ")}</p>
-        <p style={{ fontSize: "12px", color: "#9CA3AF" }}>
-          {cliente.mascotas.length} mascota{cliente.mascotas.length !== 1 ? "s" : ""}
-        </p>
       </td>
 
       {/* Estado */}

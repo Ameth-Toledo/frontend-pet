@@ -20,7 +20,20 @@ export default function ClientesPage() {
   if (loading) return <Spinner />;
 
   return (
-    <div style={{ padding: "32px", minHeight: "100vh" }}>
+    <div style={{ padding: "32px", minHeight: "100vh", position: "relative" }}>
+      {/* Admin name top-right */}
+      <span
+        style={{
+          position: "absolute",
+          top: "32px",
+          right: "32px",
+          fontSize: "14px",
+          fontWeight: 600,
+          color: "#1F2937",
+        }}
+      >
+        Dr. Smith
+      </span>
       <ClientesHeader searchTerm={searchTerm} onSearchChange={setSearchTerm} />
       <ClientesTable clientes={filteredClientes} />
     </div>

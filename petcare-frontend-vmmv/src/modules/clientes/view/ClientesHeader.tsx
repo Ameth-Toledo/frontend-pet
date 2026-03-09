@@ -11,7 +11,7 @@ export default function ClientesHeader({ searchTerm, onSearchChange }: ClientesH
       style={{
         display: "flex",
         justifyContent: "space-between",
-        alignItems: "flex-start",
+        alignItems: "center",
         marginBottom: "24px",
         flexWrap: "wrap",
         gap: "16px",
