@@ -18,3 +18,5 @@ export const authService = {
     }
   },
 };
+// Alias para compatibilidad
+export const AuthService = authService;
