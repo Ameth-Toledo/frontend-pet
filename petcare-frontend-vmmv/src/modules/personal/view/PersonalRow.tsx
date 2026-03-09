@@ -90,14 +90,11 @@ export default function VeterinarioRow({ veterinario }: VeterinarioRowProps) {
     >
       {/* Veterinario */}
       <td style={{ padding: "16px 20px" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-          <Avatar initials={veterinario.avatarInitials} />
-          <div>
-            <p style={{ fontSize: "14px", fontWeight: 600, color: "#1F2937", marginBottom: "2px" }}>
-              {veterinario.nombre}
-            </p>
-            <p style={{ fontSize: "12px", color: "#6B7280" }}>{veterinario.especialidad}</p>
-          </div>
+        <div>
+          <p style={{ fontSize: "14px", fontWeight: 600, color: "#1F2937", marginBottom: "2px" }}>
+            {veterinario.nombre}
+          </p>
+          <p style={{ fontSize: "12px", color: "#6B7280" }}>{veterinario.especialidad}</p>
         </div>
       </td>
 

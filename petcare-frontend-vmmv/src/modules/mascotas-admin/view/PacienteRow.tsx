@@ -6,32 +6,7 @@ interface PacienteRowProps {
 }
 
 function EspecieAvatar({ icon }: { icon: PacienteUI["especieIcon"] }) {
-  const svgs: Record<PacienteUI["especieIcon"], React.ReactNode> = {
-    dog: (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4F8A7C" strokeWidth="1.8">
-        <path d="M10 5.5C10 4.12 11.12 3 12.5 3S15 4.12 15 5.5V7h2l1 2-1 1v5a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2v-5L6 9l1-2h3V5.5z" />
-        <path d="M9 17v2M15 17v2" strokeLinecap="round" />
-      </svg>
-    ),
-    cat: (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4F8A7C" strokeWidth="1.8">
-        <path d="M4 6V3l3 3h10l3-3v3a7 7 0 0 1-7 7 7 7 0 0 1-7-7z" />
-        <path d="M9 17v2M15 17v2M9 13c0 2 6 2 6 0" strokeLinecap="round" />
-      </svg>
-    ),
-    bird: (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4F8A7C" strokeWidth="1.8">
-        <path d="M20 4c-2 0-5 1-7 4H7a4 4 0 0 0 0 8h1l1 3h2l1-3h3a5 5 0 0 0 5-5V4z" />
-      </svg>
-    ),
-    other: (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4F8A7C" strokeWidth="1.8">
-        <circle cx="12" cy="12" r="9" />
-        <path d="M12 8v4M12 16h.01" strokeLinecap="round" />
-      </svg>
-    ),
-  };
-
+  const isDog = icon !== "cat";
   return (
     <div
       style={{
@@ -45,7 +20,27 @@ function EspecieAvatar({ icon }: { icon: PacienteUI["especieIcon"] }) {
         flexShrink: 0,
       }}
     >
-      {svgs[icon]}
+      {isDog ? (
+        <svg width="22" height="22" viewBox="0 0 64 64" fill="none" stroke="#4F8A7C" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+          <ellipse cx="32" cy="38" rx="18" ry="14" />
+          <circle cx="32" cy="20" r="10" />
+          <ellipse cx="20" cy="14" rx="5" ry="8" />
+          <ellipse cx="44" cy="14" rx="5" ry="8" />
+          <circle cx="28" cy="20" r="1.5" fill="#4F8A7C" stroke="none" />
+          <circle cx="36" cy="20" r="1.5" fill="#4F8A7C" stroke="none" />
+          <path d="M29 25 q3 3 6 0" />
+        </svg>
+      ) : (
+        <svg width="22" height="22" viewBox="0 0 64 64" fill="none" stroke="#4F8A7C" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+          <ellipse cx="32" cy="40" rx="16" ry="12" />
+          <circle cx="32" cy="22" r="10" />
+          <path d="M22 12 L18 4 L26 10" />
+          <path d="M42 12 L46 4 L38 10" />
+          <circle cx="28" cy="22" r="1.5" fill="#4F8A7C" stroke="none" />
+          <circle cx="36" cy="22" r="1.5" fill="#4F8A7C" stroke="none" />
+          <path d="M29 27 q3 2 6 0" />
+        </svg>
+      )}
     </div>
   );
 }
@@ -130,13 +125,7 @@ export default function PacienteRow({ paciente }: PacienteRowProps) {
 
       {/* Propietario */}
       <td style={{ padding: "14px 20px" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2">
-            <circle cx="12" cy="8" r="4" />
-            <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
-          </svg>
-          <span style={{ fontSize: "14px", color: "#1F2937" }}>{paciente.propietario}</span>
-        </div>
+        <span style={{ fontSize: "14px", color: "#1F2937" }}>{paciente.propietario}</span>
       </td>
 
       {/* Estado */}

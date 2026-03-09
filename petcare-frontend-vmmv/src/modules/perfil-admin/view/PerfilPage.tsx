@@ -22,26 +22,33 @@ export default function PerfilPage() {
   return (
     <div style={{ padding: "32px", minHeight: "100vh" }}>
       {/* Header */}
-      <div style={{ marginBottom: "28px" }}>
-        <h1 style={{ fontSize: "22px", fontWeight: 800, color: "#1F2937", margin: 0 }}>
-          Configuración de Perfil
-        </h1>
-        <p style={{ fontSize: "13px", color: "#6B7280", margin: "4px 0 0 0" }}>
-          Gestiona tu información personal y preferencias de cuenta.
-        </p>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "28px" }}>
+        <div>
+          <h1 style={{ fontSize: "22px", fontWeight: 800, color: "#1F2937", margin: 0 }}>
+            Configuración de Perfil
+          </h1>
+          <p style={{ fontSize: "13px", color: "#6B7280", margin: "4px 0 0 0" }}>
+            Gestiona tu información personal y preferencias de cuenta.
+          </p>
+        </div>
+        <span style={{ fontSize: "14px", fontWeight: 600, color: "#1F2937", whiteSpace: "nowrap" }}>
+          Dr. Smith
+        </span>
       </div>
 
-      {vm.form && (
-        <PerfilForm
-          form={vm.form}
-          saving={vm.saving}
-          saved={vm.saved}
-          onFieldChange={vm.updateField}
-          onSave={vm.saveProfile}
-          onCancel={vm.resetForm}
-          onChangePassword={vm.openPasswordModal}
-        />
-      )}
+      <div style={{ display: "flex", justifyContent: "center" }}>
+        {vm.form && (
+          <PerfilForm
+            form={vm.form}
+            saving={vm.saving}
+            saved={vm.saved}
+            onFieldChange={vm.updateField}
+            onSave={vm.saveProfile}
+            onCancel={vm.resetForm}
+            onChangePassword={vm.openPasswordModal}
+          />
+        )}
+      </div>
 
       {vm.isPasswordModalOpen && <ChangePasswordModal onClose={vm.closePasswordModal} />}
     </div>

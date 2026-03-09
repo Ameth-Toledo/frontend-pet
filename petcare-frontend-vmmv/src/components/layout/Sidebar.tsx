@@ -2,6 +2,7 @@
 
 import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPaw } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -21,19 +22,38 @@ export default function Sidebar({ navItems }: SidebarProps) {
   const linkClass = (path: string) =>
     `flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition ${
       pathname === path
-        ? "bg-emerald-600 text-white"
+        ? ""
         : "text-gray-600 hover:bg-gray-100"
     }`;
 
   return (
     <aside className="w-64 bg-white border-r border-gray-100 min-h-screen p-6 flex flex-col">
-      <Link href="/" className="block mb-10 text-lg font-semibold">
-        Pet<span className="text-emerald-600">Care</span>
+      <Link href="/" className="flex items-center gap-3 mb-10">
+        <div
+          style={{
+            width: "36px",
+            height: "36px",
+            borderRadius: "10px",
+            backgroundColor: "#4F8A7C",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            flexShrink: 0,
+          }}
+        >
+          <FontAwesomeIcon icon={faPaw} style={{ color: "#FFFFFF", width: "18px", height: "18px" }} />
+        </div>
+        <span style={{ fontSize: "18px", fontWeight: 700, color: "#1F2937" }}>PetCare</span>
       </Link>
 
-      <nav className="space-y-3 flex-1">
+      <nav className="space-y-1 flex-1">
         {navItems.map((item) => (
-          <Link key={item.href} href={item.href} className={linkClass(item.href)}>
+          <Link
+            key={item.href}
+            href={item.href}
+            className={linkClass(item.href)}
+            style={pathname === item.href ? { backgroundColor: "#D9EDEA", color: "#4F8A7C", borderRight: "5px solid #4F8A7C", borderBottomRightRadius: "0px" } : undefined}
+          >
             <FontAwesomeIcon icon={item.icon} className="w-5 h-5 flex-shrink-0" />
             <span>{item.label}</span>
           </Link>

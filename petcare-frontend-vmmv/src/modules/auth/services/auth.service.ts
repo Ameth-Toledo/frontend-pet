@@ -1,3 +1,4 @@
+'use client';
 import axios from 'axios';
 import { 
   LoginRequestDTO, 
@@ -25,6 +26,14 @@ const authClient = axios.create({
 authClient.interceptors.response.use(
   (response) => response,
   (error) => {
+    // Agrega esto para ver el error real en consola
+    console.error('Auth API Error:', {
+      message: error.message,
+      status: error.response?.status,
+      data: error.response?.data,
+      url: error.config?.url,
+    });
+
     if (error.response?.status === 401) {
       if (typeof window !== 'undefined') {
         localStorage.removeItem('token');

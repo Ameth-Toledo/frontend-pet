@@ -18,11 +18,16 @@ export default function AnalisisPage() {
   return (
     <div style={{ padding: "32px", minHeight: "100vh" }}>
       {/* Header */}
-      <div style={{ marginBottom: "24px" }}>
-        <h1 style={{ fontSize: "22px", fontWeight: 800, color: "#1F2937", margin: 0 }}>Análisis</h1>
-        <p style={{ fontSize: "13px", color: "#6B7280", margin: "4px 0 0 0" }}>
-          Estadísticas y métricas generales del rendimiento de la clínica.
-        </p>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "24px" }}>
+        <div>
+          <h1 style={{ fontSize: "22px", fontWeight: 800, color: "#1F2937", margin: 0 }}>Análisis</h1>
+          <p style={{ fontSize: "13px", color: "#6B7280", margin: "4px 0 0 0" }}>
+            Estadísticas y métricas generales del rendimiento de la clínica.
+          </p>
+        </div>
+        <span style={{ fontSize: "14px", fontWeight: 600, color: "#1F2937", whiteSpace: "nowrap" }}>
+          Dr. Smith
+        </span>
       </div>
 
       {error && (

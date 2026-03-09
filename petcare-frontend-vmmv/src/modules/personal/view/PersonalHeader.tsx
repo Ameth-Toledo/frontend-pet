@@ -57,6 +57,14 @@ export default function PersonalHeader({ searchTerm, onSearchChange, onNuevoClic
             </svg>
             Registrar nuevo personal
           </button>
+
+          {/* Divider */}
+          <div style={{ width: "1px", height: "28px", backgroundColor: "#E5E7EB", marginLeft: "8px" }} />
+
+          {/* Admin name */}
+          <span style={{ fontSize: "14px", fontWeight: 600, color: "#1F2937", marginLeft: "8px", whiteSpace: "nowrap" }}>
+            Dr. Smith
+          </span>
         </div>
       </div>
 
