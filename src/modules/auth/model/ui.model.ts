@@ -2,10 +2,10 @@ export type UserRole = 'CLIENTE' | 'ADMIN' | 'VETERINARIO';
 
 export interface UserUIModel {
   id: number;
-  fullName: string;        // Nombre + Apellido combinados
+  fullName: string;
   email: string;
-  role: UserRole;          // Rol traducido y simplificado
-  isStaff: boolean;        // true si es PERSONAL
+  role: UserRole;
+  isStaff: boolean;
 }
 
 export interface AuthStateUIModel {

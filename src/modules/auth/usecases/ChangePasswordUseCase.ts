@@ -1,7 +1,7 @@
 import { authService } from '@/modules/auth/services/auth.service';
-import { ChangePasswordRequest } from '@/modules/auth/interfaces/auth.interfaces';
+import { ChangePasswordRequestDTO } from '@/modules/auth/model/dto/request/ChangePasswordRequestDTO';
 
-export const changePasswordUseCase = async (data: ChangePasswordRequest): Promise<void> => {
+export const changePasswordUseCase = async (data: ChangePasswordRequestDTO): Promise<void> => {
   if (data.newPassword !== data.confirmPassword) {
     throw new Error('Las contraseñas no coinciden');
   }
