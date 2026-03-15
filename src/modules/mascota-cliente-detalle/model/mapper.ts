@@ -1,4 +1,9 @@
-import { MascotaDetalleDTO, HistorialDTO, VacunaDTO } from "./dto";
+import { MascotaDetalleResponseDTO } from "./dto/response/MascotaDetalleResponseDTO";
+import { HistorialResponseDTO } from "./dto/response/HistorialResponseDTO";
+import { VacunaResponseDTO } from "./dto/response/VacunaResponseDTO";
+import { MascotaDetalle } from "./entities/MascotaDetalle";
+import { Historial } from "./entities/Historial";
+import { Vacuna } from "./entities/Vacuna";
 import { MascotaDetalleUI, HistorialUI, VacunaUI } from "./ui.model";
 
 const MESES: Record<number, string> = {
@@ -20,46 +25,76 @@ function parseLocalDate(isoDate: string): Date {
 
 function formatFechaHistorial(isoDate: string): string {
   const date = parseLocalDate(isoDate);
-  const day = date.getDate();
-  const mes = MESES[date.getMonth()];
-  const year = date.getFullYear();
-  return `${day} ${mes} ${year}`;
+  return `${date.getDate()} ${MESES[date.getMonth()]} ${date.getFullYear()}`;
 }
 
 function formatFechaVacuna(isoDate: string): string {
   const date = parseLocalDate(isoDate);
-  const day = date.getDate();
-  const mes = MESES_LARGO[date.getMonth()];
-  const year = date.getFullYear();
-  return `${day} ${mes} ${year}`;
+  return `${date.getDate()} ${MESES_LARGO[date.getMonth()]} ${date.getFullYear()}`;
 }
 
-export function mapMascotaDetalleDTOtoUI(dto: MascotaDetalleDTO): MascotaDetalleUI {
-  return {
-    id: dto.id,
-    nombre: dto.nombre,
-    especie: dto.especie,
-    raza: dto.raza,
-    edad: `${dto.edad} años`,
-    propietario: dto.propietario,
-    fotoUrl: dto.fotoUrl,
-  };
-}
+export class MascotaDetalleMapper {
+  static toMascotaEntity(dto: MascotaDetalleResponseDTO): MascotaDetalle {
+    return {
+      id:          dto.id,
+      nombre:      dto.nombre,
+      especie:     dto.especie,
+      raza:        dto.raza,
+      edad:        dto.edad,
+      propietario: dto.propietario,
+      fotoUrl:     dto.fotoUrl,
+    };
+  }
 
-export function mapHistorialDTOtoUI(dto: HistorialDTO): HistorialUI {
-  return {
-    id: dto.id,
-    fechaFormateada: formatFechaHistorial(dto.fecha),
-    motivo: dto.motivo,
-    observaciones: dto.observaciones,
-    veterinario: dto.veterinario,
-  };
-}
+  static toMascotaUI(entity: MascotaDetalle): MascotaDetalleUI {
+    return {
+      id:          entity.id,
+      nombre:      entity.nombre,
+      especie:     entity.especie,
+      raza:        entity.raza,
+      edad:        `${entity.edad} años`,
+      propietario: entity.propietario,
+      fotoUrl:     entity.fotoUrl,
+    };
+  }
 
-export function mapVacunaDTOtoUI(dto: VacunaDTO): VacunaUI {
-  return {
-    id: dto.id,
-    nombre: dto.nombre,
-    fecha: formatFechaVacuna(dto.fechaAplicacion),
-  };
+  static mascotaFromDTOtoUI(dto: MascotaDetalleResponseDTO): MascotaDetalleUI {
+    return MascotaDetalleMapper.toMascotaUI(MascotaDetalleMapper.toMascotaEntity(dto));
+  }
+
+  static toHistorialEntity(dto: HistorialResponseDTO): Historial {
+    return {
+      id:            dto.id,
+      fecha:         dto.fecha,
+      motivo:        dto.motivo,
+      observaciones: dto.observaciones,
+      veterinario:   dto.veterinario,
+    };
+  }
+
+  static toHistorialUI(entity: Historial): HistorialUI {
+    return {
+      id:               entity.id,
+      fechaFormateada:  formatFechaHistorial(entity.fecha),
+      motivo:           entity.motivo,
+      observaciones:    entity.observaciones,
+      veterinario:      entity.veterinario,
+    };
+  }
+
+  static historialFromDTOtoUI(dto: HistorialResponseDTO): HistorialUI {
+    return MascotaDetalleMapper.toHistorialUI(MascotaDetalleMapper.toHistorialEntity(dto));
+  }
+
+  static toVacunaEntity(dto: VacunaResponseDTO): Vacuna {
+    return { id: dto.id, nombre: dto.nombre, fechaAplicacion: dto.fechaAplicacion };
+  }
+
+  static toVacunaUI(entity: Vacuna): VacunaUI {
+    return { id: entity.id, nombre: entity.nombre, fecha: formatFechaVacuna(entity.fechaAplicacion) };
+  }
+
+  static vacunaFromDTOtoUI(dto: VacunaResponseDTO): VacunaUI {
+    return MascotaDetalleMapper.toVacunaUI(MascotaDetalleMapper.toVacunaEntity(dto));
+  }
 }

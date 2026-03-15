@@ -1,9 +1,7 @@
 import React from "react";
 import { ClienteUI } from "../model/ui.model";
+import { ClienteRowProps } from "../model/dto/props/ClienteRowProps";
 
-interface ClienteRowProps {
-  cliente: ClienteUI;
-}
 
 function StatusBadge({ estado }: { estado: ClienteUI["estado"] }) {
   const isActive = estado === "Activo";

@@ -15,13 +15,19 @@ function Spinner() {
 }
 
 export default function PacientesPage() {
-  const { filteredPacientes, searchTerm, setSearchTerm, loading } = usePacientesViewModel();
+  const { filteredPacientes, searchTerm, setSearchTerm, loading, error, userName } = usePacientesViewModel();
 
   if (loading) return <Spinner />;
 
+  if (error) return (
+    <div style={{ padding: "32px" }}>
+      <p style={{ color: "#EF4444", fontSize: "14px" }}>Error: {error}</p>
+    </div>
+  );
+
   return (
     <div style={{ padding: "32px", minHeight: "100vh" }}>
-      <PacientesHeader searchTerm={searchTerm} onSearchChange={setSearchTerm} />
+      <PacientesHeader searchTerm={searchTerm} onSearchChange={setSearchTerm} userName={userName} />
       <PacientesTable pacientes={filteredPacientes} />
     </div>
   );

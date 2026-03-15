@@ -1,51 +1,58 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { getVetPerfilUseCase } from "../usecases/GetVetPerfilUseCase";
+import { updateVetPerfilUseCase } from "../usecases/UpdateVetPerfilUseCase";
+import { getScheduleUseCase } from "../usecases/GetScheduleUseCase";
+import { saveScheduleUseCase } from "../usecases/SaveScheduleUseCase";
+import { changePasswordVetUseCase } from "../usecases/ChangePasswordVetUseCase";
 import { veterinarioConfiguracionService } from "../services/veterinarioConfiguracion.service";
-import { mapVetProfileDTOtoUI, mapVetProfileFormToDTO, mapScheduleUItoDTO } from "../model/mapper";
 import { VeterinarioProfileFormUI, ScheduleUI } from "../model/ui.model";
+import { UserUIModel } from "@/modules/auth/model/ui.model";
 
 export function useVeterinarioConfiguracionViewModel() {
-  const [profileId, setProfileId] = useState("");
-  const [form, setForm] = useState<VeterinarioProfileFormUI>({
-    nombreCompleto: "",
-    correoElectronico: "",
-    telefono: "",
-    cedula: "",
-  });
-  const [schedule, setSchedule] = useState<ScheduleUI>({});
-  const [duration, setDuration] = useState("30");
-  const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
-  const [saved, setSaved] = useState(false);
+  const [profileId, setProfileId]       = useState("");
+  const [form, setForm]                 = useState<VeterinarioProfileFormUI>({ nombreCompleto: "", correoElectronico: "", telefono: "", cedula: "" });
+  const [schedule, setSchedule]         = useState<ScheduleUI>({});
+  const [duration, setDuration]         = useState("30");
+  const [loading, setLoading]           = useState(true);
+  const [saving, setSaving]             = useState(false);
+  const [saved, setSaved]               = useState(false);
   const [scheduleSaved, setScheduleSaved] = useState(false);
-  const [scheduleError, setScheduleError] = useState("");
+  const [scheduleError, setScheduleError] = useState<string | null>(null);
+  const [userName, setUserName]         = useState("Veterinario");
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
 
-  // Password modal state
-  const [newPassword, setNewPassword] = useState("");
+  const [newPassword, setNewPassword]         = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [passwordError, setPasswordError] = useState("");
-  const [passwordSaving, setPasswordSaving] = useState(false);
+  const [passwordError, setPasswordError]     = useState<string | null>(null);
+  const [passwordSaving, setPasswordSaving]   = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const raw = localStorage.getItem("user");
+      if (raw) {
+        const user: UserUIModel = JSON.parse(raw);
+        setUserName(`Dr. ${user.fullName}`);
+      }
+    }
+  }, []);
 
   useEffect(() => {
     const load = async () => {
       setLoading(true);
-      const [profileDTO, scheduleDTO] = await Promise.all([
-        veterinarioConfiguracionService.getProfile(),
-        veterinarioConfiguracionService.getSchedule(),
-      ]);
-      const ui = mapVetProfileDTOtoUI(profileDTO);
-      setProfileId(ui.id);
-      setForm({
-        nombreCompleto: ui.nombreCompleto,
-        correoElectronico: ui.correoElectronico,
-        telefono: ui.telefono,
-        cedula: ui.cedula,
-      });
-      setSchedule(scheduleDTO);
-      setDuration(veterinarioConfiguracionService.getDuration());
-      setLoading(false);
+      try {
+        const [ui, scheduleUI] = await Promise.all([
+          getVetPerfilUseCase(),
+          getScheduleUseCase(),
+        ]);
+        setProfileId(ui.id);
+        setForm({ nombreCompleto: ui.nombreCompleto, correoElectronico: ui.correoElectronico, telefono: ui.telefono, cedula: ui.cedula });
+        setSchedule(scheduleUI);
+        setDuration(veterinarioConfiguracionService.getDuration());
+      } finally {
+        setLoading(false);
+      }
     };
     load();
   }, []);
@@ -57,11 +64,13 @@ export function useVeterinarioConfiguracionViewModel() {
 
   const saveProfile = async () => {
     setSaving(true);
-    const dto = mapVetProfileFormToDTO(profileId, form);
-    await veterinarioConfiguracionService.updateProfile(dto);
-    setSaving(false);
-    setSaved(true);
-    setTimeout(() => setSaved(false), 3000);
+    try {
+      await updateVetPerfilUseCase(profileId, form);
+      setSaved(true);
+      setTimeout(() => setSaved(false), 3000);
+    } finally {
+      setSaving(false);
+    }
   };
 
   const handleScheduleChange = (
@@ -71,50 +80,44 @@ export function useVeterinarioConfiguracionViewModel() {
   ) => {
     setSchedule((prev) => ({ ...prev, [day]: { ...prev[day], [field]: value } }));
     setScheduleSaved(false);
-    setScheduleError("");
+    setScheduleError(null);
   };
 
   const saveSchedule = async () => {
     setSaving(true);
-    setScheduleError("");
+    setScheduleError(null);
     try {
-      await veterinarioConfiguracionService.saveSchedule(
-        mapScheduleUItoDTO(schedule),
-        duration
-      );
+      await saveScheduleUseCase(schedule, duration);
       setScheduleSaved(true);
       setTimeout(() => setScheduleSaved(false), 3000);
-    } catch (e: any) {
-      setScheduleError(e.message ?? "Error al guardar");
+    } catch (err: unknown) {
+      setScheduleError(err instanceof Error ? err.message : "Error al guardar");
     } finally {
       setSaving(false);
     }
   };
 
   const submitPassword = async () => {
-    if (newPassword !== confirmPassword) {
-      setPasswordError("Las contrase\u00f1as no coinciden.");
-      return;
-    }
-    if (newPassword.length < 6) {
-      setPasswordError("La contrase\u00f1a debe tener al menos 6 caracteres.");
-      return;
-    }
     setPasswordSaving(true);
-    await veterinarioConfiguracionService.changePassword({ newPassword, confirmPassword });
-    setPasswordSaving(false);
-    setIsPasswordModalOpen(false);
-    setNewPassword("");
-    setConfirmPassword("");
-    setPasswordError("");
+    setPasswordError(null);
+    try {
+      await changePasswordVetUseCase(newPassword, confirmPassword);
+      setIsPasswordModalOpen(false);
+      setNewPassword("");
+      setConfirmPassword("");
+    } catch (err: unknown) {
+      setPasswordError(err instanceof Error ? err.message : "Error al cambiar contraseña");
+    } finally {
+      setPasswordSaving(false);
+    }
   };
 
   return {
-    form, updateField, saving, saved, saveProfile, loading,
+    form, updateField, saving, saved, saveProfile, loading, userName,
     schedule, handleScheduleChange, duration, setDuration, saveSchedule, scheduleSaved, scheduleError,
     isPasswordModalOpen,
-    openPasswordModal: () => setIsPasswordModalOpen(true),
-    closePasswordModal: () => { setIsPasswordModalOpen(false); setNewPassword(""); setConfirmPassword(""); setPasswordError(""); },
+    openPasswordModal:  () => setIsPasswordModalOpen(true),
+    closePasswordModal: () => { setIsPasswordModalOpen(false); setNewPassword(""); setConfirmPassword(""); setPasswordError(null); },
     newPassword, setNewPassword,
     confirmPassword, setConfirmPassword,
     passwordError, passwordSaving, submitPassword,

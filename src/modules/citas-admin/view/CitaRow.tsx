@@ -1,9 +1,6 @@
 import React from "react";
 import { CitaUI } from "../model/ui.model";
-
-interface CitaRowProps {
-  cita: CitaUI;
-}
+import { CitaRowProps } from "../model/dto/props/CitaRowProps";
 
 function PetIcon({ species }: { species: CitaUI["species"] }) {
   const isDog = species === "dog" || species === "bird" || species === "other";

@@ -1,5 +1,11 @@
-import { ClienteDTO } from "./dto";
+import { ClienteResponseDTO, ClienteStatusDTO } from "./dto/response/ClienteResponseDTO";
+import { Cliente } from "./entities/Cliente";
 import { ClienteUI, ClienteStatusUI } from "./ui.model";
+
+const estadoMap: Record<ClienteStatusDTO, ClienteStatusUI> = {
+  ACTIVO:   "Activo",
+  INACTIVO: "Inactivo",
+};
 
 function getIniciales(nombre: string): string {
   return nombre
@@ -9,18 +15,32 @@ function getIniciales(nombre: string): string {
     .join("");
 }
 
-function mapEstado(estado: ClienteDTO["estado"]): ClienteStatusUI {
-  return estado === "ACTIVO" ? "Activo" : "Inactivo";
-}
+export class ClienteMapper {
+  static toEntity(dto: ClienteResponseDTO): Cliente {
+    return {
+      id:       dto.id,
+      nombre:   dto.nombre,
+      telefono: dto.telefono,
+      email:    dto.email,
+      mascotas: dto.mascotas,
+      estado:   dto.estado,
+    };
+  }
 
-export function mapClienteDTOtoUI(dto: ClienteDTO): ClienteUI {
-  return {
-    id: dto.id,
-    nombre: dto.nombre,
-    iniciales: getIniciales(dto.nombre),
-    telefono: dto.telefono,
-    email: dto.email,
-    mascotas: dto.mascotas,
-    estado: mapEstado(dto.estado),
-  };
+  static toUIModel(entity: Cliente): ClienteUI {
+    const estado: ClienteStatusDTO = entity.estado;
+    return {
+      id:        entity.id,
+      nombre:    entity.nombre,
+      iniciales: getIniciales(entity.nombre),
+      telefono:  entity.telefono,
+      email:     entity.email,
+      mascotas:  entity.mascotas,
+      estado:    estadoMap[estado],
+    };
+  }
+
+  static fromDTOtoUI(dto: ClienteResponseDTO): ClienteUI {
+    return ClienteMapper.toUIModel(ClienteMapper.toEntity(dto));
+  }
 }

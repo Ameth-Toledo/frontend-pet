@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { citasService } from "../services/citas.service";
-import { mapCitaDTOtoUI } from "../model/mapper";
+import { getCitasAdminUseCase } from "../usecases/GetCitasAdminUseCase";
 import { CitaUI } from "../model/ui.model";
+import { UserUIModel } from "@/modules/auth/model/ui.model";
 
 interface CitasViewModelState {
   citas: CitaUI[];
@@ -11,31 +11,50 @@ interface CitasViewModelState {
   searchTerm: string;
   setSearchTerm: (term: string) => void;
   loading: boolean;
+  error: string | null;
+  userName: string;
 }
 
 export function useCitasViewModel(): CitasViewModelState {
-  const [citas, setCitas] = useState<CitaUI[]>([]);
+  const [citas, setCitas]           = useState<CitaUI[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading]       = useState(true);
+  const [error, setError]           = useState<string | null>(null);
+  const [userName, setUserName]     = useState("Administrador");
 
   useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      const dtos = await citasService.getCitas();
-      setCitas(dtos.map(mapCitaDTOtoUI));
-      setLoading(false);
-    };
-    fetchData();
+    if (typeof window !== "undefined") {
+      const raw = localStorage.getItem("user");
+      if (raw) {
+        const user: UserUIModel = JSON.parse(raw);
+        setUserName(user.fullName);
+      }
+    }
   }, []);
 
-  const filteredCitas = citas.filter((c) => {
+  useEffect(() => {
+    const fetch = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        setCitas(await getCitasAdminUseCase());
+      } catch (err: unknown) {
+        setError(err instanceof Error ? err.message : "Error al cargar las citas");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetch();
+  }, []);
+
+  const filteredCitas = citas.filter(({ paciente, propietario, servicio }) => {
     const term = searchTerm.toLowerCase();
     return (
-      c.paciente.toLowerCase().includes(term) ||
-      c.propietario.toLowerCase().includes(term) ||
-      c.servicio.toLowerCase().includes(term)
+      paciente.toLowerCase().includes(term)   ||
+      propietario.toLowerCase().includes(term) ||
+      servicio.toLowerCase().includes(term)
     );
   });
 
-  return { citas, filteredCitas, searchTerm, setSearchTerm, loading };
+  return { citas, filteredCitas, searchTerm, setSearchTerm, loading, error, userName };
 }

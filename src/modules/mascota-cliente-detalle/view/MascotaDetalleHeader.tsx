@@ -1,9 +1,5 @@
 import React from "react";
-import { MascotaDetalleUI } from "../model/ui.model";
-
-interface MascotaDetalleHeaderProps {
-  mascota: MascotaDetalleUI;
-}
+import { MascotaDetalleHeaderProps } from "../model/dto/props/MascotaDetalleHeaderProps";
 
 function PawIllustration() {
   return (

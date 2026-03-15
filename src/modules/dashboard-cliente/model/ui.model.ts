@@ -1,5 +1,5 @@
-export type TipoPetUI = "perro" | "gato" | "ave" | "otro";
-export type TipoCitaUI = "consulta" | "vacuna" | "cirugia" | "otro";
+export type TipoPetUI   = "perro" | "gato" | "ave" | "otro";
+export type TipoCitaUI  = "consulta" | "vacuna" | "cirugia" | "otro";
 
 export interface PetUI {
   id: string;

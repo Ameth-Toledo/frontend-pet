@@ -1,35 +1,58 @@
-import { VeterinarioDTO, CreatePersonalDTO, RolDTO } from "./dto";
+import { VeterinarioResponseDTO, VeterinarioEstadoDTO, RolDTO } from "./dto/response/VeterinarioResponseDTO";
+import { CreatePersonalRequestDTO } from "./dto/request/CreatePersonalRequestDTO";
+import { Veterinario } from "./entities/Veterinario";
 import { VeterinarioUI, VeterinarioEstadoUI } from "./ui.model";
 import { CreatePersonalUI, RolUI } from "./create.ui.model";
 
-function mapEstado(estado: VeterinarioDTO["estado"]): VeterinarioEstadoUI {
-  return estado === "ACTIVO" ? "Activo" : "Inactivo";
-}
-
-export function mapVeterinarioDTOtoUI(dto: VeterinarioDTO): VeterinarioUI {
-  return {
-    id: dto.id,
-    nombre: dto.nombre,
-    especialidad: dto.especialidad,
-    telefono: dto.telefono,
-    email: dto.email,
-    cedula: dto.cedula,
-    estado: mapEstado(dto.estado),
-    avatarInitials: dto.avatarInitials,
-  };
-}
+const estadoMap: Record<VeterinarioEstadoDTO, VeterinarioEstadoUI> = {
+  ACTIVO:   "Activo",
+  INACTIVO: "Inactivo",
+};
 
 const rolMap: Record<RolUI, RolDTO> = {
   Administrador: "ADMINISTRADOR",
-  Veterinario: "VETERINARIO",
+  Veterinario:   "VETERINARIO",
 };
 
-export function mapCreatePersonalUItoDTO(ui: CreatePersonalUI): CreatePersonalDTO {
-  return {
-    rol: rolMap[ui.rol],
-    nombreCompleto: ui.nombreCompleto,
-    correoElectronico: ui.correoElectronico,
-    cedulaProfesional: ui.cedulaProfesional,
-    contrasenaTemporal: ui.contrasenaTemporal,
-  };
+export class PersonalMapper {
+  static toEntity(dto: VeterinarioResponseDTO): Veterinario {
+    return {
+      id:             dto.id,
+      nombre:         dto.nombre,
+      especialidad:   dto.especialidad,
+      telefono:       dto.telefono,
+      email:          dto.email,
+      cedula:         dto.cedula,
+      estado:         dto.estado,
+      avatarInitials: dto.avatarInitials,
+    };
+  }
+
+  static toUIModel(entity: Veterinario): VeterinarioUI {
+    const estado: VeterinarioEstadoDTO = entity.estado;
+    return {
+      id:             entity.id,
+      nombre:         entity.nombre,
+      especialidad:   entity.especialidad,
+      telefono:       entity.telefono,
+      email:          entity.email,
+      cedula:         entity.cedula,
+      estado:         estadoMap[estado],
+      avatarInitials: entity.avatarInitials,
+    };
+  }
+
+  static fromDTOtoUI(dto: VeterinarioResponseDTO): VeterinarioUI {
+    return PersonalMapper.toUIModel(PersonalMapper.toEntity(dto));
+  }
+
+  static toRequestDTO(ui: CreatePersonalUI): CreatePersonalRequestDTO {
+    return {
+      rol:                rolMap[ui.rol],
+      nombreCompleto:     ui.nombreCompleto,
+      correoElectronico:  ui.correoElectronico,
+      cedulaProfesional:  ui.cedulaProfesional,
+      contrasenaTemporal: ui.contrasenaTemporal,
+    };
+  }
 }

@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { citasVetService } from "../services/citas.service";
-import { mapCitaVetDTOtoUI } from "../model/mapper";
+import { getCitasVetUseCase } from "../usecases/GetCitasVetUseCase";
 import { CitaVetUI } from "../model/ui.model";
+import { UserUIModel } from "@/modules/auth/model/ui.model";
 
 interface CitasVetViewModelState {
   citas: CitaVetUI[];
@@ -11,34 +11,50 @@ interface CitasVetViewModelState {
   searchTerm: string;
   setSearchTerm: (term: string) => void;
   loading: boolean;
+  error: string | null;
   userName: string;
 }
 
 export function useCitasVetViewModel(): CitasVetViewModelState {
-  const [citas, setCitas] = useState<CitaVetUI[]>([]);
+  const [citas, setCitas]         = useState<CitaVetUI[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading]     = useState(true);
+  const [error, setError]         = useState<string | null>(null);
+  const [userName, setUserName]   = useState("Veterinario");
 
   useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      const dtos = await citasVetService.getCitas();
-      setCitas(dtos.map(mapCitaVetDTOtoUI));
-      setLoading(false);
-    };
-    fetchData();
+    if (typeof window !== "undefined") {
+      const raw = localStorage.getItem("user");
+      if (raw) {
+        const user: UserUIModel = JSON.parse(raw);
+        setUserName(`Dr. ${user.fullName}`);
+      }
+    }
   }, []);
 
-  const filteredCitas = citas.filter((c) => {
+  useEffect(() => {
+    const fetch = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        setCitas(await getCitasVetUseCase());
+      } catch (err: unknown) {
+        setError(err instanceof Error ? err.message : "Error al cargar las citas");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetch();
+  }, []);
+
+  const filteredCitas = citas.filter(({ paciente, propietario, servicio }) => {
     const term = searchTerm.toLowerCase();
     return (
-      c.paciente.toLowerCase().includes(term) ||
-      c.propietario.toLowerCase().includes(term) ||
-      c.servicio.toLowerCase().includes(term)
+      paciente.toLowerCase().includes(term) ||
+      propietario.toLowerCase().includes(term) ||
+      servicio.toLowerCase().includes(term)
     );
   });
 
-  const userName = "Dr. Smith";
-
-  return { citas, filteredCitas, searchTerm, setSearchTerm, loading, userName };
+  return { citas, filteredCitas, searchTerm, setSearchTerm, loading, error, userName };
 }

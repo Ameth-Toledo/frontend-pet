@@ -1,126 +1,66 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
+import { useClienteDashboardViewModel } from "../viewmodel/useClienteDashboardViewModel";
+import DashboardHeader from "./DashboardHeader";
+import PetCard from "./PetCard";
+import AppointmentCard from "./AppointmentCard";
+import AgregarMascotaModal from "./AgregarMascotaModal";
 
-const C = {
-  green: "#5BAA9C",
-  bg: "#F7F9F8",
-  textMain: "#1F2937",
-};
+function Spinner() {
+  return (
+    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100vh" }}>
+      <div style={{ width: "40px", height: "40px", border: "4px solid #E5E7EB", borderTop: "4px solid #5BAA9C", borderRadius: "50%", animation: "spin 0.8s linear infinite" }} />
+      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+    </div>
+  );
+}
 
 export default function ClienteDashboardPage() {
-  const [showModal, setShowModal] = useState(false);
-  const [nombre, setNombre] = useState("");
-  const [especie, setEspecie] = useState("Perro");
-  const [raza, setRaza] = useState("");
+  const { data, loading, error, showModal, setShowModal, handleAgregarMascota } =
+    useClienteDashboardViewModel();
 
-  const handleGuardar = () => {
-    if (!nombre.trim()) return;
+  if (loading) return <Spinner />;
 
-    console.log("Nueva mascota:", { nombre, especie, raza });
-
-    setShowModal(false);
-    setNombre("");
-    setRaza("");
-    setEspecie("Perro");
-  };
+  if (error) return (
+    <div style={{ padding: "32px" }}>
+      <p style={{ color: "#EF4444", fontSize: "14px" }}>Error: {error}</p>
+    </div>
+  );
 
   return (
-    <div style={{ backgroundColor: C.bg, minHeight: "100vh" }}>
-      <div className="p-8">
+    <div style={{ backgroundColor: "#F7F9F8", minHeight: "100vh", padding: "32px" }}>
+      <DashboardHeader />
 
-        {/* Header */}
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-xl font-bold" style={{ color: C.textMain }}>
-            Mis Mascotas
-          </h1>
-
-          <button
-            onClick={() => setShowModal(true)}
-            className="px-5 py-2 rounded-lg text-white font-semibold shadow-sm hover:opacity-90 transition"
-            style={{ backgroundColor: C.green }}
-          >
-            + Agregar mascota
-          </button>
+      {/* Mascotas */}
+      <section style={{ marginBottom: "40px" }}>
+        <h2 style={{ fontSize: "18px", fontWeight: 700, color: "#1F2937", marginBottom: "16px" }}>Mis mascotas</h2>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "20px" }}>
+          {data?.mascotas.map((pet) => (
+            <PetCard key={pet.id} pet={pet} />
+          ))}
         </div>
+      </section>
 
-        {/* Aquí iría tu listado real */}
-        <div className="text-gray-500 text-sm">
-          Aquí se mostrará el listado de mascotas.
+      {/* Próximas citas */}
+      <section>
+        <h2 style={{ fontSize: "18px", fontWeight: 700, color: "#1F2937", marginBottom: "16px" }}>Próximas citas</h2>
+        <div style={{ backgroundColor: "#FFFFFF", border: "1px solid #E5E7EB", borderRadius: "16px", padding: "8px 24px" }}>
+          {data?.proximasCitas.map((apt, i) => (
+            <AppointmentCard
+              key={apt.id}
+              appointment={apt}
+              isLast={i === (data.proximasCitas.length - 1)}
+            />
+          ))}
         </div>
-      </div>
+      </section>
 
-      {/* MODAL */}
       {showModal && (
-        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50">
-          <div className="bg-white w-[420px] rounded-2xl shadow-xl p-8 relative">
-
-            <h2 className="text-lg font-bold mb-6">
-              Agregar mascota
-            </h2>
-
-            {/* Nombre */}
-            <div className="mb-4">
-              <label className="block text-sm mb-2">
-                Nombre
-              </label>
-              <input
-                type="text"
-                value={nombre}
-                onChange={(e) => setNombre(e.target.value)}
-                className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#5BAA9C]"
-                placeholder="Ej. Firulais"
-              />
-            </div>
-
-            {/* Especie */}
-            <div className="mb-4">
-              <label className="block text-sm mb-2">
-                Especie
-              </label>
-              <select
-                value={especie}
-                onChange={(e) => setEspecie(e.target.value)}
-                className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#5BAA9C]"
-              >
-                <option>Perro</option>
-                <option>Gato</option>
-              </select>
-            </div>
-
-            {/* Raza */}
-            <div className="mb-6">
-              <label className="block text-sm mb-2">
-                Raza
-              </label>
-              <input
-                type="text"
-                value={raza}
-                onChange={(e) => setRaza(e.target.value)}
-                className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#5BAA9C]"
-                placeholder="Ej. Golden Retriever"
-              />
-            </div>
-
-            {/* Botones */}
-            <div className="flex justify-end gap-3">
-              <button
-                onClick={() => setShowModal(false)}
-                className="px-4 py-2 rounded-lg border text-sm"
-              >
-                Cancelar
-              </button>
-
-              <button
-                onClick={handleGuardar}
-                className="px-4 py-2 rounded-lg text-white text-sm"
-                style={{ backgroundColor: C.green }}
-              >
-                Guardar
-              </button>
-            </div>
-          </div>
-        </div>
+        <AgregarMascotaModal
+          onClose={() => setShowModal(false)}
+          onGuardar={handleAgregarMascota}
+        />
       )}
     </div>
   );

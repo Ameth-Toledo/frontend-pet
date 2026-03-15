@@ -1,12 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { clienteMascotaDetalleService } from "../services/clienteMascotaDetalle.service";
-import {
-  mapMascotaDetalleDTOtoUI,
-  mapHistorialDTOtoUI,
-  mapVacunaDTOtoUI,
-} from "../model/mapper";
+import { getMascotaDetalleUseCase } from "../usecases/GetMascotaDetalleUseCase";
+import { getHistorialUseCase } from "../usecases/GetHistorialUseCase";
+import { getVacunasUseCase } from "../usecases/GetVacunasUseCase";
 import { MascotaDetalleUI, HistorialUI, VacunaUI, TabActivo } from "../model/ui.model";
 
 interface ClienteMascotaDetalleViewModelState {
@@ -23,25 +20,25 @@ interface ClienteMascotaDetalleViewModelState {
 export function useClienteMascotaDetalleViewModel(
   mascotaId: string
 ): ClienteMascotaDetalleViewModelState {
-  const [mascota, setMascota] = useState<MascotaDetalleUI | null>(null);
-  const [historial, setHistorial] = useState<HistorialUI[]>([]);
-  const [vacunas, setVacunas] = useState<VacunaUI[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [mascota, setMascota]               = useState<MascotaDetalleUI | null>(null);
+  const [historial, setHistorial]           = useState<HistorialUI[]>([]);
+  const [vacunas, setVacunas]               = useState<VacunaUI[]>([]);
+  const [isLoading, setIsLoading]           = useState(true);
   const [isLoadingVacunas, setIsLoadingVacunas] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [tabActivo, setTabActivo] = useState<TabActivo>("historial");
+  const [error, setError]                   = useState<string | null>(null);
+  const [tabActivo, setTabActivo]           = useState<TabActivo>("historial");
 
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
       setError(null);
       try {
-        const [mascotaDTO, historialDTOs] = await Promise.all([
-          clienteMascotaDetalleService.getMascotaDetalle(mascotaId),
-          clienteMascotaDetalleService.getHistorialByMascotaId(mascotaId),
+        const [mascotaUI, historialUI] = await Promise.all([
+          getMascotaDetalleUseCase(mascotaId),
+          getHistorialUseCase(mascotaId),
         ]);
-        setMascota(mascotaDTO ? mapMascotaDetalleDTOtoUI(mascotaDTO) : null);
-        setHistorial(historialDTOs.map(mapHistorialDTOtoUI));
+        setMascota(mascotaUI);
+        setHistorial(historialUI);
       } catch {
         setError("No se pudo cargar la información de la mascota.");
       } finally {
@@ -52,14 +49,11 @@ export function useClienteMascotaDetalleViewModel(
   }, [mascotaId]);
 
   useEffect(() => {
-    if (tabActivo !== "vacunas") return;
-    if (vacunas.length > 0) return;
-
+    if (tabActivo !== "vacunas" || vacunas.length > 0) return;
     const loadVacunas = async () => {
       setIsLoadingVacunas(true);
       try {
-        const dtos = await clienteMascotaDetalleService.getVacunasByMascotaId(mascotaId);
-        setVacunas(dtos.map(mapVacunaDTOtoUI));
+        setVacunas(await getVacunasUseCase(mascotaId));
       } catch {
         setError("No se pudo cargar la cartilla de vacunación.");
       } finally {
@@ -69,14 +63,5 @@ export function useClienteMascotaDetalleViewModel(
     loadVacunas();
   }, [tabActivo, mascotaId, vacunas.length]);
 
-  return {
-    mascota,
-    historial,
-    vacunas,
-    isLoading,
-    isLoadingVacunas,
-    error,
-    tabActivo,
-    setTabActivo,
-  };
+  return { mascota, historial, vacunas, isLoading, isLoadingVacunas, error, tabActivo, setTabActivo };
 }

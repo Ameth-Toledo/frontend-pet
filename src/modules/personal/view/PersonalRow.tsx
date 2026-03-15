@@ -1,49 +1,11 @@
 import React from "react";
+import { PersonalRowProps } from "../model/dto/props/PersonalRowProps";
 import { VeterinarioUI } from "../model/ui.model";
-
-interface VeterinarioRowProps {
-  veterinario: VeterinarioUI;
-}
-
-function Avatar({ initials }: { initials: string }) {
-  return (
-    <div
-      style={{
-        width: "42px",
-        height: "42px",
-        borderRadius: "50%",
-        backgroundColor: "#E6F4F1",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        fontSize: "13px",
-        fontWeight: 700,
-        color: "#4F8A7C",
-        flexShrink: 0,
-        border: "2px solid #D1EAE4",
-      }}
-    >
-      {initials}
-    </div>
-  );
-}
 
 function EstadoBadge({ estado }: { estado: VeterinarioUI["estado"] }) {
   const isActive = estado === "Activo";
   return (
-    <span
-      style={{
-        display: "inline-block",
-        padding: "3px 14px",
-        borderRadius: "20px",
-        fontSize: "11px",
-        fontWeight: 700,
-        letterSpacing: "0.05em",
-        textTransform: "uppercase",
-        backgroundColor: isActive ? "#E6F4F1" : "#F3F4F6",
-        color: isActive ? "#4F8A7C" : "#6B7280",
-      }}
-    >
+    <span style={{ display: "inline-block", padding: "3px 14px", borderRadius: "20px", fontSize: "11px", fontWeight: 700, letterSpacing: "0.05em", textTransform: "uppercase", backgroundColor: isActive ? "#E6F4F1" : "#F3F4F6", color: isActive ? "#4F8A7C" : "#6B7280" }}>
       {estado}
     </span>
   );
@@ -51,70 +13,38 @@ function EstadoBadge({ estado }: { estado: VeterinarioUI["estado"] }) {
 
 function IconButton({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <button
-      title={title}
-      style={{
-        width: "30px",
-        height: "30px",
-        borderRadius: "8px",
-        border: "none",
-        backgroundColor: "transparent",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        cursor: "pointer",
-        color: "#4F8A7C",
-      }}
-      onMouseEnter={(e) => {
-        (e.currentTarget as HTMLButtonElement).style.backgroundColor = "#E6F4F1";
-      }}
-      onMouseLeave={(e) => {
-        (e.currentTarget as HTMLButtonElement).style.backgroundColor = "transparent";
-      }}
-    >
+    <button title={title} style={{ width: "30px", height: "30px", borderRadius: "8px", border: "none", backgroundColor: "transparent", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: "#4F8A7C" }}
+      onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = "#E6F4F1"; }}
+      onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = "transparent"; }}>
       {children}
     </button>
   );
 }
 
-export default function VeterinarioRow({ veterinario }: VeterinarioRowProps) {
+export default function PersonalRow({ veterinario }: PersonalRowProps) {
   return (
-    <tr
-      style={{ borderBottom: "1px solid #F3F4F6" }}
-      onMouseEnter={(e) => {
-        (e.currentTarget as HTMLTableRowElement).style.backgroundColor = "#FAFAFA";
-      }}
-      onMouseLeave={(e) => {
-        (e.currentTarget as HTMLTableRowElement).style.backgroundColor = "transparent";
-      }}
-    >
-      {/* Veterinario */}
+    <tr style={{ borderBottom: "1px solid #F3F4F6" }}
+      onMouseEnter={(e) => { (e.currentTarget as HTMLTableRowElement).style.backgroundColor = "#FAFAFA"; }}
+      onMouseLeave={(e) => { (e.currentTarget as HTMLTableRowElement).style.backgroundColor = "transparent"; }}>
+
       <td style={{ padding: "16px 20px" }}>
-        <div>
-          <p style={{ fontSize: "14px", fontWeight: 600, color: "#1F2937", marginBottom: "2px" }}>
-            {veterinario.nombre}
-          </p>
-          <p style={{ fontSize: "12px", color: "#6B7280" }}>{veterinario.especialidad}</p>
-        </div>
+        <p style={{ fontSize: "14px", fontWeight: 600, color: "#1F2937", marginBottom: "2px" }}>{veterinario.nombre}</p>
+        <p style={{ fontSize: "12px", color: "#6B7280" }}>{veterinario.especialidad}</p>
       </td>
 
-      {/* Contacto */}
       <td style={{ padding: "16px 20px" }}>
         <p style={{ fontSize: "14px", color: "#1F2937", marginBottom: "2px" }}>{veterinario.telefono}</p>
         <p style={{ fontSize: "12px", color: "#6B7280" }}>{veterinario.email}</p>
       </td>
 
-      {/* Cédula / ID */}
       <td style={{ padding: "16px 20px" }}>
         <p style={{ fontSize: "14px", color: "#1F2937", fontWeight: 500 }}>{veterinario.cedula}</p>
       </td>
 
-      {/* Estado */}
       <td style={{ padding: "16px 20px" }}>
         <EstadoBadge estado={veterinario.estado} />
       </td>
 
-      {/* Acciones */}
       <td style={{ padding: "16px 20px" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
           <IconButton title="Editar veterinario">

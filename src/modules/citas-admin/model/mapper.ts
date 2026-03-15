@@ -1,25 +1,27 @@
-import { CitaDTO, ServicioDTO, CitaEstadoDTO } from "./dto";
-import { CitaUI, CitaEstadoUI, ServicioUI } from "./ui.model";
+import { CitaAdminResponseDTO, ServicioDTO, CitaEstadoDTO } from "./dto/response/CitaAdminResponseDTO";
+import { CitaAdmin } from "./entities/CitaAdmin";
+import { CitaUI, ServicioUI, CitaEstadoUI } from "./ui.model";
 
 const servicioLabelMap: Record<ServicioDTO, ServicioUI> = {
-  CHEQUEO_MEDICO: "Chequeo médico",
+  CHEQUEO_MEDICO:  "Chequeo médico",
   LIMPIEZA_DENTAL: "Limpieza dental",
-  CONTROL_PESO: "Control de peso",
-  VACUNACION: "Vacunación",
-  CIRUGIA: "Cirugía",
+  CONTROL_PESO:    "Control de peso",
+  VACUNACION:      "Vacunación",
+  CIRUGIA:         "Cirugía",
 };
 
 const servicioSubtituloMap: Record<ServicioDTO, string> = {
-  CHEQUEO_MEDICO: "Revisión general",
+  CHEQUEO_MEDICO:  "Revisión general",
   LIMPIEZA_DENTAL: "Higiene bucal",
-  CONTROL_PESO: "Seguimiento nutricional",
-  VACUNACION: "Inmunización anual",
-  CIRUGIA: "Procedimiento quirúrgico",
+  CONTROL_PESO:    "Seguimiento nutricional",
+  VACUNACION:      "Inmunización anual",
+  CIRUGIA:         "Procedimiento quirúrgico",
 };
 
-function mapEstado(estado: CitaEstadoDTO): CitaEstadoUI {
-  return estado === "CONFIRMADA" ? "Confirmada" : "Cancelada";
-}
+const estadoMap: Record<CitaEstadoDTO, CitaEstadoUI> = {
+  CONFIRMADA: "Confirmada",
+  CANCELADA:  "Cancelada",
+};
 
 function getIniciales(nombre: string): string {
   return nombre
@@ -29,18 +31,40 @@ function getIniciales(nombre: string): string {
     .join("");
 }
 
-export function mapCitaDTOtoUI(dto: CitaDTO): CitaUI {
-  return {
-    id: dto.id,
-    paciente: dto.paciente,
-    raza: dto.raza,
-    species: dto.species,
-    iniciales: getIniciales(dto.paciente),
-    propietario: dto.propietario,
-    servicio: servicioLabelMap[dto.servicio],
-    servicioSubtitulo: servicioSubtituloMap[dto.servicio],
-    fecha: dto.fecha,
-    hora: dto.hora,
-    estado: mapEstado(dto.estado),
-  };
+export class CitaAdminMapper {
+  static toEntity(dto: CitaAdminResponseDTO): CitaAdmin {
+    return {
+      id:          dto.id,
+      paciente:    dto.paciente,
+      raza:        dto.raza,
+      species:     dto.species,
+      propietario: dto.propietario,
+      servicio:    dto.servicio,
+      fecha:       dto.fecha,
+      hora:        dto.hora,
+      estado:      dto.estado,
+    };
+  }
+
+  static toUIModel(entity: CitaAdmin): CitaUI {
+    const servicio: ServicioDTO = entity.servicio;
+    const estado: CitaEstadoDTO = entity.estado;
+    return {
+      id:                entity.id,
+      paciente:          entity.paciente,
+      raza:              entity.raza,
+      species:           entity.species,
+      iniciales:         getIniciales(entity.paciente),
+      propietario:       entity.propietario,
+      servicio:          servicioLabelMap[servicio],
+      servicioSubtitulo: servicioSubtituloMap[servicio],
+      fecha:             entity.fecha,
+      hora:              entity.hora,
+      estado:            estadoMap[estado],
+    };
+  }
+
+  static fromDTOtoUI(dto: CitaAdminResponseDTO): CitaUI {
+    return CitaAdminMapper.toUIModel(CitaAdminMapper.toEntity(dto));
+  }
 }

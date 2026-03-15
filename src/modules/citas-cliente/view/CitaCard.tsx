@@ -1,6 +1,7 @@
 import React from "react";
-import { CitaUI } from "../model/ui.model";
 import EstadoBadge from "./EstadoBadge";
+import { CitaCardProps } from "../model/dto/props/CitaCardProps";
+
 
 const C = {
   green: "#4F8A7C",
@@ -11,9 +12,7 @@ const C = {
   border:   "#E5E7EB",
 };
 
-interface CitaCardProps {
-  cita: CitaUI;
-}
+
 
 function CalendarIcon() {
   return (

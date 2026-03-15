@@ -1,28 +1,37 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { clienteCitasService } from "../services/clienteCitas.service";
-import { mapCitaDTOtoUI } from "../model/mapper";
+import { getCitasClienteUseCase } from "../usecases/GetCitasClienteUseCase";
 import { CitaUI } from "../model/ui.model";
 
 interface ClienteCitasViewModelState {
   citas: CitaUI[];
   isLoading: boolean;
+  error: string | null;
+  selectedCita: CitaUI | null;
+  setSelectedCita: (cita: CitaUI | null) => void;
 }
 
 export function useClienteCitasViewModel(): ClienteCitasViewModelState {
-  const [citas, setCitas] = useState<CitaUI[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [citas, setCitas]               = useState<CitaUI[]>([]);
+  const [isLoading, setIsLoading]       = useState(true);
+  const [error, setError]               = useState<string | null>(null);
+  const [selectedCita, setSelectedCita] = useState<CitaUI | null>(null);
 
   useEffect(() => {
-    const fetchCitas = async () => {
+    const fetch = async () => {
       setIsLoading(true);
-      const dtos = await clienteCitasService.getCitas();
-      setCitas(dtos.map(mapCitaDTOtoUI));
-      setIsLoading(false);
+      setError(null);
+      try {
+        setCitas(await getCitasClienteUseCase());
+      } catch (err: unknown) {
+        setError(err instanceof Error ? err.message : "Error al cargar las citas");
+      } finally {
+        setIsLoading(false);
+      }
     };
-    fetchCitas();
+    fetch();
   }, []);
 
-  return { citas, isLoading };
+  return { citas, isLoading, error, selectedCita, setSelectedCita };
 }

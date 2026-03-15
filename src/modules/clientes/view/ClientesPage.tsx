@@ -15,26 +15,19 @@ function Spinner() {
 }
 
 export default function ClientesPage() {
-  const { filteredClientes, searchTerm, setSearchTerm, loading } = useClientesViewModel();
+  const { filteredClientes, searchTerm, setSearchTerm, loading, error, userName } = useClientesViewModel();
 
   if (loading) return <Spinner />;
 
+  if (error) return (
+    <div style={{ padding: "32px" }}>
+      <p style={{ color: "#EF4444", fontSize: "14px" }}>Error: {error}</p>
+    </div>
+  );
+
   return (
-    <div style={{ padding: "32px", minHeight: "100vh", position: "relative" }}>
-      {/* Admin name top-right */}
-      <span
-        style={{
-          position: "absolute",
-          top: "32px",
-          right: "32px",
-          fontSize: "14px",
-          fontWeight: 600,
-          color: "#1F2937",
-        }}
-      >
-        Dr. Smith
-      </span>
-      <ClientesHeader searchTerm={searchTerm} onSearchChange={setSearchTerm} />
+    <div style={{ padding: "32px", minHeight: "100vh" }}>
+      <ClientesHeader searchTerm={searchTerm} onSearchChange={setSearchTerm} userName={userName} />
       <ClientesTable clientes={filteredClientes} />
     </div>
   );

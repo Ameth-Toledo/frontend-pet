@@ -1,11 +1,6 @@
 import React from "react";
-import { CitaUI } from "../model/ui.model";
 import CitaRow from "./CitaRow";
-
-interface CitasTableProps {
-  citas: CitaUI[];
-  total?: number;
-}
+import { CitasTableProps } from "../model/dto/props/CitasTableProps";
 
 const COLUMNS = ["Paciente", "Propietario", "Servicio", "Fecha / Hora", "Estado", "Acciones"];
 

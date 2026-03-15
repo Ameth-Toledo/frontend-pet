@@ -1,12 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { veterinarioDashboardService } from "../services/veterinarioDashboard.service";
-import {
-  mapVetAppointmentDTOtoUI,
-  mapVetPatientDTOtoUI,
-  mapVetStatsDTOtoUI,
-} from "../model/mapper";
+import { getVeterinarioDashboardUseCase } from "../usecases/GetVeterinarioDashboardUseCase";
 import { VetAppointmentUI, VetPatientUI, VetStatsUI } from "../model/ui.model";
 
 interface VeterinarioDashboardViewModelState {
@@ -14,31 +9,33 @@ interface VeterinarioDashboardViewModelState {
   upcomingAppointments: VetAppointmentUI[];
   recentPatients: VetPatientUI[];
   loading: boolean;
+  error: string | null;
 }
 
 export function useVeterinarioDashboardViewModel(): VeterinarioDashboardViewModelState {
-  const [stats, setStats] = useState<VetStatsUI | null>(null);
+  const [stats, setStats]                               = useState<VetStatsUI | null>(null);
   const [upcomingAppointments, setUpcomingAppointments] = useState<VetAppointmentUI[]>([]);
-  const [recentPatients, setRecentPatients] = useState<VetPatientUI[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [recentPatients, setRecentPatients]             = useState<VetPatientUI[]>([]);
+  const [loading, setLoading]                           = useState(true);
+  const [error, setError]                               = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetch = async () => {
       setLoading(true);
-      const [statsDTO, appointmentsDTO, patientsDTO] = await Promise.all([
-        veterinarioDashboardService.getStats(),
-        veterinarioDashboardService.getUpcomingAppointments(),
-        veterinarioDashboardService.getRecentPatients(),
-      ]);
-
-      setStats(mapVetStatsDTOtoUI(statsDTO));
-      setUpcomingAppointments(appointmentsDTO.map(mapVetAppointmentDTOtoUI));
-      setRecentPatients(patientsDTO.map(mapVetPatientDTOtoUI));
-      setLoading(false);
+      setError(null);
+      try {
+        const { stats, appointments, patients } = await getVeterinarioDashboardUseCase();
+        setStats(stats);
+        setUpcomingAppointments(appointments);
+        setRecentPatients(patients);
+      } catch (err: unknown) {
+        setError(err instanceof Error ? err.message : "Error al cargar el dashboard");
+      } finally {
+        setLoading(false);
+      }
     };
-
-    fetchData();
+    fetch();
   }, []);
 
-  return { stats, upcomingAppointments, recentPatients, loading };
+  return { stats, upcomingAppointments, recentPatients, loading, error };
 }

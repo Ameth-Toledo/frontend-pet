@@ -1,9 +1,6 @@
 import React from "react";
+import { MetricsCardsProps } from "../model/dto/props/MetricsCardsProps";
 import { DashboardMetricsUI } from "../model/metrics.ui.model";
-
-interface MetricsCardsProps {
-  metrics: DashboardMetricsUI;
-}
 
 function CalendarIcon() {
   return (
@@ -34,63 +31,18 @@ interface CardProps {
 
 function MetricCard({ icon, label, value, trendLabel, trendPositive }: CardProps) {
   return (
-    <div
-      style={{
-        flex: 1,
-        backgroundColor: "#FFFFFF",
-        border: "1px solid #E5E7EB",
-        borderRadius: "16px",
-        padding: "24px 28px",
-        display: "flex",
-        flexDirection: "column",
-        gap: "10px",
-        position: "relative",
-      }}
-    >
-      {/* Trend badge */}
-      <div
-        style={{
-          position: "absolute",
-          top: "16px",
-          right: "16px",
-          backgroundColor: trendPositive ? "#E6F4F1" : "#FDECEC",
-          color: trendPositive ? "#4F8A7C" : "#B91C1C",
-          fontSize: "11px",
-          fontWeight: 700,
-          padding: "3px 10px",
-          borderRadius: "20px",
-          display: "flex",
-          alignItems: "center",
-          gap: "2px",
-        }}
-      >
-        <svg width="10" height="10" viewBox="0 0 24 24" fill="none"
-          stroke="currentColor" strokeWidth="2.5">
-          {trendPositive
-            ? <polyline points="18 15 12 9 6 15" />
-            : <polyline points="6 9 12 15 18 9" />}
+    <div style={{ flex: 1, backgroundColor: "#FFFFFF", border: "1px solid #E5E7EB", borderRadius: "16px", padding: "24px 28px", display: "flex", flexDirection: "column", gap: "10px", position: "relative" }}>
+      <div style={{ position: "absolute", top: "16px", right: "16px", backgroundColor: trendPositive ? "#E6F4F1" : "#FDECEC", color: trendPositive ? "#4F8A7C" : "#B91C1C", fontSize: "11px", fontWeight: 700, padding: "3px 10px", borderRadius: "20px", display: "flex", alignItems: "center", gap: "2px" }}>
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+          {trendPositive ? <polyline points="18 15 12 9 6 15" /> : <polyline points="6 9 12 15 18 9" />}
         </svg>
         {trendLabel}
       </div>
-
-      {/* Icon */}
-      <div
-        style={{
-          width: "44px", height: "44px", borderRadius: "12px",
-          backgroundColor: "#E6F4F1",
-          display: "flex", alignItems: "center", justifyContent: "center",
-        }}
-      >
+      <div style={{ width: "44px", height: "44px", borderRadius: "12px", backgroundColor: "#E6F4F1", display: "flex", alignItems: "center", justifyContent: "center" }}>
         {icon}
       </div>
-
-      {/* Label */}
       <p style={{ fontSize: "13px", color: "#6B7280", fontWeight: 500 }}>{label}</p>
-
-      {/* Value */}
-      <p style={{ fontSize: "38px", fontWeight: 800, color: "#1F2937", lineHeight: 1 }}>
-        {value.toLocaleString("es-ES")}
-      </p>
+      <p style={{ fontSize: "38px", fontWeight: 800, color: "#1F2937", lineHeight: 1 }}>{value.toLocaleString("es-ES")}</p>
     </div>
   );
 }
@@ -98,20 +50,8 @@ function MetricCard({ icon, label, value, trendLabel, trendPositive }: CardProps
 export default function MetricsCards({ metrics }: MetricsCardsProps) {
   return (
     <div style={{ display: "flex", gap: "20px", marginBottom: "24px", flexWrap: "wrap" }}>
-      <MetricCard
-        icon={<CalendarIcon />}
-        label="Citas del Mes"
-        value={metrics.citasDelMes}
-        trendLabel={metrics.citasTrendLabel}
-        trendPositive={metrics.citasTrendPositive}
-      />
-      <MetricCard
-        icon={<PatientIcon />}
-        label="Nuevos Pacientes"
-        value={metrics.nuevosPacientes}
-        trendLabel={metrics.nuevosPacientesTrendLabel}
-        trendPositive={metrics.nuevosPacientesTrendPositive}
-      />
+      <MetricCard icon={<CalendarIcon />} label="Citas del Mes"     value={metrics.citasDelMes}     trendLabel={metrics.citasTrendLabel}           trendPositive={metrics.citasTrendPositive} />
+      <MetricCard icon={<PatientIcon />}  label="Nuevos Pacientes"  value={metrics.nuevosPacientes} trendLabel={metrics.nuevosPacientesTrendLabel}  trendPositive={metrics.nuevosPacientesTrendPositive} />
     </div>
   );
 }

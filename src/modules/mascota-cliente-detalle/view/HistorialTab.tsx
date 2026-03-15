@@ -1,25 +1,16 @@
 import React from "react";
-import { HistorialUI } from "../model/ui.model";
+import { HistorialTabProps } from "../model/dto/props/HistorialTabProps";
 import HistorialCard from "./HistorialCard";
-
-interface HistorialTabProps {
-  historial: HistorialUI[];
-}
 
 export default function HistorialTab({ historial }: HistorialTabProps) {
   if (historial.length === 0) {
-    return (
-      <p className="text-sm text-gray-400 py-8 text-center">
-        No hay registros en el historial médico.
-      </p>
-    );
+    return <p className="text-sm text-gray-400 py-8 text-center">No hay registros en el historial médico.</p>;
   }
 
   return (
     <div className="flex flex-col gap-4">
       {historial.map((item) => (
         <div key={item.id} className="flex gap-4 items-start">
-          {/* Timeline dot */}
           <div className="mt-5 flex-shrink-0">
             <div className="w-2.5 h-2.5 rounded-full bg-[#4F8A7C]" />
           </div>

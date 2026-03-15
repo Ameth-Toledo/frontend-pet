@@ -1,10 +1,6 @@
 import React from "react";
 import { Eye, Pencil } from "lucide-react";
-import { MascotaUI } from "../model/ui.model";
-
-interface Props {
-  mascota: MascotaUI;
-}
+import { MascotaCardProps } from "../model/dto/props/MascotaCardProps";
 
 function PetIcon({ especie }: { especie: string }) {
   const isCat = especie.toLowerCase() === "gato";
@@ -31,54 +27,32 @@ function PetIcon({ especie }: { especie: string }) {
   );
 }
 
-export default function MascotaCard({ mascota }: Props) {
+export default function MascotaCard({ mascota }: MascotaCardProps) {
   return (
-    <div
-      style={{
-        display: "grid",
-        gridTemplateColumns: "1fr 1.5fr 1.5fr 1fr 80px",
-        alignItems: "center",
-        padding: "16px 24px",
-        fontSize: "13px",
-        borderTop: "1px solid #F3F4F6",
-      }}
-    >
+    <div style={{ display: "grid", gridTemplateColumns: "1fr 1.5fr 1.5fr 1fr 80px", alignItems: "center", padding: "16px 24px", fontSize: "13px", borderTop: "1px solid #F3F4F6" }}>
       <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-        <div style={{
-          width: "38px", height: "38px", borderRadius: "10px",
-          backgroundColor: "#E6F4F1",
-          display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
-        }}>
+        <div style={{ width: "38px", height: "38px", borderRadius: "10px", backgroundColor: "#E6F4F1", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
           <PetIcon especie={mascota.especie} />
         </div>
         <span style={{ fontWeight: 600, color: "#1F2937" }}>{mascota.nombre}</span>
       </div>
+
       <div>
         <p style={{ fontWeight: 600, color: "#1F2937", margin: 0 }}>{mascota.especie}</p>
         <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0 0" }}>{mascota.raza}</p>
       </div>
+
       <div style={{ color: "#6B7280" }}>{mascota.propietario}</div>
+
       <div>
-        <span
-          style={{
-            padding: "4px 10px",
-            borderRadius: "20px",
-            fontSize: "11px",
-            fontWeight: 600,
-            backgroundColor: mascota.estado === "ACTIVO" ? "#E6F4F1" : "#F3F4F6",
-            color: mascota.estado === "ACTIVO" ? "#2F6B62" : "#6B7280",
-          }}
-        >
+        <span style={{ padding: "4px 10px", borderRadius: "20px", fontSize: "11px", fontWeight: 600, backgroundColor: mascota.estado === "ACTIVO" ? "#E6F4F1" : "#F3F4F6", color: mascota.estado === "ACTIVO" ? "#2F6B62" : "#6B7280" }}>
           {mascota.estado}
         </span>
       </div>
+
       <div style={{ display: "flex", justifyContent: "flex-end", gap: "12px", color: "#9CA3AF" }}>
-        <button style={{ background: "none", border: "none", cursor: "pointer", color: "inherit" }}>
-          <Eye size={15} />
-        </button>
-        <button style={{ background: "none", border: "none", cursor: "pointer", color: "inherit" }}>
-          <Pencil size={15} />
-        </button>
+        <button style={{ background: "none", border: "none", cursor: "pointer", color: "inherit" }}><Eye size={15} /></button>
+        <button style={{ background: "none", border: "none", cursor: "pointer", color: "inherit" }}><Pencil size={15} /></button>
       </div>
     </div>
   );

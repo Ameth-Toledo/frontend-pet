@@ -1,0 +1,10 @@
+export interface VetAppointment {
+  id: string;
+  patientName: string;
+  patientBreed: string;
+  patientSpecies: "dog" | "cat" | "bird" | "other";
+  ownerName: string;
+  time: string;
+  service: string;
+  type: "checkup" | "grooming" | "vaccination" | "surgery";
+}

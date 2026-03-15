@@ -1,23 +1,23 @@
 "use client";
 
 import { useState } from "react";
-import { personalService } from "../services/personal.service";
-import { mapCreatePersonalUItoDTO } from "../model/mapper";
+import { createPersonalUseCase } from "../usecases/CreatePersonalUseCase";
 import { RolUI, CreatePersonalErrorsUI } from "../model/create.ui.model";
+import { personalService } from "../services/personal.service";
 
 interface UseCreatePersonalViewModelProps {
   onSuccess: () => void;
 }
 
 export function useCreatePersonalViewModel({ onSuccess }: UseCreatePersonalViewModelProps) {
-  const [rol, setRol] = useState<RolUI>("Administrador");
-  const [nombreCompleto, setNombreCompleto] = useState("");
-  const [correoElectronico, setCorreoElectronico] = useState("");
-  const [cedulaProfesional, setCedulaProfesional] = useState("");
+  const [rol, setRol]                               = useState<RolUI>("Administrador");
+  const [nombreCompleto, setNombreCompleto]         = useState("");
+  const [correoElectronico, setCorreoElectronico]   = useState("");
+  const [cedulaProfesional, setCedulaProfesional]   = useState("");
   const [contrasenaTemporal, setContrasenaTemporal] = useState("PetCare-2024-X9Z");
-  const [errors, setErrors] = useState<CreatePersonalErrorsUI>({});
-  const [loading, setLoading] = useState(false);
-  const [regenerating, setRegenerating] = useState(false);
+  const [errors, setErrors]                         = useState<CreatePersonalErrorsUI>({});
+  const [loading, setLoading]                       = useState(false);
+  const [regenerating, setRegenerating]             = useState(false);
 
   const reset = () => {
     setRol("Administrador");
@@ -57,21 +57,24 @@ export function useCreatePersonalViewModel({ onSuccess }: UseCreatePersonalViewM
   const submit = async () => {
     if (!validate()) return;
     setLoading(true);
-    const dto = mapCreatePersonalUItoDTO({
-      rol,
-      nombreCompleto,
-      correoElectronico,
-      cedulaProfesional,
-      contrasenaTemporal,
-    });
-    await personalService.createPersonal(dto);
-    setLoading(false);
-    reset();
-    onSuccess();
+    try {
+      await createPersonalUseCase({
+        rol,
+        nombreCompleto,
+        correoElectronico,
+        cedulaProfesional,
+        contrasenaTemporal,
+      });
+      reset();
+      onSuccess();
+    } catch {
+      setErrors({ nombreCompleto: "Error al registrar. Intenta de nuevo." });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return {
-    // state
     rol, setRol,
     nombreCompleto, setNombreCompleto,
     correoElectronico, setCorreoElectronico,
@@ -80,7 +83,6 @@ export function useCreatePersonalViewModel({ onSuccess }: UseCreatePersonalViewM
     errors,
     loading,
     regenerating,
-    // actions
     reset,
     regenerarContrasena,
     copiarContrasena,

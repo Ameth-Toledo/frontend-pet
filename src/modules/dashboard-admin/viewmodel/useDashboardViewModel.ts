@@ -1,12 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { dashboardService } from "../services/dashboard.service";
-import {
-  mapAppointmentDTOtoUI,
-  mapPatientDTOtoUI,
-  mapStatsDTOtoUI,
-} from "../model/mapper";
+import { getDashboardUseCase } from "../usecases/GetDashboardUseCase";
 import { AppointmentUI, PatientUI, StatsUI } from "../model/ui.model";
 
 interface DashboardViewModelState {
@@ -14,31 +9,33 @@ interface DashboardViewModelState {
   upcomingAppointments: AppointmentUI[];
   recentPatients: PatientUI[];
   loading: boolean;
+  error: string | null;
 }
 
 export function useDashboardViewModel(): DashboardViewModelState {
-  const [stats, setStats] = useState<StatsUI | null>(null);
+  const [stats, setStats]                           = useState<StatsUI | null>(null);
   const [upcomingAppointments, setUpcomingAppointments] = useState<AppointmentUI[]>([]);
-  const [recentPatients, setRecentPatients] = useState<PatientUI[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [recentPatients, setRecentPatients]         = useState<PatientUI[]>([]);
+  const [loading, setLoading]                       = useState(true);
+  const [error, setError]                           = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetch = async () => {
       setLoading(true);
-      const [statsDTO, appointmentsDTO, patientsDTO] = await Promise.all([
-        dashboardService.getStats(),
-        dashboardService.getUpcomingAppointments(),
-        dashboardService.getRecentPatients(),
-      ]);
-
-      setStats(mapStatsDTOtoUI(statsDTO));
-      setUpcomingAppointments(appointmentsDTO.map(mapAppointmentDTOtoUI));
-      setRecentPatients(patientsDTO.map(mapPatientDTOtoUI));
-      setLoading(false);
+      setError(null);
+      try {
+        const { stats, appointments, patients } = await getDashboardUseCase();
+        setStats(stats);
+        setUpcomingAppointments(appointments);
+        setRecentPatients(patients);
+      } catch (err: unknown) {
+        setError(err instanceof Error ? err.message : "Error al cargar el dashboard");
+      } finally {
+        setLoading(false);
+      }
     };
-
-    fetchData();
+    fetch();
   }, []);
 
-  return { stats, upcomingAppointments, recentPatients, loading };
+  return { stats, upcomingAppointments, recentPatients, loading, error };
 }

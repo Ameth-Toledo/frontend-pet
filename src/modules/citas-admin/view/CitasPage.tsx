@@ -15,13 +15,19 @@ function Spinner() {
 }
 
 export default function CitasPage() {
-  const { filteredCitas, searchTerm, setSearchTerm, loading } = useCitasViewModel();
+  const { filteredCitas, searchTerm, setSearchTerm, loading, error, userName } = useCitasViewModel();
 
   if (loading) return <Spinner />;
 
+  if (error) return (
+    <div style={{ padding: "32px" }}>
+      <p style={{ color: "#EF4444", fontSize: "14px" }}>Error: {error}</p>
+    </div>
+  );
+
   return (
     <div style={{ padding: "32px", minHeight: "100vh" }}>
-      <CitasHeader searchTerm={searchTerm} onSearchChange={setSearchTerm} />
+      <CitasHeader searchTerm={searchTerm} onSearchChange={setSearchTerm} userName={userName} />
       <CitasTable citas={filteredCitas} />
     </div>
   );

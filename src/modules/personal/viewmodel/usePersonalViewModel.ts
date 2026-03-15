@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { personalService } from "../services/personal.service";
-import { mapVeterinarioDTOtoUI } from "../model/mapper";
+import { getPersonalUseCase } from "../usecases/GetPersonalUseCase";
 import { VeterinarioUI } from "../model/ui.model";
+import { UserUIModel } from "@/modules/auth/model/ui.model";
 
 interface PersonalViewModelState {
   veterinarios: VeterinarioUI[];
@@ -11,39 +11,54 @@ interface PersonalViewModelState {
   searchTerm: string;
   setSearchTerm: (term: string) => void;
   loading: boolean;
-  // modal
+  error: string | null;
+  userName: string;
   isCreateOpen: boolean;
   openCreate: () => void;
   closeCreate: () => void;
 }
 
 export function usePersonalViewModel(): PersonalViewModelState {
-  const [veterinarios, setVeterinarios] = useState<VeterinarioUI[]>([]);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [loading, setLoading] = useState(true);
-  const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [veterinarios, setVeterinarios]   = useState<VeterinarioUI[]>([]);
+  const [searchTerm, setSearchTerm]       = useState("");
+  const [loading, setLoading]             = useState(true);
+  const [error, setError]                 = useState<string | null>(null);
+  const [userName, setUserName]           = useState("Administrador");
+  const [isCreateOpen, setIsCreateOpen]   = useState(false);
 
   useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      const dtos = await personalService.getVeterinarios();
-      setVeterinarios(dtos.map(mapVeterinarioDTOtoUI));
-      setLoading(false);
-    };
-    fetchData();
+    if (typeof window !== "undefined") {
+      const raw = localStorage.getItem("user");
+      if (raw) {
+        const user: UserUIModel = JSON.parse(raw);
+        setUserName(user.fullName);
+      }
+    }
   }, []);
 
-  const filteredVeterinarios = veterinarios.filter((v) => {
+  useEffect(() => {
+    const fetch = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        setVeterinarios(await getPersonalUseCase());
+      } catch (err: unknown) {
+        setError(err instanceof Error ? err.message : "Error al cargar el personal");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetch();
+  }, []);
+
+  const filteredVeterinarios = veterinarios.filter(({ nombre, especialidad, email }) => {
     const term = searchTerm.toLowerCase();
     return (
-      v.nombre.toLowerCase().includes(term) ||
-      v.especialidad.toLowerCase().includes(term) ||
-      v.email.toLowerCase().includes(term)
+      nombre.toLowerCase().includes(term)      ||
+      especialidad.toLowerCase().includes(term) ||
+      email.toLowerCase().includes(term)
     );
   });
-
-  const openCreate = () => setIsCreateOpen(true);
-  const closeCreate = () => setIsCreateOpen(false);
 
   return {
     veterinarios,
@@ -51,8 +66,10 @@ export function usePersonalViewModel(): PersonalViewModelState {
     searchTerm,
     setSearchTerm,
     loading,
+    error,
+    userName,
     isCreateOpen,
-    openCreate,
-    closeCreate,
+    openCreate:  () => setIsCreateOpen(true),
+    closeCreate: () => setIsCreateOpen(false),
   };
 }

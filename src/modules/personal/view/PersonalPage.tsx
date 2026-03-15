@@ -16,18 +16,20 @@ function Spinner() {
 }
 
 export default function PersonalPage() {
-  const { filteredVeterinarios, searchTerm, setSearchTerm, loading, isCreateOpen, openCreate, closeCreate } =
+  const { filteredVeterinarios, searchTerm, setSearchTerm, loading, error, userName, isCreateOpen, openCreate, closeCreate } =
     usePersonalViewModel();
 
   if (loading) return <Spinner />;
 
+  if (error) return (
+    <div style={{ padding: "32px" }}>
+      <p style={{ color: "#EF4444", fontSize: "14px" }}>Error: {error}</p>
+    </div>
+  );
+
   return (
     <div style={{ padding: "32px", minHeight: "100vh" }}>
-      <PersonalHeader
-        searchTerm={searchTerm}
-        onSearchChange={setSearchTerm}
-        onNuevoClick={openCreate}
-      />
+      <PersonalHeader searchTerm={searchTerm} onSearchChange={setSearchTerm} onNuevoClick={openCreate} userName={userName} />
       <PersonalTable veterinarios={filteredVeterinarios} />
       {isCreateOpen && <PersonalFormModal onClose={closeCreate} />}
     </div>
