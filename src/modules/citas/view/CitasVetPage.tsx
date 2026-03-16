@@ -5,8 +5,9 @@ import { useCitasVetViewModel } from "@/modules/citas/viewmodel/useCitasViewMode
 import { CitaVetUI } from "../model/ui.model";
 import CitasVetHeader, { FiltroServicioVet } from "./CitasVetHeader";
 import CitasVetTable from "./CitasVetTable";
-import CitaDetailModal, { CitaDetailData } from "@/modules/citas-admin/view/CitaDetailModal";
 import ConsultaNotasModal from "./ConsultaNotasModal";
+import CitaDetailModal from "@/modules/citas-admin/view/CitaDetailModal";
+import { CitaDetailData } from "@/modules/citas-admin/model/dto/props/CitaDetailModalProps";
 
 function Spinner() {
   return (
@@ -21,31 +22,27 @@ const especieMap: Record<string, string> = { dog: "Perro", cat: "Gato", bird: "A
 
 function mapToDetail(c: CitaVetUI): CitaDetailData {
   return {
-    nombre: c.paciente,
-    raza: c.raza,
-    especie: especieMap[c.species] ?? c.species,
+    nombre:      c.paciente,
+    raza:        c.raza,
+    especie:     especieMap[c.species] ?? c.species,
     propietario: c.propietario,
-    servicio: c.servicio,
-    hora: c.hora,
-    fecha: c.fecha,
+    servicio:    c.servicio,
+    hora:        c.hora,
+    fecha:       c.fecha,
   };
 }
 
 export default function CitasVetPage() {
   const { filteredCitas, searchTerm, setSearchTerm, loading } = useCitasVetViewModel();
   const [filtroServicio, setFiltroServicio] = useState<FiltroServicioVet>("todas");
-  const [selectedVer, setSelectedVer] = useState<CitaVetUI | null>(null);
+  const [selectedVer,    setSelectedVer]    = useState<CitaVetUI | null>(null);
   const [selectedEditar, setSelectedEditar] = useState<CitaVetUI | null>(null);
 
   if (loading) return <Spinner />;
 
   const citasFiltradas = filtroServicio === "todas"
     ? filteredCitas
-    : filteredCitas.filter((c) =>
-        filtroServicio === "chequeo"
-          ? c.servicio === "Chequeo médico"
-          : c.servicio === "Corte de pelo y baño"
-      );
+    : filteredCitas.filter((c) => c.servicio === "Chequeo médico");
 
   return (
     <div style={{ padding: "32px", minHeight: "100vh" }}>

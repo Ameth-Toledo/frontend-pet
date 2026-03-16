@@ -4,7 +4,7 @@ import PersonalRow from "./PersonalRow";
 
 const COLUMNS = ["VETERINARIO", "CONTACTO", "CÉDULA / ID", "ESTADO", "ACCIONES"];
 
-export default function PersonalTable({ veterinarios, total = 128 }: PersonalTableProps) {
+export default function PersonalTable({ veterinarios, onEditarVeterinario }: PersonalTableProps) {
   return (
     <div style={{ backgroundColor: "#FFFFFF", border: "1px solid #E5E7EB", borderRadius: "16px", overflow: "hidden" }}>
       <div style={{ overflowX: "auto" }}>
@@ -22,7 +22,9 @@ export default function PersonalTable({ veterinarios, total = 128 }: PersonalTab
             {veterinarios.length === 0 ? (
               <tr><td colSpan={5} style={{ padding: "48px", textAlign: "center", color: "#9CA3AF", fontSize: "14px" }}>No se encontraron veterinarios.</td></tr>
             ) : (
-              veterinarios.map((v) => <PersonalRow key={v.id} veterinario={v} />)
+              veterinarios.map((v) => (
+                <PersonalRow key={v.id} veterinario={v} onEditar={() => onEditarVeterinario(v)} />
+              ))
             )}
           </tbody>
         </table>
@@ -30,7 +32,7 @@ export default function PersonalTable({ veterinarios, total = 128 }: PersonalTab
 
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "14px 20px", borderTop: "1px solid #E5E7EB" }}>
         <p style={{ fontSize: "13px", color: "#6B7280" }}>
-          Mostrando <span style={{ fontWeight: 600, color: "#1F2937" }}>{veterinarios.length}</span> de <span style={{ fontWeight: 600, color: "#1F2937" }}>{total}</span> veterinarios
+          Mostrando <span style={{ fontWeight: 600, color: "#1F2937" }}>{veterinarios.length}</span> veterinarios
         </p>
         <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
           <button style={{ width: "30px", height: "30px", borderRadius: "8px", border: "1px solid #E5E7EB", backgroundColor: "#FFFFFF", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: "#6B7280" }}>

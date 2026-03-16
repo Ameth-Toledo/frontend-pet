@@ -1,39 +1,18 @@
 import React from "react";
-import { CitaVetUI } from "../model/ui.model";
+import { CitasVetTableProps } from "../model/dto/props/CitasVetTableProps";
 import CitasVetRow from "./CitasVetRow";
-
-interface CitasVetTableProps {
-  citas: CitaVetUI[];
-}
 
 const COLUMNS = ["PACIENTE", "PROPIETARIO", "SERVICIO", "FECHA", "ACCIÓN"];
 
-export default function CitasVetTable({ citas }: CitasVetTableProps) {
+export default function CitasVetTable({ citas, onVerCita, onEditarCita }: CitasVetTableProps) {
   return (
-    <div
-      style={{
-        backgroundColor: "#FFFFFF",
-        border: "1px solid #E5E7EB",
-        borderRadius: "16px",
-        overflow: "hidden",
-      }}
-    >
+    <div style={{ backgroundColor: "#FFFFFF", border: "1px solid #E5E7EB", borderRadius: "16px", overflow: "hidden" }}>
       <div style={{ overflowX: "auto" }}>
         <table style={{ width: "100%", borderCollapse: "collapse" }}>
           <thead>
             <tr style={{ borderBottom: "1px solid #E5E7EB" }}>
               {COLUMNS.map((col, i) => (
-                <th
-                  key={col}
-                  style={{
-                    padding: "12px 20px",
-                    textAlign: i === COLUMNS.length - 1 ? "right" : "left",
-                    fontSize: "11px",
-                    fontWeight: 600,
-                    color: "#9CA3AF",
-                    letterSpacing: "0.06em",
-                  }}
-                >
+                <th key={col} style={{ padding: "12px 20px", textAlign: i === COLUMNS.length - 1 ? "right" : "left", fontSize: "11px", fontWeight: 600, color: "#9CA3AF", letterSpacing: "0.06em" }}>
                   {col}
                 </th>
               ))}
@@ -47,7 +26,9 @@ export default function CitasVetTable({ citas }: CitasVetTableProps) {
                 </td>
               </tr>
             ) : (
-              citas.map((c) => <CitasVetRow key={c.id} cita={c} />)
+              citas.map((c) => (
+                <CitasVetRow key={c.id} cita={c} onVer={() => onVerCita(c)} onEditar={() => onEditarCita(c)} />
+              ))
             )}
           </tbody>
         </table>

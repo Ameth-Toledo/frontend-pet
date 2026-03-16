@@ -4,20 +4,21 @@ import React, { useState } from "react";
 import { useCitasViewModel } from "@/modules/citas-admin/viewmodel/useCitasViewModel";
 import CitasHeader, { FiltroServicio } from "./CitasHeader";
 import CitasTable from "./CitasTable";
-import CitaDetailModal, { CitaDetailData } from "./CitaDetailModal";
+import CitaDetailModal from "./CitaDetailModal";
+import { CitaDetailData } from "../model/dto/props/CitaDetailModalProps";
 import { CitaUI } from "../model/ui.model";
 
 const especieMap: Record<string, string> = { dog: "Perro", cat: "Gato", bird: "Ave", other: "Otro" };
 
 function mapCitaToDetail(cita: CitaUI): CitaDetailData {
   return {
-    nombre: cita.paciente,
-    raza: cita.raza,
-    especie: especieMap[cita.species] ?? cita.species,
+    nombre:      cita.paciente,
+    raza:        cita.raza,
+    especie:     especieMap[cita.species] ?? cita.species,
     propietario: cita.propietario,
-    servicio: cita.servicio,
-    hora: cita.hora,
-    fecha: cita.fecha,
+    servicio:    cita.servicio,
+    hora:        cita.hora,
+    fecha:       cita.fecha,
   };
 }
 
@@ -32,18 +33,14 @@ function Spinner() {
 
 export default function CitasPage() {
   const { filteredCitas, searchTerm, setSearchTerm, loading } = useCitasViewModel();
-  const [selectedCita, setSelectedCita] = useState<CitaUI | null>(null);
+  const [selectedCita,   setSelectedCita]   = useState<CitaUI | null>(null);
   const [filtroServicio, setFiltroServicio] = useState<FiltroServicio>("todos");
 
   if (loading) return <Spinner />;
 
   const citasFiltradas = filtroServicio === "todos"
     ? filteredCitas
-    : filteredCitas.filter((c) =>
-        filtroServicio === "chequeo"
-          ? c.servicio === "Chequeo médico"
-          : c.servicio === "Corte de pelo y baño"
-      );
+    : filteredCitas.filter((c) => c.servicio === "Chequeo médico");
 
   return (
     <div style={{ padding: "32px", minHeight: "100vh" }}>
