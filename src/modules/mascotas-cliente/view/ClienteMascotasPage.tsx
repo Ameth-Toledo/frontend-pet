@@ -86,8 +86,8 @@ export function ClienteMascotasPage() {
                 <input defaultValue={selectedMascota.especie} className="w-full border rounded-lg p-2 text-sm" />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Edad</label>
-                <input defaultValue={selectedMascota.edad} className="w-full border rounded-lg p-2 text-sm" />
+                <label className="block text-sm font-medium text-gray-700 mb-1">Fecha de nacimiento</label>
+                <input defaultValue={selectedMascota.fecha_nacimiento ?? ''} className="w-full border rounded-lg p-2 text-sm" />
               </div>
               <button
                 onClick={() => { setSelectedMascota(null); setShowEdit(false); }}

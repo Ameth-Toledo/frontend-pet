@@ -20,21 +20,25 @@ export function useClienteMascotasViewModel() {
   const getUserId = (): number | null => {
     try {
       const stored = localStorage.getItem('user');
-      return stored ? JSON.parse(stored).id : user?.id ?? null;
+      return stored ? JSON.parse(stored).id : null;
     } catch {
-      return user?.id ?? null;
+      return null;
     }
   };
 
   const fetchMascotas = async () => {
     const userId = getUserId();
-    if (!userId) return;
+    if (!userId) {
+      setLoading(false);
+      return;
+    }
     setLoading(true);
     setError(null);
     try {
       const data = await clienteMascotasService.getMascotas(userId);
       setMascotas(data.map(MascotaClienteMapper.fromDTOtoUI));
-    } catch {
+    } catch (err) {
+      console.error('fetchMascotas error:', err);
       setError('Error al cargar las mascotas');
     } finally {
       setLoading(false);
@@ -56,7 +60,7 @@ export function useClienteMascotasViewModel() {
       setMascotas(prev => [...prev, nueva]);
       return { success: true };
     } catch (err) {
-      console.error('Error al crear mascota:', err);
+      console.error('createMascota error:', err);
       setError('Error al registrar la mascota');
       return { success: false };
     } finally {
@@ -64,9 +68,10 @@ export function useClienteMascotasViewModel() {
     }
   };
 
+  // Se ejecuta cuando user se carga desde localStorage
   useEffect(() => {
-    fetchMascotas();
-  }, []);
+    if (user?.id) fetchMascotas();
+  }, [user?.id]);
 
   return {
     mascotas,

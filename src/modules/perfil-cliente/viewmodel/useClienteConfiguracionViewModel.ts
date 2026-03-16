@@ -1,14 +1,14 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
-import { getClienteConfiguracionUseCase } from "../usecases/GetClienteConfiguracionUseCase";
-import { updateClienteConfiguracionUseCase } from "../usecases/UpdateClienteConfiguracionUseCase";
-import { changePasswordClienteUseCase } from "../usecases/ChangePasswordClienteUseCase";
-import { ClienteConfiguracionUI, ChangePasswordFormUI } from "../model/ui.model";
+import { useEffect, useState } from 'react';
+import { getClienteConfiguracionUseCase } from '../usecases/GetClienteConfiguracionUseCase';
+import { updateClienteConfiguracionUseCase } from '../usecases/UpdateClienteConfiguracionUseCase';
+import { changePasswordClienteUseCase } from '../usecases/ChangePasswordClienteUseCase';
+import { ClienteConfiguracionUI, ChangePasswordFormUI } from '../model/ui.model';
 
 export function useClienteConfiguracionViewModel() {
   const [configuracion, setConfiguracion] = useState<ClienteConfiguracionUI | null>(null);
-  const [form, setForm]                   = useState<ClienteConfiguracionUI>({ id: "", nombreCompleto: "", correoElectronico: "", telefono: "", rol: "" });
+  const [form, setForm]                   = useState<ClienteConfiguracionUI>({ id: '', nombreCompleto: '', correoElectronico: '', telefono: '', rol: '' });
   const [loading, setLoading]             = useState(true);
   const [saving, setSaving]               = useState(false);
   const [savedOk, setSavedOk]             = useState(false);
@@ -27,7 +27,7 @@ export function useClienteConfiguracionViewModel() {
         setConfiguracion(ui);
         setForm(ui);
       } catch {
-        setError("No se pudo cargar la configuración.");
+        setError('No se pudo cargar la configuración.');
       } finally {
         setLoading(false);
       }
@@ -36,7 +36,7 @@ export function useClienteConfiguracionViewModel() {
   }, []);
 
   const updateFormField = (field: keyof ClienteConfiguracionUI, value: string) => {
-    setForm((prev) => ({ ...prev, [field]: value }));
+    setForm(prev => ({ ...prev, [field]: value }));
     setSavedOk(false);
   };
 
@@ -49,7 +49,7 @@ export function useClienteConfiguracionViewModel() {
       setSavedOk(true);
       setTimeout(() => setSavedOk(false), 2500);
     } catch {
-      setError("No se pudieron guardar los cambios.");
+      setError('No se pudieron guardar los cambios.');
     } finally {
       setSaving(false);
     }
@@ -77,7 +77,7 @@ export function useClienteConfiguracionViewModel() {
       await changePasswordClienteUseCase(passwordForm);
       cerrarPasswordModal();
     } catch (err: unknown) {
-      setPasswordError(err instanceof Error ? err.message : "Error al cambiar la contraseña.");
+      setPasswordError(err instanceof Error ? err.message : 'Error al cambiar la contraseña.');
     } finally {
       setPasswordLoading(false);
     }

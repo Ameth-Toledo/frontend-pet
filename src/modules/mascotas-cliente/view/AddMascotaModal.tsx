@@ -43,7 +43,6 @@ export default function AddMascotaModal({ isOpen, onClose, onSubmit, isLoading }
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
       <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 space-y-5">
 
-        {/* Header */}
         <div className="flex items-center justify-between">
           <h2 className="text-lg font-semibold text-gray-900">Agregar mascota</h2>
           <button onClick={onClose} className="text-gray-400 hover:text-gray-600 transition-colors">
@@ -53,7 +52,6 @@ export default function AddMascotaModal({ isOpen, onClose, onSubmit, isLoading }
           </button>
         </div>
 
-        {/* Nombre */}
         <div>
           <label className={labelClass}>Nombre</label>
           <input
@@ -65,7 +63,6 @@ export default function AddMascotaModal({ isOpen, onClose, onSubmit, isLoading }
           />
         </div>
 
-        {/* Especie y Sexo */}
         <div className="grid grid-cols-2 gap-3">
           <div>
             <label className={labelClass}>Especie</label>
@@ -83,7 +80,6 @@ export default function AddMascotaModal({ isOpen, onClose, onSubmit, isLoading }
           </div>
         </div>
 
-        {/* Fecha nacimiento y Peso */}
         <div className="grid grid-cols-2 gap-3">
           <div>
             <label className={labelClass}>Fecha de nacimiento</label>
@@ -110,7 +106,6 @@ export default function AddMascotaModal({ isOpen, onClose, onSubmit, isLoading }
           </div>
         </div>
 
-        {/* Botones */}
         <div className="flex gap-3 pt-1">
           <button
             onClick={onClose}

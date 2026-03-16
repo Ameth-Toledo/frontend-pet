@@ -1,4 +1,4 @@
-export type EstadoCitaUI = "CONFIRMADA" | "CANCELADA" | "COMPLETADA";
+export type EstadoCitaUI = 'PENDIENTE' | 'CONFIRMADA' | 'CANCELADA' | 'COMPLETADA';
 
 export interface CitaUI {
   id: string;
