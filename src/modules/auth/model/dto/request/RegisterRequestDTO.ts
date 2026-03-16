@@ -4,4 +4,5 @@ export interface RegisterRequestDTO {
   email: string;
   telefono: string;
   password: string;
+  imagenPerfil?: File;
 }
