@@ -1,9 +1,11 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { usePacientesViewModel } from "@/modules/mascotas-admin/viewmodel/usePacientesViewModel";
-import PacientesHeader from "./PacientesHeader";
+import { PacienteUI } from "../model/ui.model";
+import PacientesHeader, { FiltroEspecie } from "./PacientesHeader";
 import PacientesTable from "./PacientesTable";
+import PacienteHistorialModal from "./PacienteHistorialModal";
 
 function Spinner() {
   return (
@@ -15,20 +17,33 @@ function Spinner() {
 }
 
 export default function PacientesPage() {
-  const { filteredPacientes, searchTerm, setSearchTerm, loading, error, userName } = usePacientesViewModel();
+  const { filteredPacientes, searchTerm, setSearchTerm, loading } = usePacientesViewModel();
+  const [selectedPaciente, setSelectedPaciente] = useState<PacienteUI | null>(null);
+  const [filtroEspecie, setFiltroEspecie] = useState<FiltroEspecie>("todos");
 
   if (loading) return <Spinner />;
 
-  if (error) return (
-    <div style={{ padding: "32px" }}>
-      <p style={{ color: "#EF4444", fontSize: "14px" }}>Error: {error}</p>
-    </div>
-  );
+  const pacientesFiltrados = filtroEspecie === "todos"
+    ? filteredPacientes
+    : filteredPacientes.filter((p) =>
+        filtroEspecie === "perro" ? p.especieIcon !== "cat" : p.especieIcon === "cat"
+      );
 
   return (
     <div style={{ padding: "32px", minHeight: "100vh" }}>
-      <PacientesHeader searchTerm={searchTerm} onSearchChange={setSearchTerm} userName={userName} />
-      <PacientesTable pacientes={filteredPacientes} />
+      <PacientesHeader
+        searchTerm={searchTerm}
+        onSearchChange={setSearchTerm}
+        filtroEspecie={filtroEspecie}
+        onFiltroChange={setFiltroEspecie}
+      />
+      <PacientesTable pacientes={pacientesFiltrados} onVerPaciente={setSelectedPaciente} />
+      {selectedPaciente && (
+        <PacienteHistorialModal
+          paciente={selectedPaciente}
+          onClose={() => setSelectedPaciente(null)}
+        />
+      )}
     </div>
   );
 }

@@ -40,7 +40,7 @@ function CatSVG() {
   );
 }
 
-export default function PetCard({ pet }: PetCardProps) {
+export default function PetCard({ pet, onVerMascota }: PetCardProps) {
   const [hover, setHover] = React.useState(false);
   return (
     <div style={{ flex: "1 1 200px", backgroundColor: C.white, border: `1px solid ${C.border}`, borderRadius: "20px", padding: "28px 24px", display: "flex", flexDirection: "column", alignItems: "center", gap: "16px", boxShadow: "0 1px 8px rgba(0,0,0,0.05)", cursor: "default", transition: "box-shadow 0.2s, transform 0.2s" }}
@@ -50,7 +50,7 @@ export default function PetCard({ pet }: PetCardProps) {
         {pet.tipo === "perro" ? <DogSVG /> : <CatSVG />}
       </div>
       <p style={{ fontSize: "16px", fontWeight: 700, color: C.textMain }}>{pet.nombre}</p>
-      <button style={{ width: "100%", backgroundColor: hover ? C.greenLight : C.white, color: hover ? C.green : "#4B5563", border: `1px solid ${hover ? C.green : C.border}`, borderRadius: "10px", padding: "8px 0", fontSize: "13px", fontWeight: 500, cursor: "pointer", transition: "all 0.15s" }}
+      <button onClick={onVerMascota} style={{ width: "100%", backgroundColor: hover ? C.greenLight : C.white, color: hover ? C.green : "#4B5563", border: `1px solid ${hover ? C.green : C.border}`, borderRadius: "10px", padding: "8px 0", fontSize: "13px", fontWeight: 500, cursor: "pointer", transition: "all 0.15s" }}
         onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}>
         Ver mascota
       </button>

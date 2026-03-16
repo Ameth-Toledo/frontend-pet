@@ -38,28 +38,37 @@ function Spinner() {
 }
 
 export default function DashboardPage() {
-  const { stats, upcomingAppointments, recentPatients, loading, error } = useDashboardViewModel();
+  const { stats, upcomingAppointments, recentPatients, loading } = useDashboardViewModel();
 
   if (loading) return <Spinner />;
 
-  if (error) return (
-    <div style={{ padding: "32px" }}>
-      <p style={{ color: "#EF4444", fontSize: "14px" }}>Error: {error}</p>
-    </div>
-  );
-
   return (
     <div style={{ padding: "32px", minHeight: "100vh" }}>
+      {/* Header */}
       <div style={{ marginBottom: "24px" }}>
         <h1 style={{ fontSize: "22px", fontWeight: 800, color: "#1F2937", margin: 0 }}>Panel principal</h1>
-        <p style={{ fontSize: "13px", color: "#6B7280", margin: "4px 0 0 0" }}>Resumen general de la clínica veterinaria.</p>
+        <p style={{ fontSize: "13px", color: "#6B7280", margin: "4px 0 0 0" }}>
+          Resumen general de la clínica veterinaria.
+        </p>
       </div>
 
+      {/* Stats row */}
       <div style={{ display: "flex", gap: "20px", marginBottom: "24px" }}>
-        <StatsCard title="Citas de hoy"      value={stats!.appointmentsToday} subtext={stats!.appointmentsTrend}                                   icon={<CalendarIcon />} />
-        <StatsCard title="Pacientes activos" value={stats!.activePatients}    subtext={`${stats!.newPatientsThisWeek} pacientes nuevos esta semana`} icon={<PawIcon />}      />
+        <StatsCard
+          title="Citas de hoy"
+          value={stats!.appointmentsToday}
+          subtext={stats!.appointmentsTrend}
+          icon={<CalendarIcon />}
+        />
+        <StatsCard
+          title="Pacientes activos"
+          value={stats!.activePatients}
+          subtext={`${stats!.newPatientsThisWeek} pacientes nuevos esta semana`}
+          icon={<PawIcon />}
+        />
       </div>
 
+      {/* Bottom section */}
       <div style={{ display: "flex", gap: "20px", alignItems: "flex-start" }}>
         <UpcomingAppointments appointments={upcomingAppointments} />
         <RecentPatients patients={recentPatients} />
