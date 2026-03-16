@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import PetCard from "./PetCard";
 import AppointmentCard from "./AppointmentCard";
 import AgregarMascotaModal from "./AgregarMascotaModal";
+import AgendarCitaModal from "./AgendarCitaModal";
 import { PetUI, AppointmentUI } from "../model/ui.model";
 
 const C = {
@@ -24,21 +25,23 @@ const mockCitas: AppointmentUI[] = [
 
 export default function ClienteDashboardPage() {
   const router = useRouter();
-  const [showModal, setShowModal] = useState(false);
+  const [showAgregarModal, setShowAgregarModal] = useState(false);
+  const [showAgendarModal, setShowAgendarModal] = useState(false);
 
   return (
     <div style={{ backgroundColor: C.bg, minHeight: "100vh", padding: "32px" }}>
 
       <div style={{ display: "flex", gap: "12px", marginBottom: "32px" }}>
-        <button style={{ display: "flex", alignItems: "center", gap: "8px", backgroundColor: C.green, color: C.white, border: "none", borderRadius: "24px", padding: "10px 22px", fontSize: "14px", fontWeight: 600, cursor: "pointer" }}>
+        <button
+          onClick={() => setShowAgendarModal(true)}
+          style={{ display: "flex", alignItems: "center", gap: "8px", backgroundColor: C.green, color: C.white, border: "none", borderRadius: "24px", padding: "10px 22px", fontSize: "14px", fontWeight: 600, cursor: "pointer" }}>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-            <circle cx="12" cy="12" r="10" />
-            <line x1="12" y1="8" x2="12" y2="16" />
-            <line x1="8" y1="12" x2="16" y2="12" />
+            <circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="16" /><line x1="8" y1="12" x2="16" y2="12" />
           </svg>
           Agendar cita
         </button>
-        <button onClick={() => setShowModal(true)}
+        <button
+          onClick={() => setShowAgregarModal(true)}
           style={{ display: "flex", alignItems: "center", gap: "8px", backgroundColor: C.white, color: C.green, border: `1.5px solid ${C.green}`, borderRadius: "24px", padding: "10px 22px", fontSize: "14px", fontWeight: 600, cursor: "pointer" }}>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
@@ -48,6 +51,7 @@ export default function ClienteDashboardPage() {
       </div>
 
       <div style={{ display: "flex", gap: "28px", alignItems: "flex-start" }}>
+
         <div style={{ flex: "1 1 0" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
             <h2 style={{ fontSize: "18px", fontWeight: 800, color: C.textMain, margin: 0 }}>Mis Mascotas</h2>
@@ -73,7 +77,8 @@ export default function ClienteDashboardPage() {
             ))}
             <div style={{ borderTop: `1px solid ${C.border}`, padding: "14px 0 10px", textAlign: "center" }}>
               <p style={{ fontSize: "12px", color: C.textSub, marginBottom: "6px" }}>¿Necesitas una nueva cita?</p>
-              <button style={{ background: "none", border: "none", fontSize: "13px", color: C.green, fontWeight: 600, cursor: "pointer" }}>
+              <button onClick={() => setShowAgendarModal(true)}
+                style={{ background: "none", border: "none", fontSize: "13px", color: C.green, fontWeight: 600, cursor: "pointer" }}>
                 + Agendar cita nueva
               </button>
             </div>
@@ -81,11 +86,20 @@ export default function ClienteDashboardPage() {
         </div>
       </div>
 
-      {showModal && (
+      {showAgregarModal && (
         <AgregarMascotaModal
-          onClose={() => setShowModal(false)}
+          onClose={() => setShowAgregarModal(false)}
           onGuardar={(nombre, especie, raza) => {
-            setShowModal(false);
+            setShowAgregarModal(false);
+          }}
+        />
+      )}
+
+      {showAgendarModal && (
+        <AgendarCitaModal
+          onClose={() => setShowAgendarModal(false)}
+          onAgendar={(mascotaId, fecha, hora, motivo) => {
+            setShowAgendarModal(false);
           }}
         />
       )}

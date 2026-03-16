@@ -20,11 +20,7 @@ export default function ClientesTable({ clientes, onVerCliente }: ClientesTableP
           </thead>
           <tbody>
             {clientes.length === 0 ? (
-              <tr>
-                <td colSpan={5} style={{ padding: "40px", textAlign: "center", color: "#9CA3AF", fontSize: "14px" }}>
-                  No se encontraron clientes.
-                </td>
-              </tr>
+              <tr><td colSpan={5} style={{ padding: "40px", textAlign: "center", color: "#9CA3AF", fontSize: "14px" }}>No se encontraron clientes.</td></tr>
             ) : (
               clientes.map((cliente) => (
                 <ClienteRow key={cliente.id} cliente={cliente} onVer={() => onVerCliente(cliente)} />
@@ -33,14 +29,13 @@ export default function ClientesTable({ clientes, onVerCliente }: ClientesTableP
           </tbody>
         </table>
       </div>
-
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "14px 20px", borderTop: "1px solid #E5E7EB", backgroundColor: "#FAFAFA" }}>
         <p style={{ fontSize: "13px", color: "#6B7280" }}>
           Mostrando <span style={{ fontWeight: 600, color: "#1F2937" }}>{clientes.length}</span> clientes
         </p>
         <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
           {[1, 2, 3].map((page) => (
-            <button key={page} style={{ width: "32px", height: "32px", borderRadius: "8px", border: page === 1 ? "none" : "1px solid #E5E7EB", backgroundColor: page === 1 ? "#4F8A7C" : "#FFFFFF", color: page === 1 ? "#FFFFFF" : "#6B7280", fontSize: "13px", fontWeight: page === 1 ? 600 : 400, cursor: "pointer" }}>
+            <button key={page} style={{ width: "32px", height: "32px", borderRadius: "8px", border: page === 1 ? "none" : "1px solid #E5E7EB", backgroundColor: page === 1 ? "#4F8A7C" : "#FFFFFF", color: page === 1 ? "#FFFFFF" : "#6B7280", fontSize: "13px", cursor: "pointer" }}>
               {page}
             </button>
           ))}

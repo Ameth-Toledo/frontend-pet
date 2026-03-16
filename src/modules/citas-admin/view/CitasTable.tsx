@@ -20,11 +20,7 @@ export default function CitasTable({ citas, onVerCita }: CitasTableProps) {
           </thead>
           <tbody>
             {citas.length === 0 ? (
-              <tr>
-                <td colSpan={6} style={{ padding: "40px", textAlign: "center", color: "#9CA3AF", fontSize: "14px" }}>
-                  No se encontraron citas.
-                </td>
-              </tr>
+              <tr><td colSpan={6} style={{ padding: "40px", textAlign: "center", color: "#9CA3AF", fontSize: "14px" }}>No se encontraron citas.</td></tr>
             ) : (
               citas.map((cita) => (
                 <CitaRow key={cita.id} cita={cita} onVer={() => onVerCita(cita)} />

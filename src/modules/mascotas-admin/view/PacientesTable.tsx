@@ -4,7 +4,7 @@ import PacienteRow from "./PacienteRow";
 
 const COLUMNS = ["MASCOTA", "ESPECIE / RAZA", "PROPIETARIO", "ESTADO", "ACCIONES"];
 
-export default function PacientesTable({ pacientes, total = 128 }: PacientesTableProps) {
+export default function PacientesTable({ pacientes, onVerPaciente }: PacientesTableProps) {
   return (
     <div style={{ backgroundColor: "#FFFFFF", border: "1px solid #E5E7EB", borderRadius: "16px", overflow: "hidden" }}>
       <div style={{ overflowX: "auto" }}>
@@ -22,7 +22,7 @@ export default function PacientesTable({ pacientes, total = 128 }: PacientesTabl
             {pacientes.length === 0 ? (
               <tr><td colSpan={5} style={{ padding: "48px", textAlign: "center", color: "#9CA3AF", fontSize: "14px" }}>No se encontraron pacientes.</td></tr>
             ) : (
-              pacientes.map((p) => <PacienteRow key={p.id} paciente={p} />)
+              pacientes.map((p) => <PacienteRow key={p.id} paciente={p} onVer={() => onVerPaciente(p)} />)
             )}
           </tbody>
         </table>
@@ -30,7 +30,7 @@ export default function PacientesTable({ pacientes, total = 128 }: PacientesTabl
 
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "14px 20px", borderTop: "1px solid #E5E7EB" }}>
         <p style={{ fontSize: "13px", color: "#6B7280" }}>
-          Mostrando <span style={{ fontWeight: 600, color: "#1F2937" }}>{pacientes.length}</span> de <span style={{ fontWeight: 600, color: "#1F2937" }}>{total}</span> pacientes
+          Mostrando <span style={{ fontWeight: 600, color: "#1F2937" }}>{pacientes.length}</span> pacientes
         </p>
         <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
           <button style={{ width: "30px", height: "30px", borderRadius: "8px", border: "1px solid #E5E7EB", backgroundColor: "#FFFFFF", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: "#6B7280" }}>
