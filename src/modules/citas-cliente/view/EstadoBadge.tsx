@@ -6,20 +6,25 @@ interface EstadoBadgeProps {
 }
 
 const BADGE_STYLES: Record<EstadoCitaUI, { bg: string; color: string; label: string }> = {
+  PENDIENTE: {
+    bg:    '#EFF6FF',
+    color: '#1D4ED8',
+    label: 'PENDIENTE',
+  },
   CONFIRMADA: {
-    bg:    "#E6F2EF",
-    color: "#2F7A6A",
-    label: "CONFIRMADA",
+    bg:    '#E6F2EF',
+    color: '#2F7A6A',
+    label: 'CONFIRMADA',
   },
   CANCELADA: {
-    bg:    "#FFF4E6",
-    color: "#B45309",
-    label: "CANCELADA",
+    bg:    '#FFF4E6',
+    color: '#B45309',
+    label: 'CANCELADA',
   },
   COMPLETADA: {
-    bg:    "#F3F4F6",
-    color: "#6B7280",
-    label: "COMPLETADA",
+    bg:    '#F3F4F6',
+    color: '#6B7280',
+    label: 'COMPLETADA',
   },
 };
 

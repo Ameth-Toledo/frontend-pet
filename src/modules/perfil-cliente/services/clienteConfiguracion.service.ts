@@ -1,28 +1,47 @@
-import { apiClient } from "@/lib/axios";
-import { ClienteConfiguracionResponseDTO } from "../model/dto/response/ClienteConfiguracionResponseDTO";
-import { UpdateClienteConfiguracionRequestDTO } from "../model/dto/request/UpdateClienteConfiguracionRequestDTO";
-import { ChangePasswordClienteRequestDTO } from "../model/dto/request/ChangePasswordClienteRequestDTO";
-import { mockClienteConfiguracion } from "./clienteConfiguracion.mock";
+import { apiClient } from '@/lib/axios';
+import { ClienteConfiguracionResponseDTO } from '../model/dto/response/ClienteConfiguracionResponseDTO';
+import { ChangePasswordClienteRequestDTO } from '../model/dto/request/ChangePasswordClienteRequestDTO';
+import { UpdateClienteConfiguracionRequestDTO } from '../model/dto/request/UpdateClienteConfiguracionRequestDTO';
 
 export const clienteConfiguracionService = {
-  /**
-   * TODO: reemplazar mock por:
-   * const res = await apiClient.get<ClienteConfiguracionResponseDTO>('/cliente/configuracion');
-   * return res.data;
-   */
-  getConfiguracion: (): Promise<ClienteConfiguracionResponseDTO> =>
-    new Promise((resolve) => setTimeout(() => resolve({ ...mockClienteConfiguracion }), 800)),
 
-  updateConfiguracion: (dto: UpdateClienteConfiguracionRequestDTO): Promise<void> =>
-    new Promise((resolve) => {
-      setTimeout(() => {
-        Object.assign(mockClienteConfiguracion, dto);
-        resolve();
-      }, 800);
-    }),
+  getConfiguracion: async (): Promise<ClienteConfiguracionResponseDTO> => {
+    const stored = localStorage.getItem('user');
+    if (!stored) throw new Error('No hay sesión activa');
+    const user = JSON.parse(stored);
+    const res = await apiClient.get(`/clients/${user.id}`);
+    const data = res.data.data ?? res.data;
+    return {
+      id:                String(data.id),
+      nombreCompleto:    `${data.nombre} ${data.apellido}`.trim(),
+      correoElectronico: data.email     ?? '',
+      telefono:          data.telefono  ?? '',
+      rol:               user.role      ?? '',
+    };
+  },
 
-  changePassword: (dto: ChangePasswordClienteRequestDTO): Promise<void> =>
-    new Promise((resolve) => setTimeout(() => resolve(), 800)),
+  updateConfiguracion: async (dto: UpdateClienteConfiguracionRequestDTO): Promise<void> => {
+    const stored = localStorage.getItem('user');
+    if (!stored) throw new Error('No hay sesión activa');
+    const user = JSON.parse(stored);
+    const [nombre, ...rest] = dto.nombreCompleto.trim().split(' ');
+    const apellido = rest.join(' ');
+    await apiClient.put(`/clients/${user.id}`, {
+      nombre,
+      apellido,
+      email:    dto.correoElectronico,
+      telefono: dto.telefono,
+    });
+    // Actualizar localStorage
+    user.fullName = dto.nombreCompleto;
+    user.email    = dto.correoElectronico;
+    localStorage.setItem('user', JSON.stringify(user));
+  },
+
+  changePassword: async (dto: ChangePasswordClienteRequestDTO): Promise<void> => {
+    await apiClient.put('/veterinarios/cambiar-password', {
+      password_actual: dto.passwordActual,
+      password_nueva:  dto.nuevaPassword,
+    });
+  },
 };
-
-void apiClient; 

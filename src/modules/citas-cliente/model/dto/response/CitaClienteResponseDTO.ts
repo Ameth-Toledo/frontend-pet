@@ -1,10 +1,13 @@
-export type EstadoCitaDTO = "CONFIRMADA" | "CANCELADA" | "COMPLETADA";
+export type EstadoCitaDTO = 'PENDIENTE' | 'CONFIRMADA' | 'CANCELADA' | 'COMPLETADA';
 
 export interface CitaClienteResponseDTO {
-  id: string;
+  id: number;
+  id_user: number;
+  id_mascota: number;
+  id_servicio: number;
+  id_veterinario?: number | null;
+  id_agenda?: number | null;
   fecha: string;
-  hora: string;
-  motivo: string;
-  mascotaNombre: string;
   estado: EstadoCitaDTO;
+  observaciones_cliente?: string | null;
 }

@@ -1,15 +1,12 @@
-import { apiClient } from "@/lib/axios";
-import { ClienteDashboardResponseDTO } from "../model/dto/response/ClienteDashboardResponseDTO";
-import { mockClienteDashboard } from "./clientedashboard.mock";
+import { apiClient } from '@/lib/axios';
+import { GetCitaResponse } from '../model/dto/response/AppointmentResponseDTO';
 
 export const clienteDashboardService = {
-  /**
-   * TODO: reemplazar mock por:
-   * const res = await apiClient.get<ClienteDashboardResponseDTO>('/cliente/dashboard');
-   * return res.data;
-   */
-  getDashboard: (): Promise<ClienteDashboardResponseDTO> =>
-    new Promise((resolve) => setTimeout(() => resolve(mockClienteDashboard), 600)),
+  getCitas: async (userId: number): Promise<GetCitaResponse[]> => {
+    const res = await apiClient.get('/citas');
+    const data = Array.isArray(res.data) ? res.data
+      : Array.isArray(res.data?.data) ? res.data.data
+      : [];
+    return data.filter((c: GetCitaResponse) => c.id_user === userId);
+  },
 };
-
-void apiClient;

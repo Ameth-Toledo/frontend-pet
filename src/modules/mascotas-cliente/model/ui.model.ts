@@ -1,9 +1,11 @@
-export type IconType = "perro" | "gato" | "ave" | "otro";
+export type IconType = 'perro' | 'gato';
 
 export interface MascotaUI {
-  id: string;
+  id: number;
   nombre: string;
   especie: string;
-  edad: number;
   icon: IconType;
+  sexo?: string | null;
+  peso?: number | null;
+  fecha_nacimiento?: string | null;
 }

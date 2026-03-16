@@ -1,43 +1,37 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
-import { getClienteDashboardUseCase } from "../usecases/GetClienteDashboardUseCase";
-import { ClienteDashboardUI } from "../model/ui.model";
+import { useEffect, useState } from 'react';
+import { clienteDashboardService } from '../services/clientedashboard.service';
+import { GetCitaResponse } from '../model/dto/response/AppointmentResponseDTO';
 
-interface ClienteDashboardViewModelState {
-  data: ClienteDashboardUI | null;
-  loading: boolean;
-  error: string | null;
-  showModal: boolean;
-  setShowModal: (v: boolean) => void;
-  handleAgregarMascota: (nombre: string, especie: string, raza: string) => void;
-}
+export function useClienteDashboardViewModel() {
+  const [citas,   setCitas]   = useState<GetCitaResponse[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error,   setError]   = useState<string | null>(null);
 
-export function useClienteDashboardViewModel(): ClienteDashboardViewModelState {
-  const [data, setData]           = useState<ClienteDashboardUI | null>(null);
-  const [loading, setLoading]     = useState(true);
-  const [error, setError]         = useState<string | null>(null);
-  const [showModal, setShowModal] = useState(false);
+  const getUserId = (): number | null => {
+    try {
+      const stored = localStorage.getItem('user');
+      return stored ? JSON.parse(stored).id : null;
+    } catch { return null; }
+  };
 
   useEffect(() => {
-    const fetch = async () => {
+    const load = async () => {
+      const userId = getUserId();
+      if (!userId) { setLoading(false); return; }
       setLoading(true);
-      setError(null);
       try {
-        setData(await getClienteDashboardUseCase());
+        const data = await clienteDashboardService.getCitas(userId);
+        setCitas(data);
       } catch {
-        setError("No se pudieron cargar los datos del dashboard.");
+        setError('No se pudieron cargar las citas.');
       } finally {
         setLoading(false);
       }
     };
-    fetch();
+    load();
   }, []);
 
-  const handleAgregarMascota = (nombre: string, especie: string, raza: string) => {
-    console.log("[ViewModel] Agregar mascota:", { nombre, especie, raza });
-    setShowModal(false);
-  };
-
-  return { data, loading, error, showModal, setShowModal, handleAgregarMascota };
+  return { citas, loading, error };
 }

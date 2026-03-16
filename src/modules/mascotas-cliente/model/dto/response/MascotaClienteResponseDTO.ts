@@ -1,8 +1,12 @@
-export type EspecieDTO = "PERRO" | "GATO" | "AVE" | "OTRO";
+export type EspecieDTO = 'Perro' | 'Gato';
 
 export interface MascotaClienteResponseDTO {
-  id: string;
-  nombre: string;
+  id: number;
+  id_user: number;
   especie: EspecieDTO;
-  edad: number;
+  nombre: string;
+  fecha_nacimiento?: string | null;
+  sexo?: string | null;
+  peso?: number | null;
+  activo: boolean;
 }
