@@ -1,15 +1,16 @@
-import { apiClient } from "@/lib/axios";
-import { MascotaClienteResponseDTO } from "../model/dto/response/MascotaClienteResponseDTO";
-import { mockMascotasCliente } from "./clienteMascotas.mock";
+import { apiClient } from '@/lib/axios';
+import { MascotaClienteResponseDTO } from '../model/dto/response/MascotaClienteResponseDTO';
+import { CreateMascotaRequestDTO } from '../model/dto/request/CreateMascotaRequestDTO';
 
 export const clienteMascotasService = {
-  /**
-   * TODO: reemplazar mock por:
-   * const res = await apiClient.get<MascotaClienteResponseDTO[]>('/cliente/mascotas');
-   * return res.data;
-   */
-  getMascotas: (): Promise<MascotaClienteResponseDTO[]> =>
-    new Promise((resolve) => setTimeout(() => resolve(mockMascotasCliente), 500)),
-};
 
-void apiClient;
+  getMascotas: async (userId: number): Promise<MascotaClienteResponseDTO[]> => {
+    const res = await apiClient.get<MascotaClienteResponseDTO[]>(`/api/pets/user/${userId}`);
+    return res.data;
+  },
+
+  createMascota: async (data: CreateMascotaRequestDTO): Promise<MascotaClienteResponseDTO> => {
+    const res = await apiClient.post<MascotaClienteResponseDTO>('/api/pets', data);
+    return res.data;
+  },
+};

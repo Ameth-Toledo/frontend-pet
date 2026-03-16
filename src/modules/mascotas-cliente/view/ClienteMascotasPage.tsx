@@ -1,29 +1,30 @@
-"use client";
+'use client';
 
-import React, { useState } from "react";
-import { useRouter } from "next/navigation";
-import { useClienteMascotasViewModel } from "@/modules/mascotas-cliente/viewmodel/useClienteMascotasViewModel";
-import MascotasHeader from "./MascotasHeader";
-import MascotaCard from "./MascotaCard";
-import AddMascotaCard from "./AddMascotaCard";
-import { MascotaUI } from "../model/ui.model";
-import AgregarMascotaModal from "@/modules/dashboard-cliente/view/AgregarMascotaModal";
+import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useClienteMascotasViewModel } from '../viewmodel/useClienteMascotasViewModel';
+import MascotasHeader from './MascotasHeader';
+import MascotaCard from './MascotaCard';
+import AddMascotaCard from './AddMascotaCard';
+import AddMascotaModal from './AddMascotaModal';
+import { MascotaUI } from '../model/ui.model';
+import { CreateMascotaRequestDTO } from '../model/dto/request/CreateMascotaRequestDTO';
 
 function Spinner() {
   return (
     <div className="flex items-center justify-center h-screen">
-      <div className="w-10 h-10 border-4 border-gray-200 border-t-emerald-600 rounded-full animate-spin" />
+      <div className="w-10 h-10 border-4 border-gray-200 border-t-[#2F8F83] rounded-full animate-spin" />
     </div>
   );
 }
 
 export function ClienteMascotasPage() {
   const router = useRouter();
-  const { mascotas, loading } = useClienteMascotasViewModel();
+  const { mascotas, loading, creating, error, createMascota } = useClienteMascotasViewModel();
 
   const [selectedMascota, setSelectedMascota] = useState<MascotaUI | null>(null);
-  const [mode,            setMode]            = useState<"edit" | null>(null);
-  const [showAgregar,     setShowAgregar]      = useState(false);
+  const [showEdit,        setShowEdit]        = useState(false);
+  const [showAgregar,     setShowAgregar]     = useState(false);
 
   if (loading) return <Spinner />;
 
@@ -31,45 +32,67 @@ export function ClienteMascotasPage() {
     <div className="p-8 bg-gray-50 min-h-screen">
       <MascotasHeader />
 
+      {error && (
+        <div className="mb-4 bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg text-sm">
+          {error}
+        </div>
+      )}
+
+      {mascotas.length === 0 && (
+        <div className="flex flex-col items-center justify-center py-16 text-center space-y-3">
+          <div className="w-16 h-16 bg-[#2F8F83]/10 rounded-full flex items-center justify-center">
+            <svg className="w-8 h-8 text-[#2F8F83]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
+                d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <p className="text-gray-500 text-sm">Aún no tienes mascotas registradas</p>
+          <button
+            onClick={() => setShowAgregar(true)}
+            className="text-[#2F8F83] text-sm font-medium hover:underline"
+          >
+            Registrar mi primera mascota
+          </button>
+        </div>
+      )}
+
       <div className="grid grid-cols-[repeat(auto-fill,minmax(220px,1fr))] gap-6">
-        {mascotas.map((mascota) => (
+        {mascotas.map(mascota => (
           <MascotaCard
             key={mascota.id}
             mascota={mascota}
             onVer={(id) => router.push(`/cliente/mismascotas/${id}`)}
-            onEditar={() => { setSelectedMascota(mascota); setMode("edit"); }}
+            onEditar={() => { setSelectedMascota(mascota); setShowEdit(true); }}
           />
         ))}
         <AddMascotaCard onClick={() => setShowAgregar(true)} />
       </div>
 
-      {selectedMascota && mode === "edit" && (
+      {selectedMascota && showEdit && (
         <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50">
           <div className="bg-white w-[520px] rounded-2xl shadow-xl p-8 relative">
-            <button onClick={() => { setSelectedMascota(null); setMode(null); }}
-              className="absolute top-4 right-4 text-gray-400 hover:text-gray-700">✕</button>
-
+            <button
+              onClick={() => { setSelectedMascota(null); setShowEdit(false); }}
+              className="absolute top-4 right-4 text-gray-400 hover:text-gray-700"
+            >✕</button>
             <h2 className="text-lg font-bold mb-6">Editar mascota</h2>
-
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Nombre</label>
-                <input defaultValue={selectedMascota.nombre}
-                  className="w-full border rounded-lg p-2 text-sm" />
+                <input defaultValue={selectedMascota.nombre} className="w-full border rounded-lg p-2 text-sm" />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Especie</label>
-                <input defaultValue={selectedMascota.especie}
-                  className="w-full border rounded-lg p-2 text-sm" />
+                <input defaultValue={selectedMascota.especie} className="w-full border rounded-lg p-2 text-sm" />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Edad</label>
-                <input defaultValue={selectedMascota.edad}
-                  className="w-full border rounded-lg p-2 text-sm" />
+                <input defaultValue={selectedMascota.edad} className="w-full border rounded-lg p-2 text-sm" />
               </div>
               <button
-                onClick={() => { setSelectedMascota(null); setMode(null); }}
-                className="w-full bg-emerald-600 text-white py-2 rounded-lg text-sm font-semibold">
+                onClick={() => { setSelectedMascota(null); setShowEdit(false); }}
+                className="w-full bg-[#2F8F83] hover:bg-[#287A70] text-white py-2 rounded-lg text-sm font-semibold transition-colors"
+              >
                 Guardar cambios
               </button>
             </div>
@@ -77,14 +100,12 @@ export function ClienteMascotasPage() {
         </div>
       )}
 
-      {showAgregar && (
-        <AgregarMascotaModal
-          onClose={() => setShowAgregar(false)}
-          onGuardar={(nombre, especie, raza) => {
-            setShowAgregar(false);
-          }}
-        />
-      )}
+      <AddMascotaModal
+        isOpen={showAgregar}
+        onClose={() => setShowAgregar(false)}
+        onSubmit={(form: Omit<CreateMascotaRequestDTO, 'id_user'>) => createMascota(form)}
+        isLoading={creating}
+      />
     </div>
   );
 }
