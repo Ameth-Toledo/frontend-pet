@@ -34,19 +34,20 @@ export class VeterinarioDashboardMapper {
     };
   }
 
-  static toAppointmentUI(entity: VetAppointment): VetAppointmentUI {
-    return {
-      id:             entity.id,
-      patientName:    entity.patientName,
-      patientBreed:   entity.patientBreed,
-      patientSpecies: entity.patientSpecies,
-      ownerName:      entity.ownerName,
-      time:           entity.time,
-      service:        entity.service,
-      badgeLabel:     typeToLabel[entity.type],
-      badgeVariant:   typeToVariant[entity.type],
-    };
-  }
+static toAppointmentUI(entity: VetAppointment): VetAppointmentUI {
+  return {
+    id:             entity.id,
+    patientName:    entity.patientName,
+    patientBreed:   entity.patientBreed,
+    patientSpecies: entity.patientSpecies,
+    ownerName:      entity.ownerName,
+    time:           entity.time,
+    service:        entity.service,
+    badgeLabel:     typeToLabel[entity.type],
+    badgeVariant:   typeToVariant[entity.type],
+    _raw:           (entity as any)._raw,
+  };
+}
 
   static toPatientEntity(dto: VetPatientResponseDTO): VetPatient {
     return { id: dto.id, name: dto.name, breed: dto.breed };

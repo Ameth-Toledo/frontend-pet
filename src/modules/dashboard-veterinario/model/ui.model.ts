@@ -8,6 +8,16 @@ export interface VetAppointmentUI {
   service: string;
   badgeLabel: string;
   badgeVariant: "checkup" | "grooming";
+  _raw?: {
+    estado: string;
+    motivoDetalle: string;
+    emailCliente: string;
+    telefonoCliente: string;
+    fecha: string;
+    especie: string;
+    sexo: string;
+    peso: string;
+  };
 }
 
 export interface VetPatientUI {

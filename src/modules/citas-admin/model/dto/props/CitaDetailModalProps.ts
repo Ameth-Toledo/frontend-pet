@@ -6,7 +6,11 @@ export interface CitaDetailData {
   servicio: string;
   hora: string;
   fecha?: string;
-  profesional?: string;
+
+  estado?: string;
+  motivoDetalle?: string;
+  emailCliente?: string;
+  telefonoCliente?: string;
 }
 
 export interface CitaDetailModalProps {

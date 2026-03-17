@@ -34,38 +34,58 @@ function Badge({ label, variant }: { label: string; variant: VetAppointmentUI["b
   );
 }
 
-export default function VetUpcomingAppointments({ appointments }: VetUpcomingAppointmentsProps) {
+export default function VetUpcomingAppointments({ appointments, onDetalles, onVerTodas }: VetUpcomingAppointmentsProps) {
   return (
     <div style={{ backgroundColor: "#FFFFFF", border: "1px solid #E5E7EB", borderRadius: "16px", padding: "24px 28px", flex: 1 }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
         <h3 style={{ fontSize: "15px", fontWeight: 700, color: "#1F2937", margin: 0 }}>Próximas citas</h3>
-        <button style={{ fontSize: "13px", color: "#4F8A7C", fontWeight: 500, background: "none", border: "none", cursor: "pointer" }}>Ver todas</button>
+        <button
+          onClick={onVerTodas}
+          style={{ fontSize: "13px", color: "#4F8A7C", fontWeight: 500, background: "none", border: "none", cursor: "pointer" }}
+        >
+          Ver todas
+        </button>
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "2fr 1.5fr 1fr 1.5fr 100px", padding: "10px 12px", fontSize: "11px", fontWeight: 600, color: "#6B7280", textTransform: "uppercase", letterSpacing: "0.05em", borderBottom: "1px solid #F3F4F6" }}>
-        <div>Pacientes</div><div>Propietario</div><div>Hora</div><div>Tipo</div>
+        <div>Pacientes</div>
+        <div>Propietario</div>
+        <div>Hora</div>
+        <div>Tipo</div>
         <div style={{ textAlign: "right" }}>Acción</div>
       </div>
 
-      {appointments.map((cita) => (
-        <div key={cita.id} style={{ display: "grid", gridTemplateColumns: "2fr 1.5fr 1fr 1.5fr 100px", alignItems: "center", padding: "14px 12px", borderBottom: "1px solid #F9FAFB" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-            <PetIcon species={cita.patientSpecies} />
-            <div>
-              <p style={{ fontWeight: 600, color: "#1F2937", margin: 0, fontSize: "13px" }}>{cita.patientName}</p>
-              <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0 0" }}>{cita.patientBreed}</p>
+      {appointments.length === 0 ? (
+        <div style={{ padding: "32px", textAlign: "center", color: "#9CA3AF", fontSize: "14px" }}>
+          No hay citas para hoy.
+        </div>
+      ) : (
+        appointments.map((cita) => (
+          <div key={cita.id} style={{ display: "grid", gridTemplateColumns: "2fr 1.5fr 1fr 1.5fr 100px", alignItems: "center", padding: "14px 12px", borderBottom: "1px solid #F9FAFB" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+              <PetIcon species={cita.patientSpecies} />
+              <div>
+                <p style={{ fontWeight: 600, color: "#1F2937", margin: 0, fontSize: "13px" }}>{cita.patientName}</p>
+                <p style={{ fontSize: "11px", color: "#6B7280", margin: "2px 0 0 0" }}>{cita.patientBreed}</p>
+              </div>
+            </div>
+            <div style={{ fontSize: "13px", color: "#6B7280" }}>{cita.ownerName}</div>
+            <div style={{ fontSize: "13px", color: "#374151", fontWeight: 500 }}>{cita.time}</div>
+            <div><Badge label={cita.badgeLabel} variant={cita.badgeVariant} /></div>
+            <div style={{ display: "flex", justifyContent: "flex-end" }}>
+              {/* ← AQUÍ está el fix: onClick llama a onDetalles(cita) */}
+              <button
+                onClick={() => onDetalles(cita)}
+                style={{ backgroundColor: "#4F8A7C", color: "#FFFFFF", border: "none", borderRadius: "8px", padding: "7px 16px", fontSize: "12px", fontWeight: 500, cursor: "pointer" }}
+                onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = "#3E6F63"; }}
+                onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = "#4F8A7C"; }}
+              >
+                Detalles
+              </button>
             </div>
           </div>
-          <div style={{ fontSize: "13px", color: "#6B7280" }}>{cita.ownerName}</div>
-          <div style={{ fontSize: "13px", color: "#374151", fontWeight: 500 }}>{cita.time}</div>
-          <div><Badge label={cita.badgeLabel} variant={cita.badgeVariant} /></div>
-          <div style={{ display: "flex", justifyContent: "flex-end" }}>
-            <button style={{ backgroundColor: "#4F8A7C", color: "#FFFFFF", border: "none", borderRadius: "8px", padding: "7px 16px", fontSize: "12px", fontWeight: 500, cursor: "pointer" }}>
-              Detalles
-            </button>
-          </div>
-        </div>
-      ))}
+        ))
+      )}
     </div>
   );
 }

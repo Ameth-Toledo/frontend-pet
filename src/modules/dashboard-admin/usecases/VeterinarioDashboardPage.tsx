@@ -72,7 +72,7 @@ export default function VeterinarioDashboardPage() {
   const [selectedCita, setSelectedCita] = useState<VetAppointmentUI | null>(null);
   const router = useRouter();
 
-  if (loading || !stats) return <Spinner />;
+  if (loading) return <Spinner />;
 
   return (
     <div style={{ padding: "32px", backgroundColor: "#F7F9FB", minHeight: "100vh" }}>
