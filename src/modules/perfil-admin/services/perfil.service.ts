@@ -1,28 +1,48 @@
-import { apiClient } from "@/lib/axios";
-import { ProfileResponseDTO } from "../model/dto/response/ProfileResponseDTO";
-import { UpdateProfileRequestDTO } from "../model/dto/request/UpdateProfileRequestDTO";
-import { ChangePasswordRequestDTO } from "../model/dto/request/ChangePasswordRequestDTO";
-import { mockProfile } from "./perfil.mock";
+import { apiClient } from '@/lib/axios';
+import { ProfileResponseDTO } from '../model/dto/response/ProfileResponseDTO';
+import { ChangePasswordRequestDTO } from '../model/dto/request/ChangePasswordRequestDTO';
 
 export const perfilService = {
-  /**
-   * TODO: reemplazar mocks por:
-   * const res = await apiClient.get<ProfileResponseDTO>('/admin/perfil');
-   * return res.data;
-   */
-  getProfile: (): Promise<ProfileResponseDTO> =>
-    new Promise((resolve) => setTimeout(() => resolve({ ...mockProfile }), 800)),
 
-  updateProfile: (dto: UpdateProfileRequestDTO): Promise<void> =>
-    new Promise((resolve) => {
-      setTimeout(() => {
-        Object.assign(mockProfile, dto);
-        resolve();
-      }, 800);
-    }),
+  getProfile: async (): Promise<ProfileResponseDTO> => {
+    const stored = localStorage.getItem('user');
+    if (!stored) throw new Error('No hay sesión activa');
+    const user = JSON.parse(stored);
 
-  changePassword: (dto: ChangePasswordRequestDTO): Promise<void> =>
-    new Promise((resolve) => setTimeout(() => resolve(), 800)),
+    const res  = await apiClient.get(`/clients/${user.id}`);
+    const data = res.data.data ?? res.data;
+
+    return {
+      id:                String(data.id ?? user.id),
+      nombreCompleto:    data.nombre && data.apellido
+                           ? `${data.nombre} ${data.apellido}`.trim()
+                           : user.fullName ?? '',
+      correoElectronico: data.email    ?? user.email ?? '',
+      telefono:          data.telefono ?? '',
+      rol:               user.role     ?? '',
+    };
+  },
+
+  updateProfile: async (dto: { nombreCompleto: string; correoElectronico: string; telefono: string }): Promise<void> => {
+    const stored = localStorage.getItem('user');
+    if (!stored) throw new Error('No hay sesión activa');
+    const user = JSON.parse(stored);
+    const [nombre, ...rest] = dto.nombreCompleto.trim().split(' ');
+    const apellido = rest.join(' ');
+    await apiClient.put(`/clients/${user.id}`, {
+      nombre,
+      apellido,
+      email:    dto.correoElectronico,
+      telefono: dto.telefono,
+    });
+    user.fullName = dto.nombreCompleto;
+    user.email    = dto.correoElectronico;
+    localStorage.setItem('user', JSON.stringify(user));
+  },
+
+  changePassword: async (dto: ChangePasswordRequestDTO): Promise<void> => {
+    await apiClient.put('/veterinarios/cambiar-password', {
+      password_nueva: dto.newPassword,
+    });
+  },
 };
-
-void apiClient;
