@@ -25,12 +25,12 @@ export default function PersonalPage() {
 
   if (loading) return <Spinner />;
 
-  const personalFiltrado = filtroRol === "todos"
+  const personalFiltrado = filtroRol === 'todos'
     ? filteredVeterinarios
     : filteredVeterinarios.filter((v) =>
-        filtroRol === "administradores"
-          ? v.especialidad === "Administrador"
-          : v.especialidad !== "Administrador"
+        filtroRol === 'administradores'
+          ? v.rol === 'ADMINISTRADOR'
+          : v.rol === 'VETERINARIO'
       );
 
   return (

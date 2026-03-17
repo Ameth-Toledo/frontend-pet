@@ -1,17 +1,17 @@
-import { VeterinarioResponseDTO, VeterinarioEstadoDTO, RolDTO } from "./dto/response/VeterinarioResponseDTO";
-import { CreatePersonalRequestDTO } from "./dto/request/CreatePersonalRequestDTO";
-import { Veterinario } from "./entities/Veterinario";
-import { VeterinarioUI, VeterinarioEstadoUI } from "./ui.model";
-import { CreatePersonalUI, RolUI } from "./create.ui.model";
+import { VeterinarioResponseDTO, VeterinarioEstadoDTO, RolDTO } from './dto/response/VeterinarioResponseDTO';
+import { CreatePersonalRequestDTO } from './dto/request/CreatePersonalRequestDTO';
+import { Veterinario } from './entities/Veterinario';
+import { VeterinarioUI, VeterinarioEstadoUI } from './ui.model';
+import { CreatePersonalUI, RolUI } from './create.ui.model';
 
 const estadoMap: Record<VeterinarioEstadoDTO, VeterinarioEstadoUI> = {
-  ACTIVO:   "Activo",
-  INACTIVO: "Inactivo",
+  ACTIVO:   'Activo',
+  INACTIVO: 'Inactivo',
 };
 
 const rolMap: Record<RolUI, RolDTO> = {
-  Administrador: "ADMINISTRADOR",
-  Veterinario:   "VETERINARIO",
+  Administrador: 'ADMINISTRADOR',
+  Veterinario:   'VETERINARIO',
 };
 
 export class PersonalMapper {
@@ -25,11 +25,11 @@ export class PersonalMapper {
       cedula:         dto.cedula,
       estado:         dto.estado,
       avatarInitials: dto.avatarInitials,
+      rol:            dto.rol,
     };
   }
 
   static toUIModel(entity: Veterinario): VeterinarioUI {
-    const estado: VeterinarioEstadoDTO = entity.estado;
     return {
       id:             entity.id,
       nombre:         entity.nombre,
@@ -37,8 +37,9 @@ export class PersonalMapper {
       telefono:       entity.telefono,
       email:          entity.email,
       cedula:         entity.cedula,
-      estado:         estadoMap[estado],
+      estado:         estadoMap[entity.estado as VeterinarioEstadoDTO],
       avatarInitials: entity.avatarInitials,
+      rol:            entity.rol as 'ADMINISTRADOR' | 'VETERINARIO',
     };
   }
 

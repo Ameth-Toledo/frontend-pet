@@ -1,4 +1,5 @@
-export type VeterinarioEstadoUI = "Activo" | "Inactivo";
+export type VeterinarioEstadoUI = 'Activo' | 'Inactivo';
+export type RolUI = 'ADMINISTRADOR' | 'VETERINARIO';
 
 export interface VeterinarioUI {
   id: string;
@@ -9,4 +10,5 @@ export interface VeterinarioUI {
   cedula: string;
   estado: VeterinarioEstadoUI;
   avatarInitials: string;
+  rol: RolUI;
 }

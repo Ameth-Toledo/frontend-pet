@@ -1,20 +1,13 @@
-export type CitaEstadoDTO = "CONFIRMADA" | "CANCELADA";
-
-export type ServicioDTO =
-  | "CHEQUEO_MEDICO"
-  | "LIMPIEZA_DENTAL"
-  | "CONTROL_PESO"
-  | "VACUNACION"
-  | "CIRUGIA";
+export type CitaEstadoDTO = 'PENDIENTE' | 'CONFIRMADA' | 'CANCELADA' | 'ATENDIDA';
 
 export interface CitaAdminResponseDTO {
-  id: string;
-  paciente: string;
-  raza: string;
-  species: "dog" | "cat" | "bird" | "other";
-  propietario: string;
-  servicio: ServicioDTO;
+  id: number;
+  id_user: number;
+  id_mascota: number;
+  id_servicio: number;
+  id_veterinario?: number | null;
+  id_agenda?: number | null;
   fecha: string;
-  hora: string;
   estado: CitaEstadoDTO;
+  observaciones_cliente?: string | null;
 }

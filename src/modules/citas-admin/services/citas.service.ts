@@ -1,14 +1,12 @@
-import { apiClient } from "@/lib/axios";
-import { CitaAdminResponseDTO } from "../model/dto/response/CitaAdminResponseDTO";
-import { mockCitas } from "./citas.mock";
+import { apiClient } from '@/lib/axios';
+import { CitaAdminResponseDTO } from '../model/dto/response/CitaAdminResponseDTO';
 
 export const citasAdminService = {
-  /**
-   * TODO: reemplazar mock por:
-   * const res = await apiClient.get<CitaAdminResponseDTO[]>('/admin/citas');
-   * return res.data;
-   */
-  getCitas: (): Promise<CitaAdminResponseDTO[]> => Promise.resolve(mockCitas),
+  getCitas: async (): Promise<CitaAdminResponseDTO[]> => {
+    const res  = await apiClient.get('/citas');
+    const data = Array.isArray(res.data) ? res.data
+      : Array.isArray(res.data?.data)    ? res.data.data
+      : [];
+    return data;
+  },
 };
-
-void apiClient;
