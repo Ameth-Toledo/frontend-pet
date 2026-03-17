@@ -1,5 +1,5 @@
-export type VeterinarioEstadoDTO = "ACTIVO" | "INACTIVO";
-export type RolDTO = "ADMINISTRADOR" | "VETERINARIO";
+export type VeterinarioEstadoDTO = 'ACTIVO' | 'INACTIVO';
+export type RolDTO = 'ADMINISTRADOR' | 'VETERINARIO';
 
 export interface VeterinarioResponseDTO {
   id: string;
@@ -10,4 +10,5 @@ export interface VeterinarioResponseDTO {
   cedula: string;
   estado: VeterinarioEstadoDTO;
   avatarInitials: string;
+  rol: RolDTO;
 }

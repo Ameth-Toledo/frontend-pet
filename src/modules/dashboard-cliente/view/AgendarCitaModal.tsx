@@ -15,8 +15,8 @@ const C = {
   border: '#E5E7EB', error: '#EF4444',
 };
 
-const HORARIOS = ['09:00', '09:30', '10:00', '10:30', '11:00', '11:30', '15:00', '15:30', '16:00', '16:30'];
-
+interface Veterinario { id: number; nombre: string; apellido: string; especialidad?: string; }
+interface Slot { id: number; fecha: string; hora_inicio: string; hora_fin: string; dia_nombre: string; }
 interface Servicio { id: number; nombre: string; }
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
@@ -29,32 +29,25 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
 }
 
 export default function AgendarCitaModal({ onClose, onAgendarSuccess, mascotas }: AgendarCitaModalProps) {
-  const [mascotaId,   setMascotaId]   = useState('');
-  const [servicioId,  setServicioId]  = useState('');
-  const [fecha,       setFecha]       = useState('');
-  const [hora,        setHora]        = useState(HORARIOS[0]);
-  const [motivo,      setMotivo]      = useState('');
-  const [servicios,   setServicios]   = useState<Servicio[]>([]);
-  const [submitting,  setSubmitting]  = useState(false);
-  const [errors,      setErrors]      = useState<Record<string, string>>({});
-  const [apiError,    setApiError]    = useState<string | null>(null);
+  const [mascotaId,    setMascotaId]    = useState('');
+  const [vetId,        setVetId]        = useState('');
+  const [slotId,       setSlotId]       = useState('');
+  const [servicioId,   setServicioId]   = useState('1');
+  const [motivo,       setMotivo]       = useState('');
+  const [veterinarios, setVeterinarios] = useState<Veterinario[]>([]);
+  const [slots,        setSlots]        = useState<Slot[]>([]);
+  const [loadingSlots, setLoadingSlots] = useState(false);
+  const [submitting,   setSubmitting]   = useState(false);
+  const [errors,       setErrors]       = useState<Record<string, string>>({});
+  const [apiError,     setApiError]     = useState<string | null>(null);
 
-  useEffect(() => {
-    if (mascotas.length > 0 && !mascotaId) {
-      setMascotaId(String(mascotas[0].id));
-    }
-  }, [mascotas]);
-
-  useEffect(() => {
-    // Servicios hardcoded por ahora — no hay endpoint de servicios
-    setServicios([
-      { id: 1, nombre: 'Consulta General' },
-      { id: 2, nombre: 'Vacunación' },
-      { id: 3, nombre: 'Desparasitación' },
-      { id: 4, nombre: 'Cirugía' },
-    ]);
-    setServicioId('1');
-  }, []);
+  const servicios: Servicio[] = [
+    { id: 1, nombre: 'Consulta general' },
+    { id: 2, nombre: 'Vacunación' },
+    { id: 3, nombre: 'Baño y corte' },
+    { id: 4, nombre: 'Desparasitación' },
+    { id: 5, nombre: 'Cirugía menor' },
+  ];
 
   const getUserId = (): number | null => {
     try {
@@ -71,12 +64,45 @@ export default function AgendarCitaModal({ onClose, onAgendarSuccess, mascotas }
     backgroundColor: C.white,
   });
 
+  // Cargar mascotas y veterinarios al montar
+  useEffect(() => {
+    if (mascotas.length > 0 && !mascotaId) setMascotaId(String(mascotas[0].id));
+    const loadVets = async () => {
+      try {
+        const res  = await apiClient.get('/veterinarios/listar');
+        const data = Array.isArray(res.data?.data) ? res.data.data : [];
+        setVeterinarios(data);
+        if (data.length > 0) setVetId(String(data[0].id));
+      } catch { /* silencioso */ }
+    };
+    loadVets();
+  }, [mascotas]);
+
+  // Cargar slots cuando cambia el veterinario
+  useEffect(() => {
+    if (!vetId) return;
+    const loadSlots = async () => {
+      setLoadingSlots(true);
+      setSlots([]);
+      setSlotId('');
+      try {
+        const res  = await apiClient.get(`/agenda/veterinario/${vetId}`);
+        const data = Array.isArray(res.data?.data) ? res.data.data : [];
+        const disponibles = data.filter((s: Slot & { estado: string }) => s.estado === 'disponible');
+        setSlots(disponibles);
+        if (disponibles.length > 0) setSlotId(String(disponibles[0].id));
+      } catch { /* silencioso */ }
+      finally { setLoadingSlots(false); }
+    };
+    loadSlots();
+  }, [vetId]);
+
   const validate = () => {
     const e: Record<string, string> = {};
-    if (!mascotaId)     e.mascota  = 'Selecciona una mascota';
-    if (!servicioId)    e.servicio = 'Selecciona un servicio';
-    if (!fecha)         e.fecha    = 'Selecciona una fecha';
-    if (!motivo.trim()) e.motivo   = 'El motivo es obligatorio';
+    if (!mascotaId)    e.mascota  = 'Selecciona una mascota';
+    if (!vetId)        e.vet      = 'Selecciona un veterinario';
+    if (!slotId)       e.slot     = 'Selecciona un horario';
+    if (!motivo.trim()) e.motivo  = 'El motivo es obligatorio';
     setErrors(e);
     return Object.keys(e).length === 0;
   };
@@ -86,6 +112,9 @@ export default function AgendarCitaModal({ onClose, onAgendarSuccess, mascotas }
     const userId = getUserId();
     if (!userId) { setApiError('No se pudo identificar al usuario'); return; }
 
+    const slot = slots.find(s => String(s.id) === slotId);
+    if (!slot) { setApiError('Slot no encontrado'); return; }
+
     setSubmitting(true);
     setApiError(null);
     try {
@@ -93,8 +122,9 @@ export default function AgendarCitaModal({ onClose, onAgendarSuccess, mascotas }
         id_user:               userId,
         id_mascota:            parseInt(mascotaId),
         id_servicio:           parseInt(servicioId),
-        id_agenda:             null, 
-        fecha:                 `${fecha}T${hora}:00`,
+        id_veterinario:        parseInt(vetId),
+        id_agenda:             parseInt(slotId),
+        fecha:                 `${slot.fecha.split('T')[0]}T${slot.hora_inicio}`,
         observaciones_cliente: motivo,
       });
       onAgendarSuccess();
@@ -110,7 +140,7 @@ export default function AgendarCitaModal({ onClose, onAgendarSuccess, mascotas }
   return (
     <div onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
       style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.45)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: '16px' }}>
-      <div style={{ backgroundColor: C.white, borderRadius: '20px', boxShadow: '0 20px 60px rgba(0,0,0,0.15)', padding: '32px', width: '100%', maxWidth: '480px' }}>
+      <div style={{ backgroundColor: C.white, borderRadius: '20px', boxShadow: '0 20px 60px rgba(0,0,0,0.15)', padding: '32px', width: '100%', maxWidth: '520px', maxHeight: '90vh', overflowY: 'auto' }}>
 
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px' }}>
           <div>
@@ -128,36 +158,52 @@ export default function AgendarCitaModal({ onClose, onAgendarSuccess, mascotas }
               <p style={{ fontSize: '13px', color: C.textSub }}>No tienes mascotas registradas.</p>
             ) : (
               <select value={mascotaId} onChange={(e) => setMascotaId(e.target.value)} style={inputStyle(!!errors.mascota)}>
-                {mascotas.map((m) => (
-                  <option key={m.id} value={String(m.id)}>{m.nombre}</option>
-                ))}
+                {mascotas.map((m) => <option key={m.id} value={String(m.id)}>{m.nombre}</option>)}
               </select>
             )}
             {errors.mascota && <p style={{ fontSize: '11px', color: C.error, margin: 0 }}>{errors.mascota}</p>}
           </Field>
 
-          {/* Servicio */}
-          <Field label="Servicio">
-            <select value={servicioId} onChange={(e) => setServicioId(e.target.value)} style={inputStyle(!!errors.servicio)}>
-              {servicios.map((s) => (
-                <option key={s.id} value={String(s.id)}>{s.nombre}</option>
-              ))}
-            </select>
-            {errors.servicio && <p style={{ fontSize: '11px', color: C.error, margin: 0 }}>{errors.servicio}</p>}
+          {/* Veterinario */}
+          <Field label="Veterinario">
+            {veterinarios.length === 0 ? (
+              <p style={{ fontSize: '13px', color: C.textSub }}>Cargando veterinarios...</p>
+            ) : (
+              <select value={vetId} onChange={(e) => setVetId(e.target.value)} style={inputStyle(!!errors.vet)}>
+                {veterinarios.map((v) => (
+                  <option key={v.id} value={String(v.id)}>
+                    {v.nombre} {v.apellido} {v.especialidad ? `- ${v.especialidad}` : ''}
+                  </option>
+                ))}
+              </select>
+            )}
+            {errors.vet && <p style={{ fontSize: '11px', color: C.error, margin: 0 }}>{errors.vet}</p>}
           </Field>
 
-          {/* Fecha y Hora */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-            <Field label="Fecha">
-              <input type="date" value={fecha} onChange={(e) => setFecha(e.target.value)} style={inputStyle(!!errors.fecha)} />
-              {errors.fecha && <p style={{ fontSize: '11px', color: C.error, margin: 0 }}>{errors.fecha}</p>}
-            </Field>
-            <Field label="Hora">
-              <select value={hora} onChange={(e) => setHora(e.target.value)} style={inputStyle()}>
-                {HORARIOS.map((h) => <option key={h} value={h}>{h}</option>)}
+          {/* Horario disponible */}
+          <Field label="Horario disponible">
+            {loadingSlots ? (
+              <p style={{ fontSize: '13px', color: C.textSub }}>Cargando horarios...</p>
+            ) : slots.length === 0 ? (
+              <p style={{ fontSize: '13px', color: C.textSub }}>No hay horarios disponibles para este veterinario.</p>
+            ) : (
+              <select value={slotId} onChange={(e) => setSlotId(e.target.value)} style={inputStyle(!!errors.slot)}>
+                {slots.map((s) => (
+                  <option key={s.id} value={String(s.id)}>
+                    {s.dia_nombre} {new Date(s.fecha).toLocaleDateString('es-MX')} — {s.hora_inicio.slice(0, 5)} a {s.hora_fin.slice(0, 5)}
+                  </option>
+                ))}
               </select>
-            </Field>
-          </div>
+            )}
+            {errors.slot && <p style={{ fontSize: '11px', color: C.error, margin: 0 }}>{errors.slot}</p>}
+          </Field>
+
+          {/* Servicio */}
+          <Field label="Servicio">
+            <select value={servicioId} onChange={(e) => setServicioId(e.target.value)} style={inputStyle()}>
+              {servicios.map((s) => <option key={s.id} value={String(s.id)}>{s.nombre}</option>)}
+            </select>
+          </Field>
 
           {/* Motivo */}
           <Field label="Motivo de la consulta">
@@ -173,15 +219,6 @@ export default function AgendarCitaModal({ onClose, onAgendarSuccess, mascotas }
               {apiError}
             </div>
           )}
-
-          <div style={{ backgroundColor: C.greenLight, borderRadius: '10px', padding: '12px 16px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={C.green} strokeWidth="2">
-              <circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" />
-            </svg>
-            <p style={{ fontSize: '12px', color: C.green, margin: 0 }}>
-              Un veterinario disponible será asignado automáticamente.
-            </p>
-          </div>
         </div>
 
         <div style={{ display: 'flex', gap: '10px', marginTop: '24px' }}>
@@ -189,8 +226,7 @@ export default function AgendarCitaModal({ onClose, onAgendarSuccess, mascotas }
             style={{ flex: 1, padding: '11px', borderRadius: '10px', border: `1px solid ${C.border}`, backgroundColor: C.white, fontSize: '14px', color: C.textSub, cursor: 'pointer' }}>
             Cancelar
           </button>
-          <button
-            onClick={handleConfirmar}
+          <button onClick={handleConfirmar}
             disabled={mascotas.length === 0 || submitting}
             style={{ flex: 2, padding: '11px', borderRadius: '10px', border: 'none', backgroundColor: C.green, color: C.white, fontSize: '14px', fontWeight: 600, cursor: (mascotas.length === 0 || submitting) ? 'not-allowed' : 'pointer', opacity: (mascotas.length === 0 || submitting) ? 0.6 : 1 }}
             onMouseEnter={(e) => { if (mascotas.length > 0 && !submitting) (e.currentTarget as HTMLButtonElement).style.backgroundColor = C.greenDark; }}

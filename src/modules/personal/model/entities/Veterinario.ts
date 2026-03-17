@@ -1,4 +1,4 @@
-import { VeterinarioEstadoDTO, RolDTO } from "../dto/response/VeterinarioResponseDTO";
+import { VeterinarioEstadoDTO, RolDTO } from '../dto/response/VeterinarioResponseDTO';
 
 export interface Veterinario {
   id: string;
@@ -9,4 +9,5 @@ export interface Veterinario {
   cedula: string;
   estado: VeterinarioEstadoDTO;
   avatarInitials: string;
+  rol: RolDTO;
 }
