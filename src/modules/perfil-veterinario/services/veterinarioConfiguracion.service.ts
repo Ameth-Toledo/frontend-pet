@@ -1,22 +1,34 @@
-import { apiClient } from "@/lib/axios";
-import { VeterinarioProfileResponseDTO } from "../model/dto/response/VeterinarioProfileResponseDTO";
-import { ScheduleResponseDTO } from "../model/dto/response/ScheduleResponseDTO";
-import { UpdateVetProfileRequestDTO } from "../model/dto/request/UpdateVetProfileRequestDTO";
-import { SaveScheduleRequestDTO } from "../model/dto/request/SaveScheduleRequestDTO";
-import { ChangePasswordVetRequestDTO } from "../model/dto/request/ChangePasswordVetRequestDTO";
-import { mockVetProfile, DEFAULT_SCHEDULE } from "./veterinarioConfiguracion.mock";
+import { apiClient } from '@/lib/axios';
+import { VeterinarioProfileResponseDTO } from '../model/dto/response/VeterinarioProfileResponseDTO';
+import { ScheduleResponseDTO } from '../model/dto/response/ScheduleResponseDTO';
+import { SaveScheduleRequestDTO } from '../model/dto/request/SaveScheduleRequestDTO';
+import { ChangePasswordVetRequestDTO } from '../model/dto/request/ChangePasswordVetRequestDTO';
+import { DEFAULT_SCHEDULE } from './veterinarioConfiguracion.mock';
 
 export const veterinarioConfiguracionService = {
-  getProfile: (): Promise<VeterinarioProfileResponseDTO> =>
-    new Promise((resolve) => setTimeout(() => resolve({ ...mockVetProfile }), 600)),
 
-  updateProfile: (dto: UpdateVetProfileRequestDTO): Promise<void> =>
-    new Promise((resolve) => setTimeout(() => { Object.assign(mockVetProfile, dto); resolve(); }, 600)),
+  getProfile: async (): Promise<VeterinarioProfileResponseDTO> => {
+    const stored = localStorage.getItem('user');
+    if (!stored) throw new Error('No hay sesión activa');
+    const user = JSON.parse(stored);
+    return {
+      id:                String(user.id),
+      nombreCompleto:    user.fullName  ?? '',
+      correoElectronico: user.email     ?? '',
+      telefono:          user.telefono  ?? '',
+      cedula:            '',
+    };
+  },
+
+  updateProfile: async (): Promise<void> => {
+    // No hay endpoint de update para veterinarios por ahora
+    return Promise.resolve();
+  },
 
   getSchedule: (): Promise<ScheduleResponseDTO> =>
     new Promise((resolve) => {
-      if (typeof window !== "undefined") {
-        const stored = localStorage.getItem("vet_schedule");
+      if (typeof window !== 'undefined') {
+        const stored = localStorage.getItem('vet_schedule');
         if (stored) return resolve(JSON.parse(stored));
       }
       resolve({ ...DEFAULT_SCHEDULE });
@@ -32,23 +44,24 @@ export const veterinarioConfiguracionService = {
             return;
           }
         }
-        if (typeof window !== "undefined") {
-          localStorage.setItem("vet_schedule", JSON.stringify(dto));
-          localStorage.setItem("appointment_duration", duration);
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('vet_schedule', JSON.stringify(dto));
+          localStorage.setItem('appointment_duration', duration);
         }
         resolve();
       }, 0);
     }),
 
-  changePassword: (dto: ChangePasswordVetRequestDTO): Promise<void> =>
-    new Promise((resolve) => setTimeout(() => resolve(), 600)),
+  changePassword: async (dto: ChangePasswordVetRequestDTO): Promise<void> => {
+    await apiClient.put('/veterinarios/cambiar-password', {
+      password_nueva: dto.newPassword,
+    });
+  },
 
   getDuration: (): string => {
-    if (typeof window !== "undefined") {
-      return localStorage.getItem("appointment_duration") ?? "30";
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('appointment_duration') ?? '30';
     }
-    return "30";
+    return '30';
   },
 };
-
-void apiClient;
