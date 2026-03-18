@@ -9,7 +9,8 @@ import {
   faChartLine,
   faGear,
 } from "@fortawesome/free-solid-svg-icons";
-import Sidebar, { NavItem } from "./Sidebar";
+import Sidebar from "./Sidebar";
+import { NavItem } from "../models/NavItem";
 
 const adminNavItems: NavItem[] = [
   { label: "Panel principal",    href: "/admin/dashboard",    icon: faTableColumns },
@@ -19,7 +20,6 @@ const adminNavItems: NavItem[] = [
   { label: "Personal",           href: "/admin/personal",     icon: faUserMd },
   { label: "Análisis",           href: "/admin/analisis",     icon: faChartLine },
   { label: "Configuración",      href: "/admin/configuracion", icon: faGear },
-  // { label: "Usuarios",        href: "/admin/usuarios",     icon: faUserShield },
 ];
 
 export default function SidebarAdmin() {

@@ -6,7 +6,8 @@ import {
   faGear,
   faTableColumns,
 } from "@fortawesome/free-solid-svg-icons";
-import Sidebar, { NavItem } from "./Sidebar";
+import { NavItem } from "../models/NavItem";
+import Sidebar from "./Sidebar";
 
 const clienteNavItems: NavItem[] = [
   { label: "Panel principal", href: "/cliente/dashboard", icon: faTableColumns  },
