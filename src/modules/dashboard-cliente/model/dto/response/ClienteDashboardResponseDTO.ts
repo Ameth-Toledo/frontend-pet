@@ -1,9 +1,9 @@
 import { PetResponseDTO } from "./PetResponseDTO";
-import { AppointmentResponseDTO } from "./AppointmentResponseDTO";
+import { GetCitaResponse } from "./AppointmentResponseDTO";
 
 export interface ClienteDashboardResponseDTO {
   usuarioNombre: string;
   usuarioMembresia: string;
   mascotas: PetResponseDTO[];
-  proximasCitas: AppointmentResponseDTO[];
+  proximasCitas: GetCitaResponse[];
 }

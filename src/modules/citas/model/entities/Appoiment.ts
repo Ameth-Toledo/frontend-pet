@@ -1,4 +1,4 @@
-import { CitaVetEstadoDTO, ServicioVetDTO } from "../dto/response/CitaVetResponseDTO";
+import { CitaVetEstadoDTO } from "../dto/response/CitaVetResponseDTO";
 
 export interface Appointment {
   id: string;
@@ -6,7 +6,7 @@ export interface Appointment {
   raza: string;
   species: "dog" | "cat" | "bird" | "other";
   propietario: string;
-  servicio: ServicioVetDTO;
+  servicio: string;
   fecha: string;
   hora: string;
   estado: CitaVetEstadoDTO;

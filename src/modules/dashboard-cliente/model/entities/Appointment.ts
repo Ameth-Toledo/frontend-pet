@@ -1,4 +1,4 @@
-import { TipoCitaDTO } from "../dto/response/AppointmentResponseDTO";
+import { EstadoCita } from "../dto/response/AppointmentResponseDTO";
 
 export interface Appointment {
   id: string;
@@ -7,5 +7,5 @@ export interface Appointment {
   mes: string;
   dia: number;
   hora: string;
-  tipo: TipoCitaDTO;
+  tipo: EstadoCita;
 }

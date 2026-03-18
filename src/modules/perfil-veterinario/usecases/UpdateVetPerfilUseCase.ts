@@ -7,5 +7,5 @@ export const updateVetPerfilUseCase = async (
   form: VeterinarioProfileFormUI
 ): Promise<void> => {
   const dto = VetProfileMapper.toUpdateRequestDTO(id, form);
-  await veterinarioConfiguracionService.updateProfile(dto);
+  await veterinarioConfiguracionService.updateProfile();
 };

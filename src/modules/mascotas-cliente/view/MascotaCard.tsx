@@ -77,7 +77,7 @@ export default function MascotaCard({ mascota, onVer, onEditar }: MascotaCardPro
       <div style={{ width: "100%", display: "flex", flexDirection: "column", gap: "8px" }}>
         {/* Ver mascota — solid */}
         <button
-          onClick={() => onVer(mascota.id)}
+          onClick={() => onVer(String(mascota.id))}
           onMouseEnter={() => setVerHover(true)}
           onMouseLeave={() => setVerHover(false)}
           style={{
@@ -102,7 +102,7 @@ export default function MascotaCard({ mascota, onVer, onEditar }: MascotaCardPro
 
         {/* Editar mascota — outline */}
         <button
-          onClick={() => onEditar(mascota.id)}
+          onClick={() => onEditar(String(mascota.id))}
           onMouseEnter={() => setEditHover(true)}
           onMouseLeave={() => setEditHover(false)}
           style={{
