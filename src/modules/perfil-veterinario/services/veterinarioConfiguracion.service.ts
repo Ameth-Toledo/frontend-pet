@@ -3,7 +3,7 @@ import { VeterinarioProfileResponseDTO } from '../model/dto/response/Veterinario
 import { ScheduleResponseDTO } from '../model/dto/response/ScheduleResponseDTO';
 import { SaveScheduleRequestDTO } from '../model/dto/request/SaveScheduleRequestDTO';
 import { ChangePasswordVetRequestDTO } from '../model/dto/request/ChangePasswordVetRequestDTO';
-import { DEFAULT_SCHEDULE } from './veterinarioConfiguracion.mock';
+
 
 const DIAS_MAP: Record<string, string> = {
   lunes:     'Lunes',
@@ -50,7 +50,7 @@ export const veterinarioConfiguracionService = {
         const stored = localStorage.getItem('vet_schedule');
         if (stored) return resolve(JSON.parse(stored));
       }
-      resolve({ ...DEFAULT_SCHEDULE });
+      resolve({ lunes: { enabled: true, start: '09:00', end: '18:00' }, martes: { enabled: true, start: '09:00', end: '18:00' }, miercoles: { enabled: true, start: '09:00', end: '18:00' }, jueves: { enabled: true, start: '09:00', end: '18:00' }, viernes: { enabled: true, start: '09:00', end: '18:00' }, sabado: { enabled: false, start: '09:00', end: '18:00' }, domingo: { enabled: false, start: '09:00', end: '18:00' } });
     }),
 
   saveSchedule: async (dto: SaveScheduleRequestDTO, duration: string): Promise<void> => {
