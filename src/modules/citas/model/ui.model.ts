@@ -1,4 +1,4 @@
-export type CitaVetEstadoUI = "Confirmada" | "Cancelada" | "Pendiente";
+export type CitaVetEstadoUI = "Confirmada" | "Cancelada" | "Pendiente" | "Atendida";
 
 export type ServicioVetUI =
   | "Chequeo médico"
@@ -8,13 +8,13 @@ export type ServicioVetUI =
   | "Cirugía";
 
 export interface CitaVetUI {
-  id: string;
-  paciente: string;
-  raza: string;
-  species: "dog" | "cat" | "bird" | "other";
+  id:          string;
+  paciente:    string;
+  raza:        string;
+  species:     "dog" | "cat" | "bird" | "other";
   propietario: string;
-  servicio: ServicioVetUI;
-  fecha: string;
-  hora: string;
-  estado: CitaVetEstadoUI;
+  servicio:    string;
+  fecha:       string;
+  hora:        string;
+  estado:      CitaVetEstadoUI;
 }

@@ -2,25 +2,27 @@
 
 import { useEffect, useState } from "react";
 import { getPacientesUseCase } from "../usecases/GetPacientesUseCase";
-import { PacienteUI } from "../model/ui.model";
+import { PacienteUI, PropietarioUI } from "../model/ui.model";
 import { UserUIModel } from "@/modules/auth/model/ui.model";
 
 interface PacientesViewModelState {
-  pacientes: PacienteUI[];
-  filteredPacientes: PacienteUI[];
-  searchTerm: string;
-  setSearchTerm: (term: string) => void;
-  loading: boolean;
-  error: string | null;
-  userName: string;
+  pacientes:          PacienteUI[];
+  propietarios:       PropietarioUI[];
+  filteredPacientes:  PacienteUI[];
+  filteredPropietarios: PropietarioUI[];
+  searchTerm:         string;
+  setSearchTerm:      (term: string) => void;
+  loading:            boolean;
+  error:              string | null;
+  userName:           string;
 }
 
 export function usePacientesViewModel(): PacientesViewModelState {
-  const [pacientes, setPacientes]       = useState<PacienteUI[]>([]);
-  const [searchTerm, setSearchTerm]     = useState("");
-  const [loading, setLoading]           = useState(true);
-  const [error, setError]               = useState<string | null>(null);
-  const [userName, setUserName]         = useState("Administrador");
+  const [pacientes,  setPacientes]  = useState<PacienteUI[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [loading,    setLoading]    = useState(true);
+  const [error,      setError]      = useState<string | null>(null);
+  const [userName,   setUserName]   = useState("Administrador");
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -33,7 +35,7 @@ export function usePacientesViewModel(): PacientesViewModelState {
   }, []);
 
   useEffect(() => {
-    const fetch = async () => {
+    const load = async () => {
       setLoading(true);
       setError(null);
       try {
@@ -44,8 +46,22 @@ export function usePacientesViewModel(): PacientesViewModelState {
         setLoading(false);
       }
     };
-    fetch();
+    load();
   }, []);
+
+  const propietarios: PropietarioUI[] = Object.values(
+    pacientes.reduce((acc, p) => {
+      if (!acc[p.propietario]) {
+        acc[p.propietario] = {
+          propietario:      p.propietario,
+          emailPropietario: p.emailPropietario,
+          mascotas:         [],
+        };
+      }
+      acc[p.propietario].mascotas.push(p);
+      return acc;
+    }, {} as Record<string, PropietarioUI>)
+  );
 
   const filteredPacientes = pacientes.filter(({ nombre, raza, propietario }) => {
     const term = searchTerm.toLowerCase();
@@ -56,5 +72,14 @@ export function usePacientesViewModel(): PacientesViewModelState {
     );
   });
 
-  return { pacientes, filteredPacientes, searchTerm, setSearchTerm, loading, error, userName };
+  const filteredPropietarios = propietarios.filter(({ propietario, emailPropietario, mascotas }) => {
+    const term = searchTerm.toLowerCase();
+    return (
+      propietario.toLowerCase().includes(term)      ||
+      emailPropietario.toLowerCase().includes(term) ||
+      mascotas.some(m => m.nombre.toLowerCase().includes(term))
+    );
+  });
+
+  return { pacientes, propietarios, filteredPacientes, filteredPropietarios, searchTerm, setSearchTerm, loading, error, userName };
 }

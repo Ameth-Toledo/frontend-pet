@@ -13,4 +13,5 @@ export interface CitaAdmin {
   id_mascota:      number;
   id_user:         number;
   id_veterinario?: number | null;
+  veterinario?:    string | null;
 }

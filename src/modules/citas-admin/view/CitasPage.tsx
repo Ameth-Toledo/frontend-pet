@@ -14,11 +14,12 @@ function mapCitaToDetail(cita: CitaUI): CitaDetailData {
   return {
     nombre:      cita.paciente,
     raza:        cita.raza,
-    especie:     especieMap[cita.species] ?? cita.species,
+    especie:     cita.raza,
     propietario: cita.propietario,
     servicio:    cita.servicio,
     hora:        cita.hora,
     fecha:       cita.fecha,
+    profesional: cita.veterinario ?? 'Sin asignar',
   };
 }
 

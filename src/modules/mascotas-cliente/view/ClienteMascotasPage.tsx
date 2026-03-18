@@ -7,6 +7,7 @@ import MascotasHeader from './MascotasHeader';
 import MascotaCard from './MascotaCard';
 import AddMascotaCard from './AddMascotaCard';
 import AddMascotaModal from './AddMascotaModal';
+import MascotaEditModal from './MascotaEditModal';
 import { MascotaUI } from '../model/ui.model';
 import { CreateMascotaRequestDTO } from '../model/dto/request/CreateMascotaRequestDTO';
 
@@ -20,7 +21,7 @@ function Spinner() {
 
 export function ClienteMascotasPage() {
   const router = useRouter();
-  const { mascotas, loading, creating, error, createMascota } = useClienteMascotasViewModel();
+  const { mascotas, loading, creating, error, createMascota, refetch } = useClienteMascotasViewModel();
 
   const [selectedMascota, setSelectedMascota] = useState<MascotaUI | null>(null);
   const [showEdit,        setShowEdit]        = useState(false);
@@ -47,10 +48,7 @@ export function ClienteMascotasPage() {
             </svg>
           </div>
           <p className="text-gray-500 text-sm">Aún no tienes mascotas registradas</p>
-          <button
-            onClick={() => setShowAgregar(true)}
-            className="text-[#2F8F83] text-sm font-medium hover:underline"
-          >
+          <button onClick={() => setShowAgregar(true)} className="text-[#2F8F83] text-sm font-medium hover:underline">
             Registrar mi primera mascota
           </button>
         </div>
@@ -69,35 +67,11 @@ export function ClienteMascotasPage() {
       </div>
 
       {selectedMascota && showEdit && (
-        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50">
-          <div className="bg-white w-[520px] rounded-2xl shadow-xl p-8 relative">
-            <button
-              onClick={() => { setSelectedMascota(null); setShowEdit(false); }}
-              className="absolute top-4 right-4 text-gray-400 hover:text-gray-700"
-            >✕</button>
-            <h2 className="text-lg font-bold mb-6">Editar mascota</h2>
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Nombre</label>
-                <input defaultValue={selectedMascota.nombre} className="w-full border rounded-lg p-2 text-sm" />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Especie</label>
-                <input defaultValue={selectedMascota.especie} className="w-full border rounded-lg p-2 text-sm" />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Fecha de nacimiento</label>
-                <input defaultValue={selectedMascota.fecha_nacimiento ?? ''} className="w-full border rounded-lg p-2 text-sm" />
-              </div>
-              <button
-                onClick={() => { setSelectedMascota(null); setShowEdit(false); }}
-                className="w-full bg-[#2F8F83] hover:bg-[#287A70] text-white py-2 rounded-lg text-sm font-semibold transition-colors"
-              >
-                Guardar cambios
-              </button>
-            </div>
-          </div>
-        </div>
+        <MascotaEditModal
+          mascota={selectedMascota}
+          onClose={() => { setSelectedMascota(null); setShowEdit(false); }}
+          onGuardar={() => { setSelectedMascota(null); setShowEdit(false); refetch(); }}
+        />
       )}
 
       <AddMascotaModal

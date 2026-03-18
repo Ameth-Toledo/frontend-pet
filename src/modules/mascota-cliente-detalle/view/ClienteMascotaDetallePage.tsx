@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { useRouter } from "next/navigation";
 import { useClienteMascotaDetalleViewModel } from "../viewmodel/useClienteMascotaDetalleViewModel";
 import { ClienteMascotaDetallePageProps } from "../model/dto/props/ClienteMascotaDetallePageProps";
 import MascotaDetalleHeader from "./MascotaDetalleHeader";
@@ -25,6 +26,7 @@ function ArrowLeftIcon() {
 }
 
 export function ClienteMascotaDetallePage({ mascotaId }: ClienteMascotaDetallePageProps) {
+  const router = useRouter();
   const { mascota, historial, vacunas, isLoading, isLoadingVacunas, error, tabActivo, setTabActivo } =
     useClienteMascotaDetalleViewModel(mascotaId);
 
@@ -33,7 +35,9 @@ export function ClienteMascotaDetallePage({ mascotaId }: ClienteMascotaDetallePa
   return (
     <div style={{ padding: "32px", backgroundColor: "#F7F9FB", minHeight: "100vh" }}>
       <div className="flex items-center gap-3 mb-6">
-        <button className="text-gray-400 hover:text-gray-600 transition-colors">
+        <button
+          onClick={() => router.back()}
+          className="text-gray-400 hover:text-gray-600 transition-colors">
           <ArrowLeftIcon />
         </button>
         <div>

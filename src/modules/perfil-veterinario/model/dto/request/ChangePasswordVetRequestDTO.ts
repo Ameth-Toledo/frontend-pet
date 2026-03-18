@@ -1,4 +1,5 @@
 export interface ChangePasswordVetRequestDTO {
-  newPassword: string;
+  currentPassword: string;
+  newPassword:     string;
   confirmPassword: string;
 }

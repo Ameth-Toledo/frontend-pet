@@ -8,12 +8,14 @@ interface UseChangePasswordViewModelProps {
 }
 
 export function useChangePasswordViewModel({ onSuccess }: UseChangePasswordViewModelProps) {
-  const [newPassword, setNewPassword]         = useState("");
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword,     setNewPassword]     = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [showNew, setShowNew]                 = useState(false);
-  const [showConfirm, setShowConfirm]         = useState(false);
-  const [loading, setLoading]                 = useState(false);
-  const [error, setError]                     = useState<string | null>(null);
+  const [showCurrent,     setShowCurrent]     = useState(false);
+  const [showNew,         setShowNew]         = useState(false);
+  const [showConfirm,     setShowConfirm]     = useState(false);
+  const [loading,         setLoading]         = useState(false);
+  const [error,           setError]           = useState<string | null>(null);
 
   const isValid = newPassword.length >= 8 && newPassword === confirmPassword;
 
@@ -26,8 +28,10 @@ export function useChangePasswordViewModel({ onSuccess }: UseChangePasswordViewM
   };
 
   const reset = () => {
+    setCurrentPassword("");
     setNewPassword("");
     setConfirmPassword("");
+    setShowCurrent(false);
     setShowNew(false);
     setShowConfirm(false);
     setError(null);
@@ -41,7 +45,7 @@ export function useChangePasswordViewModel({ onSuccess }: UseChangePasswordViewM
     setLoading(true);
     setError(null);
     try {
-      await changePasswordUseCase(newPassword);
+      await changePasswordUseCase(currentPassword, newPassword);
       reset();
       onSuccess();
     } catch (err: unknown) {
@@ -52,10 +56,12 @@ export function useChangePasswordViewModel({ onSuccess }: UseChangePasswordViewM
   };
 
   return {
-    newPassword, setNewPassword,
+    currentPassword, setCurrentPassword,
+    newPassword,     setNewPassword,
     confirmPassword, setConfirmPassword,
-    showNew, setShowNew,
-    showConfirm, setShowConfirm,
+    showCurrent,     setShowCurrent,
+    showNew,         setShowNew,
+    showConfirm,     setShowConfirm,
     loading,
     error: error ?? getError(),
     isValid,

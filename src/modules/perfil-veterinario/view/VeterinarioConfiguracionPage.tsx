@@ -77,7 +77,6 @@ export default function VeterinarioConfiguracionPage() {
         onChangePassword={vm.openPasswordModal}
       />
 
-      {/* ── Horarios ── */}
       <VetScheduleConfig
         schedule={vm.schedule}
         onScheduleChange={vm.handleScheduleChange}
@@ -89,10 +88,11 @@ export default function VeterinarioConfiguracionPage() {
         error={vm.scheduleError}
       />
 
-      {/* ── Modal contraseña ── */}
       {vm.isPasswordModalOpen && (
         <VetChangePasswordModal
           onClose={vm.closePasswordModal}
+          currentPassword={vm.currentPassword}
+          setCurrentPassword={vm.setCurrentPassword}
           newPassword={vm.newPassword}
           setNewPassword={vm.setNewPassword}
           confirmPassword={vm.confirmPassword}

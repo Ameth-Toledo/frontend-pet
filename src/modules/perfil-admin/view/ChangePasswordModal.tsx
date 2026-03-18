@@ -59,12 +59,13 @@ export default function ChangePasswordModal({ onClose }: ChangePasswordModalProp
 
         <h2 style={{ fontSize: "20px", fontWeight: 800, color: C.textMain, marginBottom: "8px" }}>Cambiar contraseña</h2>
         <p style={{ fontSize: "13px", color: C.textSub, marginBottom: "28px", lineHeight: 1.6 }}>
-          Ingresa tu nueva contraseña para actualizar el acceso a tu cuenta.
+          Ingresa tu contraseña actual y la nueva contraseña.
         </p>
 
         <div style={{ display: "flex", flexDirection: "column", gap: "18px", marginBottom: "24px" }}>
-          <PasswordInput label="Nueva contraseña" placeholder="Escribe tu nueva contraseña" value={vm.newPassword} onChange={vm.setNewPassword} show={vm.showNew} onToggleShow={() => vm.setShowNew(!vm.showNew)} error={hasError} />
-          <PasswordInput label="Confirmar nueva contraseña" placeholder="Repite la contraseña" value={vm.confirmPassword} onChange={vm.setConfirmPassword} show={vm.showConfirm} onToggleShow={() => vm.setShowConfirm(!vm.showConfirm)} error={hasError} />
+          <PasswordInput label="Contraseña actual"          placeholder="Tu contraseña actual"     value={vm.currentPassword} onChange={vm.setCurrentPassword} show={vm.showCurrent} onToggleShow={() => vm.setShowCurrent(!vm.showCurrent)} />
+          <PasswordInput label="Nueva contraseña"           placeholder="Escribe tu nueva contraseña" value={vm.newPassword}     onChange={vm.setNewPassword}     show={vm.showNew}     onToggleShow={() => vm.setShowNew(!vm.showNew)}     error={hasError} />
+          <PasswordInput label="Confirmar nueva contraseña" placeholder="Repite la contraseña"        value={vm.confirmPassword} onChange={vm.setConfirmPassword} show={vm.showConfirm} onToggleShow={() => vm.setShowConfirm(!vm.showConfirm)} error={hasError} />
         </div>
 
         {hasError && (
@@ -74,20 +75,13 @@ export default function ChangePasswordModal({ onClose }: ChangePasswordModalProp
         )}
 
         <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: "12px" }}>
-          <button onClick={onClose} style={{ background: "none", border: "none", fontSize: "14px", color: C.textSub, fontWeight: 500, cursor: "pointer", padding: "10px 16px" }}
-            onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.color = C.textMain; }}
-            onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.color = C.textSub; }}>
+          <button onClick={onClose} style={{ background: "none", border: "none", fontSize: "14px", color: C.textSub, fontWeight: 500, cursor: "pointer", padding: "10px 16px" }}>
             Cancelar
           </button>
-          <button onClick={vm.submit} disabled={vm.loading || (!vm.isValid && (vm.newPassword.length > 0 || vm.confirmPassword.length > 0))}
-            style={{ backgroundColor: vm.loading ? "#9ECEC6" : C.green, color: C.white, border: "none", borderRadius: "10px", padding: "10px 22px", fontSize: "14px", fontWeight: 700, cursor: vm.loading ? "not-allowed" : "pointer", display: "flex", alignItems: "center", gap: "8px" }}
+          <button onClick={vm.submit} disabled={vm.loading}
+            style={{ backgroundColor: vm.loading ? "#9ECEC6" : C.green, color: C.white, border: "none", borderRadius: "10px", padding: "10px 22px", fontSize: "14px", fontWeight: 700, cursor: vm.loading ? "not-allowed" : "pointer" }}
             onMouseEnter={(e) => { if (!vm.loading) (e.currentTarget as HTMLButtonElement).style.backgroundColor = C.greenDark; }}
             onMouseLeave={(e) => { if (!vm.loading) (e.currentTarget as HTMLButtonElement).style.backgroundColor = C.green; }}>
-            {vm.loading && (
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" style={{ animation: "spin 0.7s linear infinite" }}>
-                <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
-              </svg>
-            )}
             {vm.loading ? "Guardando..." : "Guardar cambios"}
           </button>
         </div>

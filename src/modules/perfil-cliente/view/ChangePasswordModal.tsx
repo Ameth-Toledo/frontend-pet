@@ -27,7 +27,7 @@ function EyeIcon({ open }: { open: boolean }) {
 function PasswordField({ label, placeholder, value, onChange }: {
   label: string; placeholder: string; value: string; onChange: (v: string) => void;
 }) {
-  const [show, setShow]       = useState(false);
+  const [show,    setShow]    = useState(false);
   const [focused, setFocused] = useState(false);
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
@@ -63,11 +63,12 @@ export default function ChangePasswordModal({ isOpen, onClose, onSubmit, loading
 
         <h2 style={{ fontSize: "20px", fontWeight: 800, color: C.textMain, marginBottom: "8px" }}>Cambiar contraseña</h2>
         <p style={{ fontSize: "13px", color: C.textSub, marginBottom: "28px", lineHeight: 1.6 }}>
-          Ingresa tu nueva contraseña para actualizar el acceso a tu cuenta.
+          Ingresa tu contraseña actual y la nueva contraseña.
         </p>
 
         <div style={{ display: "flex", flexDirection: "column", gap: "16px", marginBottom: "20px" }}>
-          <PasswordField label="Nueva contraseña"          placeholder="Escribe tu nueva contraseña" value={form.nuevaPassword}      onChange={(v) => setForm((p) => ({ ...p, nuevaPassword: v }))} />
+          <PasswordField label="Contraseña actual"          placeholder="Tu contraseña actual"        value={form.passwordActual}    onChange={(v) => setForm((p) => ({ ...p, passwordActual: v }))} />
+          <PasswordField label="Nueva contraseña"           placeholder="Escribe tu nueva contraseña" value={form.nuevaPassword}      onChange={(v) => setForm((p) => ({ ...p, nuevaPassword: v }))} />
           <PasswordField label="Confirmar nueva contraseña" placeholder="Repite la contraseña"        value={form.confirmarPassword}  onChange={(v) => setForm((p) => ({ ...p, confirmarPassword: v }))} />
         </div>
 
@@ -78,9 +79,7 @@ export default function ChangePasswordModal({ isOpen, onClose, onSubmit, loading
         )}
 
         <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: "12px" }}>
-          <button onClick={handleClose} style={{ background: "none", border: "none", fontSize: "14px", color: C.textSub, fontWeight: 500, cursor: "pointer", padding: "10px 16px" }}
-            onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.color = C.textMain; }}
-            onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.color = C.textSub; }}>
+          <button onClick={handleClose} style={{ background: "none", border: "none", fontSize: "14px", color: C.textSub, fontWeight: 500, cursor: "pointer", padding: "10px 16px" }}>
             Cancelar
           </button>
           <button onClick={() => onSubmit(form)} disabled={loading}

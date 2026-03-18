@@ -1,7 +1,10 @@
 import { apiClient } from '@/lib/axios';
 import { VeterinarioResponseDTO } from '../model/dto/response/VeterinarioResponseDTO';
 import { CreatePersonalRequestDTO } from '../model/dto/request/CreatePersonalRequestDTO';
-import { generarContrasena } from './personal.mock';
+
+function generarContrasena(): string {
+  return Math.random().toString(36).slice(-8) + Math.random().toString(36).slice(-8);
+}
 
 export const personalService = {
 

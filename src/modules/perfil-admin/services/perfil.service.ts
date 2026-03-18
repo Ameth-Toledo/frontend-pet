@@ -40,9 +40,10 @@ export const perfilService = {
     localStorage.setItem('user', JSON.stringify(user));
   },
 
-  changePassword: async (dto: ChangePasswordRequestDTO): Promise<void> => {
+  changePassword: async (dto: { currentPassword: string; newPassword: string }): Promise<void> => {
     await apiClient.put('/veterinarios/cambiar-password', {
-      password_nueva: dto.newPassword,
+      password_actual: dto.currentPassword,
+      password_nueva:  dto.newPassword,
     });
   },
 };

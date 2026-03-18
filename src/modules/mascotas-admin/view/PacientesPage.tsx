@@ -17,17 +17,20 @@ function Spinner() {
 }
 
 export default function PacientesPage() {
-  const { filteredPacientes, searchTerm, setSearchTerm, loading } = usePacientesViewModel();
+  const { filteredPropietarios, searchTerm, setSearchTerm, loading } = usePacientesViewModel();
   const [selectedPaciente, setSelectedPaciente] = useState<PacienteUI | null>(null);
   const [filtroEspecie, setFiltroEspecie] = useState<FiltroEspecie>("todos");
 
   if (loading) return <Spinner />;
 
-  const pacientesFiltrados = filtroEspecie === "todos"
-    ? filteredPacientes
-    : filteredPacientes.filter((p) =>
-        filtroEspecie === "perro" ? p.especieIcon !== "cat" : p.especieIcon === "cat"
-      );
+  const propietariosFiltrados = filtroEspecie === "todos"
+    ? filteredPropietarios
+    : filteredPropietarios.map(p => ({
+        ...p,
+        mascotas: p.mascotas.filter(m =>
+          filtroEspecie === "perro" ? m.especieIcon !== "cat" : m.especieIcon === "cat"
+        )
+      })).filter(p => p.mascotas.length > 0);
 
   return (
     <div style={{ padding: "32px", minHeight: "100vh" }}>
@@ -37,7 +40,7 @@ export default function PacientesPage() {
         filtroEspecie={filtroEspecie}
         onFiltroChange={setFiltroEspecie}
       />
-      <PacientesTable pacientes={pacientesFiltrados} onVerPaciente={setSelectedPaciente} />
+      <PacientesTable propietarios={propietariosFiltrados} onVerPaciente={setSelectedPaciente} />
       {selectedPaciente && (
         <PacienteHistorialModal
           paciente={selectedPaciente}
