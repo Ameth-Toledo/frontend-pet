@@ -51,6 +51,11 @@ export default function CitaRow({ cita, onVer }: CitaRowProps) {
       </td>
       <td style={{ padding: "16px 20px" }}><p style={{ fontSize: "14px", color: "#1F2937" }}>{cita.propietario}</p></td>
       <td style={{ padding: "16px 20px" }}>
+        <p style={{ fontSize: "14px", color: "#1F2937" }}>
+          {cita.veterinario ?? 'Sin asignar'}
+        </p>
+      </td>
+      <td style={{ padding: "16px 20px" }}>
         <p style={{ fontSize: "14px", fontWeight: 500, color: "#1F2937", marginBottom: "2px" }}>{cita.servicio}</p>
         <p style={{ fontSize: "12px", color: "#6B7280" }}>{cita.servicioSubtitulo}</p>
       </td>

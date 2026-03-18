@@ -2,7 +2,7 @@ import React from "react";
 import CitaRow from "./CitaRow";
 import { CitasTableProps } from "../model/dto/props/CitasTableProps";
 
-const COLUMNS = ["Paciente", "Propietario", "Servicio", "Fecha / Hora", "Estado", "Acciones"];
+const COLUMNS = ["Paciente", "Propietario", "Veterinario", "Servicio", "Fecha / Hora", "Estado", "Acciones"];
 
 export default function CitasTable({ citas, onVerCita }: CitasTableProps) {
   return (

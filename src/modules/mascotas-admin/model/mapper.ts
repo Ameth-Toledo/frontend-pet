@@ -24,12 +24,13 @@ const estadoMap: Record<PacienteEstadoDTO, PacienteEstadoUI> = {
 export class PacienteMapper {
   static toEntity(dto: PacienteResponseDTO): Paciente {
     return {
-      id:          dto.id,
-      nombre:      dto.nombre,
-      especie:     dto.especie,
-      raza:        dto.raza,
-      propietario: dto.propietario,
-      estado:      dto.estado,
+      id:               dto.id,
+      nombre:           dto.nombre,
+      especie:          dto.especie,
+      raza:             dto.raza,
+      propietario:      dto.propietario,
+      emailPropietario: dto.emailPropietario ?? '',
+      estado:           dto.estado,
     };
   }
 
@@ -37,13 +38,14 @@ export class PacienteMapper {
     const especie: EspecieDTO       = entity.especie;
     const estado: PacienteEstadoDTO = entity.estado;
     return {
-      id:           entity.id,
-      nombre:       entity.nombre,
-      especieLabel: especieLabelMap[especie],
-      especieIcon:  especieIconMap[especie],
-      raza:         entity.raza,
-      propietario:  entity.propietario,
-      estado:       estadoMap[estado],
+      id:               entity.id,
+      nombre:           entity.nombre,
+      especieLabel:     especieLabelMap[especie],
+      especieIcon:      especieIconMap[especie],
+      raza:             entity.raza,
+      propietario:      entity.propietario,
+      emailPropietario: entity.emailPropietario ?? '',
+      estado:           estadoMap[estado],
     };
   }
 

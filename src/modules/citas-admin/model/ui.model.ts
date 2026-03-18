@@ -1,7 +1,7 @@
 export type CitaEstadoUI = 'Pendiente' | 'Confirmada' | 'Cancelada' | 'Atendida';
 
 export interface CitaUI {
-  id: string;
+  id:                string;
   paciente:          string;
   raza:              string;
   species:           'dog' | 'cat' | 'bird' | 'other';
@@ -15,4 +15,5 @@ export interface CitaUI {
   id_mascota:        number;
   id_user:           number;
   id_veterinario?:   number | null;
+  veterinario?:      string | null;
 }

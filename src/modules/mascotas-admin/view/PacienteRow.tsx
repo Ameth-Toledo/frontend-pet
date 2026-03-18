@@ -60,7 +60,10 @@ export default function PacienteRow({ paciente, onVer }: PacienteRowProps) {
         <p style={{ fontSize: "14px", fontWeight: 500, color: "#1F2937", marginBottom: "2px" }}>{paciente.especieLabel}</p>
         <p style={{ fontSize: "12px", color: "#6B7280" }}>{paciente.raza}</p>
       </td>
-      <td style={{ padding: "14px 20px" }}><span style={{ fontSize: "14px", color: "#1F2937" }}>{paciente.propietario}</span></td>
+      <td style={{ padding: "14px 20px" }}>
+        <p style={{ fontSize: "14px", color: "#1F2937", marginBottom: "2px" }}>{paciente.propietario}</p>
+        <p style={{ fontSize: "12px", color: "#9CA3AF" }}>{paciente.emailPropietario}</p>
+      </td>
       <td style={{ padding: "14px 20px" }}><EstadoBadge estado={paciente.estado} /></td>
       <td style={{ padding: "14px 20px" }}>
         <ActionButton title="Ver detalle" onClick={onVer}>

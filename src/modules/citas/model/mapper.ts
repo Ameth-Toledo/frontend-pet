@@ -1,19 +1,12 @@
-import { CitaVetResponseDTO, ServicioVetDTO, CitaVetEstadoDTO } from "./dto/response/CitaVetResponseDTO";
-import { Appointment } from "./entities/Appoiment";
-import { CitaVetUI, ServicioVetUI, CitaVetEstadoUI } from "./ui.model";
-
-const servicioLabelMap: Record<ServicioVetDTO, ServicioVetUI> = {
-  CHEQUEO_MEDICO: "Chequeo médico",
-  LIMPIEZA_DENTAL: "Limpieza dental",
-  CONTROL_PESO:   "Control de peso",
-  VACUNACION:     "Vacunación",
-  CIRUGIA:        "Cirugía",
-};
+import { CitaVetResponseDTO, CitaVetEstadoDTO } from './dto/response/CitaVetResponseDTO';
+import { Appointment } from './entities/Appoiment';
+import { CitaVetUI, CitaVetEstadoUI } from './ui.model';
 
 const estadoMap: Record<CitaVetEstadoDTO, CitaVetEstadoUI> = {
-  CONFIRMADA: "Confirmada",
-  CANCELADA:  "Cancelada",
-  PENDIENTE:  "Pendiente",
+  PENDIENTE:  'Pendiente',
+  CONFIRMADA: 'Confirmada',
+  CANCELADA:  'Cancelada',
+  ATENDIDA:   'Atendida',
 };
 
 export class CitasVetMapper {
@@ -32,18 +25,16 @@ export class CitasVetMapper {
   }
 
   static toUIModel(entity: Appointment): CitaVetUI {
-    const servicio: ServicioVetDTO = entity.servicio;
-    const estado: CitaVetEstadoDTO = entity.estado;
     return {
       id:          entity.id,
       paciente:    entity.paciente,
       raza:        entity.raza,
       species:     entity.species,
       propietario: entity.propietario,
-      servicio:    servicioLabelMap[servicio],
+      servicio:    entity.servicio,
       fecha:       entity.fecha,
       hora:        entity.hora,
-      estado:      estadoMap[estado],
+      estado:      estadoMap[entity.estado as CitaVetEstadoDTO] ?? 'Pendiente',
     };
   }
 

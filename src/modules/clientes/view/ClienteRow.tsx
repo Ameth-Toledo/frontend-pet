@@ -19,14 +19,16 @@ export default function ClienteRow({ cliente, onVer }: ClienteRowProps) {
       onMouseLeave={(e) => { (e.currentTarget as HTMLTableRowElement).style.backgroundColor = "transparent"; }}>
       <td style={{ padding: "16px 20px" }}>
         <p style={{ fontSize: "14px", fontWeight: 600, color: "#1F2937", marginBottom: "2px" }}>{cliente.nombre}</p>
-        <p style={{ fontSize: "12px", color: "#9CA3AF" }}>{cliente.id}</p>
+        <p style={{ fontSize: "12px", color: "#9CA3AF" }}>Cliente #{cliente.id}</p>
       </td>
       <td style={{ padding: "16px 20px" }}>
         <p style={{ fontSize: "14px", color: "#1F2937", marginBottom: "2px" }}>{cliente.telefono}</p>
         <p style={{ fontSize: "12px", color: "#6B7280" }}>{cliente.email}</p>
       </td>
       <td style={{ padding: "16px 20px" }}>
-        <p style={{ fontSize: "14px", color: "#1F2937" }}>{cliente.mascotas.join(", ")}</p>
+        <p style={{ fontSize: "14px", color: "#1F2937" }}>
+          {cliente.mascotas.length > 0 ? cliente.mascotas.join(", ") : "Sin mascotas"}
+        </p>
       </td>
       <td style={{ padding: "16px 20px" }}><StatusBadge estado={cliente.estado} /></td>
       <td style={{ padding: "16px 20px" }}>

@@ -11,7 +11,12 @@ export default function MascotasList({ mascotas, total, onVerMascota, onEditarMa
       </div>
 
       {mascotas.map((m) => (
-        <MascotaCard key={m.id} mascota={m} onVer={() => onVerMascota(m)} onEditar={() => onEditarMascota(m)} />
+        <MascotaCard
+          key={m.id}
+          mascota={m}
+          onVer={() => onVerMascota(m)}
+          onEditar={onEditarMascota ? () => onEditarMascota(m) : undefined}
+        />
       ))}
 
       <div style={{ padding: "14px 24px", display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: "12px", color: "#6B7280", borderTop: "1px solid #F3F4F6" }}>

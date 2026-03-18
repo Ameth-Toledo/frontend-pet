@@ -61,7 +61,6 @@ export default function MisPacientesPage() {
         mascotas={mascotasFiltradas}
         total={mascotas.length}
         onVerMascota={(m) => setSelectedMascota(m)}
-        onEditarMascota={(m) => setEditMascota(m)}
       />
 
       {selectedMascota && (

@@ -1,13 +1,17 @@
 export type CitaEstadoDTO = 'PENDIENTE' | 'CONFIRMADA' | 'CANCELADA' | 'ATENDIDA';
 
 export interface CitaAdminResponseDTO {
-  id: number;
-  id_user: number;
-  id_mascota: number;
-  id_servicio: number;
-  id_veterinario?: number | null;
-  id_agenda?: number | null;
-  fecha: string;
-  estado: CitaEstadoDTO;
-  observaciones_cliente?: string | null;
+  id_cita:               number;
+  fecha_cita:            string;
+  estado_cita:           CitaEstadoDTO;
+  dueno:                 string;
+  email_dueno:           string;
+  telefono_dueno:        string;
+  mascota:               string;
+  especie:               string;
+  servicio:              string;
+  precio:                string;
+  veterinario:           string | null;
+  especialidad:          string | null;
+  observaciones_cliente: string | null;
 }

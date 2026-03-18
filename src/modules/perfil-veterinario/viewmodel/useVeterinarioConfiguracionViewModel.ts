@@ -23,10 +23,11 @@ export function useVeterinarioConfiguracionViewModel() {
   const [userName, setUserName]         = useState("Veterinario");
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
 
-  const [newPassword, setNewPassword]         = useState("");
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword,     setNewPassword]     = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [passwordError, setPasswordError]     = useState<string | null>(null);
-  const [passwordSaving, setPasswordSaving]   = useState(false);
+  const [passwordError,   setPasswordError]   = useState<string | null>(null);
+  const [passwordSaving,  setPasswordSaving]  = useState(false);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -101,8 +102,9 @@ export function useVeterinarioConfiguracionViewModel() {
     setPasswordSaving(true);
     setPasswordError(null);
     try {
-      await changePasswordVetUseCase(newPassword, confirmPassword);
+      await changePasswordVetUseCase(currentPassword, newPassword, confirmPassword);
       setIsPasswordModalOpen(false);
+      setCurrentPassword("");
       setNewPassword("");
       setConfirmPassword("");
     } catch (err: unknown) {
@@ -117,9 +119,16 @@ export function useVeterinarioConfiguracionViewModel() {
     schedule, handleScheduleChange, duration, setDuration, saveSchedule, scheduleSaved, scheduleError,
     isPasswordModalOpen,
     openPasswordModal:  () => setIsPasswordModalOpen(true),
-    closePasswordModal: () => { setIsPasswordModalOpen(false); setNewPassword(""); setConfirmPassword(""); setPasswordError(null); },
-    newPassword, setNewPassword,
+    closePasswordModal: () => { 
+      setIsPasswordModalOpen(false); 
+      setCurrentPassword(""); 
+      setNewPassword(""); 
+      setConfirmPassword(""); 
+      setPasswordError(null); 
+    },
+    currentPassword, setCurrentPassword,
+    newPassword,     setNewPassword,
     confirmPassword, setConfirmPassword,
-    passwordError, passwordSaving, submitPassword,
+    passwordError,   passwordSaving,     submitPassword,
   };
 }

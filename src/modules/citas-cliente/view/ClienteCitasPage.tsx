@@ -30,13 +30,17 @@ export function ClienteCitasPage() {
     <div style={{ backgroundColor: "#F7F9FB", minHeight: "100vh", padding: "32px" }}>
       <CitasHeader />
 
-      <div style={{ maxWidth: "640px", display: "flex", flexDirection: "column", gap: "16px" }}>
-        {citas.map((cita) => (
-          <div key={cita.id} onClick={() => setSelectedCita(cita)} style={{ cursor: "pointer" }}>
-            <CitaCard cita={cita} />
-          </div>
-        ))}
-      </div>
+      {citas.length === 0 ? (
+        <div style={{ maxWidth: "640px", textAlign: "center", padding: "60px 0", color: "#9CA3AF", fontSize: "14px" }}>
+          No tienes citas registradas aún.
+        </div>
+      ) : (
+        <div style={{ maxWidth: "640px", display: "flex", flexDirection: "column", gap: "14px" }}>
+          {citas.map((cita) => (
+            <CitaCard key={cita.id} cita={cita} onClick={() => setSelectedCita(cita)} />
+          ))}
+        </div>
+      )}
 
       {selectedCita && (
         <CitaDetalleModal cita={selectedCita} onClose={() => setSelectedCita(null)} />

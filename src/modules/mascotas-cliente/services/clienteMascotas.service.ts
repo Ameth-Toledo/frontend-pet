@@ -17,4 +17,8 @@ export const clienteMascotasService = {
     const res = await apiClient.post<MascotaClienteResponseDTO>('/pets', data);
     return res.data;
   },
+
+  updateMascota: async (id: number, data: Partial<CreateMascotaRequestDTO>): Promise<void> => {
+    await apiClient.put(`/pets/${id}`, data);
+  },
 };
